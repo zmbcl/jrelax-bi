@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <title>${system_admin_title}</title>
+    #required_css
+</head>
+<body>#loading
+
+<div class="app $!layout">
+    <!-- 头部菜单 -->#header
+    <section class="layout">
+        <!-- 菜单 -->#sidebar
+        <!-- 内容主体 -->
+        <section class="container">
+            <section class="main-content">
+                <!-- 主体操作栏 -->
+                <header class="header navbar bb">
+                    <!-- 左按钮区 -->
+                    <div class="btn-group tool-button">
+                        <a href="$!basePath/bi/charts/add" class="btn btn-primary navbar-btn" data-tabs-link><i class="ti-plus"></i>
+                            #springMessage('system.common.add')图表</a>
+                    </div>
+                    <div class="pull-right offscreen-right">
+                    </div>
+                </header>
+                <div class="content-wrap">
+                    <div class="wrapper">
+                        <form id="biDatasourceForm" action="$!basePath/bi/charts" method="post">
+                            <div class="row">
+                                <div class="col-lg-12 table-responsive">
+                                    <table id="biDatasourceTable" class="table no-m">
+                                        <thead>
+                                        <tr>
+                                            <th class="col-md-1">序号</th>
+                                            <th class="col-md-4">图表名称</th>
+                                            <th class="col-md-1">图表类型</th>
+                                            <th class="col-md-2">创建人</th>
+                                            <th class="col-md-2">创建时间</th>
+                                            <th>#springMessage('system.common.op')</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        #foreach($obj in $list)
+                                        <tr>
+                                            <td>$!velocityCount</td>
+                                            <td>$!obj.name</td>
+                                            <td>$!chartsType.get($!obj.type)</td>
+                                            <td>$!obj.createUser</td>
+                                            <td>$!obj.createTime</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle"
+                                                            data-toggle="dropdown">
+                                                        <i class="ti-settings"></i>
+                                                        <span class="ti-angle-down"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu" role="menu">
+                                                        <li><a href="$!basePath/bi/charts/preview?id=$!obj.id" data-tabs-link="">预览</a></li>
+                                                        <li><a href="javascript:;" onclick="ns.view.showModal('$!basePath/bi/charts/code?id=$!obj.id')">查看引用代码</a></li>
+                                                        <li class="divider"></li>
+                                                        <li><a href="javascript:;" onclick="del('${obj.id}')">#springMessage('system.common.delete')</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        #end
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    #pager_ajax
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <a class="exit-offscreen"></a>
+            </section>
+        </section>
+    </section>
+</div>
+#required_js
+<script type="text/javascript">
+    function del(id) {
+        ns.tip.confirm("确定删除吗？", function () {
+            ns.post("$!basePath/bi/charts/delete/" + id, {}, function (success, data) {
+                if (success) {
+                    ns.back("$!basePath/bi/charts", 1000);
+                } else {
+                    ns.tip.toast.error(data.error);
+                }
+            });
+        });
+    }
+</script>
+#loading_close
+</body>
+
+</html>

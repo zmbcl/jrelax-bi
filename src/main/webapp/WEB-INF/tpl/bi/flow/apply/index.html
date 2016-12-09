@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <title>${system_admin_title}</title>
+    #required_css
+</head>
+
+<body>#loading
+
+<div class="app $!layout">
+    <!-- 头部菜单 -->#header
+    <section class="layout">
+        <!-- 菜单 -->
+        #sidebar
+        <!-- 内容主体 -->
+        <section class="container">
+            <section class="main-content">
+                <!-- 主体操作栏 -->
+                <header class="header navbar">
+                    <!-- 左按钮区 -->
+                    <div class="btn-group tool-button"></div>
+                    <!-- 右按钮区 -->
+                    <div class="btn-group pull-right"></div>
+                </header>
+                <div class="content-wrap">
+                    <div class="wrapper">
+                        <div class="row clearfix">
+                            <div class="col-md-12 column">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>编号</th>
+                                        <th>流程名称</th>
+                                        <th>流程描述</th>
+                                        <th>#springMessage('system.common.op')</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    #foreach($!obj in $!list)
+                                    <tr>
+                                        <td>$!velocityCount</td>
+                                        <td>$!obj.name</td>
+                                        <td>$!obj.description</td>
+                                        <td><a href="javascript:;" onclick="start('$!obj.id')">启动流程</a></td>
+                                    </tr>
+                                    #end
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="exit-offscreen"></a>
+                </div>
+            </section>
+        </section>
+    </section>
+</div>
+#required_js
+<!-- 页面组件 -->
+
+<!-- 本页面脚本 -->
+<script src="$!basePath/framework/js/view/toast.js"></script>
+<script type="text/javascript">
+    function start(id) {
+        jQuery.post("$!basePath/bi/flow/apply/start/" + id, {}, function (data) {
+            if (data.success == true) {
+                Toast.success("流程启动成功！");
+            } else {
+                Toast.error(data.error);
+            }
+        });
+    }
+</script>
+#loading_close
+</body>
+
+</html>

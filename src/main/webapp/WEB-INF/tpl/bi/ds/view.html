@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+    <title>${system_admin_title}</title>
+    #required_css
+    <style>
+        #preview table{
+            width: auto;
+        }
+    </style>
+</head>
+
+<body>#loading
+<div class="app $!layout">
+    <!-- 头部菜单 -->
+    #header
+    <section class="layout">
+        <!-- 菜单 -->
+        #sidebar
+        <!-- 内容主体 -->
+        <section class="container">
+            <section class="main-content">
+                <div class="content-wrap">
+                    <div class="wrapper pt20">
+                        <form id="biDatasourceAddForm" role="form" class="parsley-form" data-parsley-validate
+                              action="$!basePath/bi/ds/data/$!type/$!biDatasource.id" method="post">
+                            <section class="panel">
+                                <div class="panel-heading">
+                                    <h5>$!biDatasource.name</h5>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            $!biDatasource.sqlCmd
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            #if($!params.size() > 0)
+                            <section class="panel">
+                                <div class="panel-heading">
+                                    <h5>参数列表</h5>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            #foreach($!obj in $!params)
+                                            <div class="form-group">
+                                                <label class="control-label">$!obj.field</label>
+                                                <input type="text" class="form-control" data-parsley-required="true" name="$!obj.field" value="$!obj.defaultValue">
+                                            </div>
+                                            #end
+                                            <button id="ok" class="btn btn-primary btn-parsley" data-loading-text="正在执行...">
+                                                执行
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                            #end
+                            <section class="panel">
+                                <div class="panel-heading">
+                                    数据预览
+                                </div>
+                                <div class="panel-body" id="preview"></div>
+                            </section>
+                        </form>
+                    </div>
+                </div>
+                <a class="exit-offscreen"></a>
+            </section>
+        </section>
+    </section>
+</div>
+</body>
+#required_js
+<script src="$!basePath/framework/js/form/form.js"></script>
+<script src="$!basePath/framework/js/view/toast.js"></script>
+<script src="$!basePath/framework/js/form/validator.js"></script>
+
+<script type="text/javascript">
+    ns.ready(function () {
+        $("#biDatasourceAddForm").ajaxForm({
+            beforeSubmit: function (arr, $form, options) {
+                $form.find("#ok").button("loading");
+                $("#preview").html("正在加载数据...");
+            },
+            success: function (data, statusText, xhr, $form) {
+                $("#preview").html(data);
+                $form.find("#ok").button("reset");
+            }
+        });
+
+        #if($!params.size() == 0)
+        $("#biDatasourceAddForm").submit();
+        #end
+    });
+</script>
+#loading_close
+</html>

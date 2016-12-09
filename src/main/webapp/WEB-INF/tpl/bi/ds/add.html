@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+    <title>${system_admin_title}</title>
+    #required_css
+    <style>
+        #html table{
+            width: auto;
+        }
+    </style>
+</head>
+
+<body>#loading
+<div class="app $!layout">
+    <!-- 头部菜单 -->
+    #header
+    <section class="layout">
+        <!-- 菜单 -->
+        #sidebar
+        <!-- 内容主体 -->
+        <section class="container">
+            <section class="main-content">
+                <div class="content-wrap">
+                    <div class="wrapper pt20">
+                        <form id="biDatasourceAddForm" role="form" class="parsley-form" data-parsley-validate
+                              action="$!basePath/bi/ds/add/do" method="post">
+                            <section class="panel">
+                                <div class="panel-heading">
+                                    <h5>配置</h5>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label class="control-label">数据源名称：</label>
+                                                <input type="text" class="form-control" data-parsley-required="true"
+                                                       name="name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">SQL：</label>
+                                                <textarea id="sql" name="sqlCmd" rows="5" class="form-control"
+                                                          data-parsley-required="true"></textarea>
+                                            </div>
+                                            <div class="alert alert-warning">
+                                                SQL中添加参数的方式：格式：<strong>{#参数名#}</strong>，示例：select * from table where id = '{#ID#}'
+                                            </div>
+                                            <button class="btn btn-primary" onclick="doPreviewData()" type="button">
+                                                <i class="fa fa-eye"></i> 预览数据
+                                            </button>
+                                            <button id="ok" class="btn btn-primary btn-parsley" data-loading-text="正在保存...">
+                                                <i class="fa fa-save"></i> 保存数据源
+                                            </button>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label class="control-label">参数列表：</label>
+                                                <div class="row p15">
+                                                    <table id="resolveTable"
+                                                           class="table table-condensed bg-white">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>序号</th>
+                                                            <th class="col-lg-5">参数名</th>
+                                                            <th class="col-lg-6">默认值</th>
+                                                            <th></th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                        <tr class="hide">
+                                                            <td>1</td>
+                                                            <td>
+                                                                <input type="text" name="field" class="form-control">
+                                                            </td>
+                                                            <td>
+                                                                <input type="text" name="defaultValue" class="form-control">
+                                                            </td>
+                                                            <td style="vertical-align: middle">
+                                                                <button class="btn btn-default btn-xs"
+                                                                        onclick="removeParamRow(this)">
+                                                                    <i class="fa fa-close"></i>
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <button class="btn btn-default" onclick="addParamRow()" type="button">
+                                                        增加参数
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </section>
+                            <section class="panel">
+                                <div class="panel-heading">
+                                    数据预览
+                                </div>
+                                <div class="panel-body">
+                                    <div class="box-tab no-b">
+                                        <ul class="nav nav-tabs" role="tablist">
+                                            <li class="active"><a href="#html" data-toggle="tab">HTML</a></li>
+                                            <li><a href="#json" data-toggle="tab">JSON</a></li>
+                                            <li><a href="#xml" data-toggle="tab">XML</a></li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div class="tab-pane fade active in" id="html"></div>
+                                            <div class="tab-pane fade" id="json"></div>
+                                            <div class="tab-pane fade" id="xml"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </form>
+                    </div>
+                </div>
+                <a class="exit-offscreen"></a>
+            </section>
+        </section>
+    </section>
+</div>
+</body>
+#required_js
+<script src="$!basePath/framework/js/form/form.js"></script>
+<script src="$!basePath/framework/js/view/toast.js"></script>
+<script src="$!basePath/framework/js/form/validator.js"></script>
+
+<script type="text/javascript">
+    var data = [], json, xml, html, keys = [];
+    var params = [];
+    ns.ready(function () {
+        $("#biDatasourceAddForm").ajaxForm({
+            beforeSubmit: function (arr, $form, options) {
+                $form.find("#ok").button("loading");
+            },
+            success: function (data, statusText, xhr, $form) {
+                if (data.success == true) {
+                    ns.tip.toast.success("保存成功！");
+                } else {
+                    ns.tip.toast.error(data.error);
+                }
+                $form.find("#ok").button("reset");
+            }
+        });
+    });
+    //预览数据
+    function doPreviewData() {
+        var fields = [], defaultValues = [];
+        $("#resolveTable tbody>tr:not(.hide)").each(function (i, tr) {
+            tr = $(tr);
+            var field = tr.find("input[name='field']").val();
+            var def = tr.find("input[name='defaultValue']").val();
+            fields.push(field);
+            defaultValues.push(def);
+        });
+        ns.view.showProgress();
+        ns.post("$!basePath/bi/ds/exec", {
+            sql: $("#sql").val(),
+            field: fields.toString(),
+            defaultValue : defaultValues.toLocaleString()
+        }, function (success, response) {
+            ns.view.closeProgress();
+            if (success) {
+                $("#html").html(response.html);
+                $("#json").html(response.json);
+                $("#xml").html(response.xml);
+            } else {
+                ns.tip.error("SQL语句错误", response.error);
+            }
+        });
+    }
+    //增加行
+    function addParamRow() {
+        var tr = $("#resolveTable tbody>tr.hide").clone();
+        tr.removeClass("hide");
+        tr.find("input").attr("data-parsley-required", true).attr("data-parsley-placement", "bottom");
+        tr.find("td:first").text($("#resolveTable tbody>tr:not(.hide)").length + 1);
+        $("#resolveTable tbody").append(tr);
+    }
+    //删除行
+    function removeParamRow(obj) {
+        $(obj).parents("tr").remove();
+    }
+</script>
+#loading_close
+</html>

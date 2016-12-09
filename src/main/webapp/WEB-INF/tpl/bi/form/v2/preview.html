@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+        <title>可视化表单设计器2.0</title>#required_css</head>
+        <link rel="stylesheet" href="$!basePath/app/formdesign/2.0/css/run.css" />
+        
+    <body>#loading
+        <div class="app $!layout">
+            <section class="layout">
+            	<!-- 内容主体 -->
+                <section class="main-content">
+                	<header class="header navbar bb">
+                		<div class="btn-group tool-button">
+							<button type="button" class="btn btn-default navbar-btn" onclick="$('form').submit();"><i class="fa fa-bug"></i> 测试提交</button>
+							<a href="$!basePath/bi/form/datalist20/$!form.id" class="btn btn-primary navbar-btn"><i class="fa fa-database"></i> 表单数据显示</a>
+						</div>
+                		<div class="pull-right">
+                			<button type="button" class="btn btn-default navbar-btn" onclick="window.close()"><i class="fa fa-close"></i> 关闭</button>
+                		</div>
+					</header>
+                    <div class="content-wrap">
+                       	<div class="wrapper no-p bg-default">
+                       		<div class="row">
+                       			<div class="col-lg-1"></div>
+                       			<div class="col-lg-10 bordered mt20 pt20 pb20 bg-white">
+                       			$!html
+                       			</div>
+                       			<div class="col-lg-1"></div>
+                       		</div>
+                        </div>
+                        <a class="exit-offscreen"></a>
+                    </div>
+                </section>
+        	</section>
+        </div>
+        #required_js
+        <!-- 页面组件 -->
+        <script type="text/javascript" src="$!basePath/framework/plugins/jquery.form.js"></script>
+        
+        <!-- 本页面脚本 -->
+        <script type="text/javascript" src="$!basePath/app/formdesign/2.0/formdesign.js"></script>
+        <script type="text/javascript" src="$!basePath/app/formdesign/2.0/formdesign.config.js"></script>
+        <script type="text/javascript" src="$!basePath/app/formdesign/2.0/formdesign.run.js"></script>
+        <script type="text/javascript" src="$!basePath/app/formdesign/2.0/formdesign.validator.js"></script>
+        
+        <script type="text/javascript">
+        	$(function(){
+        		fd.run.init();
+        	});
+        </script>
+        #loading_close
+    </body>
+</html>

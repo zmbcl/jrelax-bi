@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <title>${system_admin_title}</title>
+    #required_css
+    <link rel="stylesheet" href="$!basePath/app/charts/style.css">
+</head>
+<body>#loading
+
+<div class="app $!layout">
+    <!-- 头部菜单 -->#header
+    <section class="layout">
+        <!-- 菜单 -->#sidebar
+        <!-- 内容主体 -->
+        <section class="container">
+            <section class="main-content">
+                <div class="content-wrap">
+                    <div class="wrapper" style="background: #CCCCCC">
+                        <form action="$!basePath/bi/charts/add/4" method="post">
+                            <input type="hidden" name="type" value="$!type">
+                            <input type="hidden" name="configs">
+                        </form>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="panel">
+                                    <div class="panel-heading text-center">
+                                        <h4>图表参数配置（3/4）</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="col-lg-5">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">预览</div>
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="col-lg-12">
+                                                            <canvas id="previewChart" style="width: 100%"></canvas>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-7">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading text-center">图表参数项</div>
+                                                <div class="panel-body">
+                                                    <div class="row" id="configMap">
+                                                        <div class="col-lg-12">
+                                                            <div class="form-group">
+                                                                <label class="control-label">标题</label>
+                                                                <select name="options.title.display" class="chosen" onchange="toggleElement(this, 'options_title')">
+                                                                    <option value="false">不显示</option>
+                                                                    <option value="true">显示</option>
+                                                                </select>
+                                                            </div>
+                                                            <div class="form-group hide ml25" group="options_title">
+                                                                <label class="control-label">标题内容</label>
+                                                                <input type="text" class="form-control" name="options.title.text">
+                                                            </div>
+                                                            <div class="form-group hide ml25" group="options_title">
+                                                                <label class="control-label">显示方向</label>
+                                                                <select name="options.title.position" class="chosen">
+                                                                    <option value="top">上</option>
+                                                                    <option value="bottom">下</option>
+                                                                    <option value="left">左</option>
+                                                                    <option value="right">右</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-12 text-center">
+                                                            <button type="button" class="btn btn-primary" onclick="doApply()">应用设置</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel-footer text-right">
+                                        <a class="btn btn-default" href="../add/step-2?type=$!type">上一步</a>
+                                        <button type="button" id="btnNext" class="btn btn-primary" onclick="doNext()">下一步</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+        </section>
+    </section>
+</div>
+#required_js
+<script src="$!basePath/framework/plugins/charts/chartjs/Chart.min.js"></script>
+<script src="$!basePath/framework/js/form/select.js"></script>
+<script src="$!basePath/app/charts/datasource.js"></script>
+<script src="$!basePath/app/charts/utils.js"></script>
+<script src="$!basePath/app/charts/adapter/bubble.js"></script>
+<script type="text/javascript">
+    var adapter;
+    var configs = eval('$!configs');
+    $(function () {
+        _init();
+    });
+    function _init() {
+        adapter = new BubbleAdapter(configs);
+        adapter.init(document.getElementById("previewChart"));
+    }
+    function doApply() {
+        var attrs = ns.formAttrs($("#configMap"));
+
+        adapter.update(attrs);
+    }
+
+    function toggleElement(obj, el) {
+        el = "div[group^='" + el + "']";
+        if (obj.value == "true") {
+            $(el).removeClass("hide");
+        } else {
+            $(el).addClass("hide");
+        }
+    }
+
+    function doNext() {
+        var opt = adapter.getOptions();
+        delete opt.charts.data;
+        $("input[name='configs']").val(JSON.stringify(opt));
+        $("form").submit();
+    }
+
+</script>
+#loading_close
+</body>
+
+</html>

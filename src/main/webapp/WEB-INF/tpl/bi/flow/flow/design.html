@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+    
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+        <title>可视化流程设计器 - ${system_admin_title}</title>
+        #required_css
+        <style type="text/css">
+		a:hover {
+			color:black !important;
+		}
+		nav li a {
+			color:black !important;
+			background-color: #eee;
+		}
+		.start-event {
+			border-radius: 22px;
+			border:2px solid #15db81;
+		}
+		.end-event {
+			border-radius: 25px;
+			border:2px solid #da3e16;
+		}
+		.gateway{
+			transform: rotate(45deg);
+			transition: transform 2s ease 0s
+		}
+		.selected {
+			border:2px solid red;
+		}
+		.dragHover {
+			border:2px solid #5c96bc;
+		}
+		.ep {
+			position:absolute;
+			bottom: 80%;
+			right: 0px;
+			width:0.8em;
+			height:0.8em;
+			background-color:#5c96bc;
+			cursor:pointer;
+			box-shadow: 0px 0px 2px black;
+			-webkit-transition:-webkit-box-shadow 0.25s ease-in;
+			-moz-transition:-moz-box-shadow 0.25s ease-in;
+			transition:box-shadow 0.25s ease-in;
+		}
+		
+		.ep:hover {
+			box-shadow: 0px 0px 6px black;
+		}
+	</style>
+    </head>
+    <body onbeforeunload="return '确定关闭流程设计器吗？';" >#loading
+        
+        <div class="app $!layout">
+            <section class="layout">
+            <aside class="bg-default sidebar offscreen-left">
+					<header class="header navbar clearfix bg-default pl0 pr0">
+						<p class="navbar-text">流程组件</p>
+					</header>
+					<div class="content-wrap no-p">
+						<div class="wrapper">
+							<nav class="main-navigation bg-default" data-height="auto" data-size="6px" data-distance="0" data-rail-visible="true" data-wheel-step="10">
+								<ul class="nav">
+									<li class="open">
+										<a href="javascript:;">
+											<i class="toggle-accordion"></i><i class="fa fa-hand-o-up"></i>
+											<span>选择</span>
+										</a>
+										<ul class="sub-menu in">
+											<li>
+												<a href="javascript:;">
+													<i class="fa fa-hand-o-up"></i>
+													<span>选择</span>
+												</a>
+											</li>
+										</ul>
+									</li>
+									<li>
+										<a href="javascript:;">
+											<i class="toggle-accordion"></i><i class="fa fa-arrows-h"></i>
+											<span>连线</span>
+										</a>
+										<ul class="sub-menu in">
+											<li>
+												<a href="javascript:;">
+													<i class="fa fa-arrows-h"></i>
+													<span>顺序流</span>
+												</a>
+											</li>
+										</ul>
+									</li>
+									<li>
+										<a href="javascript:;">
+											<i class="toggle-accordion"></i><i class="fa fa-flash"></i>
+											<span>事件</span>
+										</a>
+										<ul class="sub-menu in">
+											<li>
+												<a href="javascript:;">
+													<i class="fa fa-circle text-success"></i>
+													<span>开始事件</span>
+													<i class="flow-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<div class="panel-body bordered bg-success start-event p20" t="event" style="position: absolute;"></div>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<i class="fa fa-clock-o"></i>
+													<span>定时开始事件</span>
+													<i class="flow-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+						                        	<div class="panel-body bordered start-event pl15 pr15 pt10 pb10" t="event" style="position: absolute;">
+						                        		<i class="fa fa-clock-o"></i>
+						                        	</div>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<i class="fa fa-circle text-danger"></i>
+													<span>结束事件</span>
+													<i class="flow-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<div class="panel-body bordered bg-danger end-event p20" t="event" style="position: absolute;"></div>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<i class="fa fa-times-circle-o"></i>
+													<span>终止结束事件</span>
+													<i class="flow-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<div class="panel-body bordered end-event pl15 pr15 pt10 pb10" t="event" style="position: absolute;">
+						                        		<i class="fa fa-close"></i>
+						                        	</div>
+												</div>
+											</li>
+										</ul>
+									</li>
+									<li>
+										<a href="javascript:;">
+											<i class="toggle-accordion"></i><i class="fa fa-tasks"></i>
+											<span>任务</span>
+										</a>
+										<ul class="sub-menu in">
+											<li>
+												<a href="javascript:;">
+													<i class="fa fa-user"></i>
+													<span>用户任务</span>
+													<i class="flow-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<div class="panel-body bordered rounded8 p20" t="userTask" style="position: absolute;">
+						                        		<i class="fa fa-user"></i> <span>用户任务</span>
+						                        	</div>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<i class="fa fa-code"></i>
+													<span>脚本任务</span>
+													<i class="flow-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<div class="panel-body bordered rounded8 p20" t="scriptTask" style="position: absolute;">
+						                        		<i class="fa fa-code"></i> <span>脚本任务</span>
+						                        	</div>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<i class="fa fa-envelope"></i>
+													<span>邮件任务</span>
+													<i class="flow-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<div class="panel-body bordered rounded8 p20" t="mailTask" style="position: absolute;">
+						                        		<i class="fa fa-envelope"></i> <span>邮件任务</span>
+						                        	</div>
+												</div>
+											</li>
+										</ul>
+									</li>
+									<li>
+										<a href="javascript:;">
+											<i class="toggle-accordion"></i><i class="fa fa-magnet"></i>
+											<span>网关</span>
+										</a>
+										<ul class="sub-menu in">
+											<li>
+												<a href="javascript:;">
+													<i class="fa fa-plus-square"></i>
+													<span>并行网关</span>
+													<i class="flow-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<div class="panel-body bordered gateway pl15 pr15 pt10 pb10" t="gateway" style="position: absolute;">
+						                        		<i class="fa fa-close"></i>
+						                        	</div>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<i class="fa fa-close"></i>
+													<span>排他网关</span>
+													<i class="flow-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<div class="panel-body bordered gateway pl15 pr15 pt10 pb10"  t="gateway" style="position: absolute;">
+						                        		<i class="fa fa-plus"></i>
+						                        	</div>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<i class="fa fa-circle-o"></i>
+													<span>相容网关</span>
+													<i class="flow-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<div class="panel-body bordered gateway pl15 pr15 pt10 pb10" t="gateway" style="position: absolute;">
+						                        		<i class="fa fa-circle-o"></i>
+						                        	</div>
+												</div>
+											</li>
+										</ul>
+									</li>
+									<li class="hide">
+										<a href="javascript:;">
+											<i class="toggle-accordion"></i><i class="fa fa-flag"></i>
+											<span>边界事件</span>
+										</a>
+										<ul class="sub-menu in">
+											<li>
+												<a href="javascript:;">
+													<i class="fa fa-clock-o"></i>
+													<span>定时边界事件</span>
+													<i class="flow-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													
+												</div>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</nav>
+						</div>
+					</div>
+					<footer>
+						<button class="btn btn-primary btn-block">保存到服务器</button>
+					</footer>
+				</aside>
+                <!-- 内容主体 -->
+                <section class="main-content">
+                    <div class="content-wrap">
+                        <div class="wrapper">
+                        	<!-- 存放连接线参数 -->
+                        	<div class="seq hide"></div>
+                        </div>
+                        <a class="exit-offscreen"></a>
+                    </div>
+                    <footer class="footer shadow no-p">
+	                    <div class="box-tab tabs-left no-b"><!-- 事件Event配置 -->
+							<ul class="nav nav-tabs">
+								<li class="active"><a href="#general" data-toggle="tab">通用设置</a></li>
+								<li><a href="#mainconfig" data-toggle="tab">主要配置</a></li>
+								<li><a href="#documentation" data-toggle="tab">描述</a></li>
+								<li><a href="#form" data-toggle="tab">表单项</a></li>
+							</ul>
+							<div class="tab-content text-center">
+								<div class="tab-pane fade active in" id="general">
+									<form class="form-horizontal" role="form">
+										<div class="form-group" with="*">
+											<label class="col-sm-1 control-label">Id</label>
+											<div class="col-sm-10">
+												<input type="text" name="id" class="form-control">
+											</div>
+										</div>
+										<div class="form-group" with="*">
+											<label class="col-sm-1 control-label">名称</label>
+											<div class="col-sm-10">
+												<input type="text" name="name" class="form-control">
+											</div>
+										</div>
+										<div class="form-group" with="userTask,scriptTask,mailTask">
+											<label class="col-sm-1 control-label">异步</label>
+											<div class="col-sm-10 text-left">
+												<input type="checkbox" name="activiti:async">
+											</div>
+										</div>
+										<div class="form-group" with="userTask,scriptTask,mailTask">
+											<label class="col-sm-1 control-label">排他</label>
+											<div class="col-sm-10 text-left">
+												<input type="checkbox" name="activiti:exclusive" checked="checked">
+											</div>
+										</div>
+									</form>
+								</div>
+								<div class="tab-pane fade" id="mainconfig">
+									<form class="form-horizontal" role="form">
+										<div class="form-group" with="event">
+											<label class="col-sm-1 control-label">发起人</label>
+											<div class="col-sm-10">
+												<input type="text" name="activiti:initiator" class="form-control">
+											</div>
+										</div>
+										<div class="form-group" with="event,userTask,scriptTask,mailTask">
+											<label class="col-sm-1 control-label">表单</label>
+											<div class="col-sm-10">
+												<select name="activiti:formKey" class="form-control">
+												<option value="">无</option>
+												#foreach($!obj in $!formList)
+												<option value="$!obj.id">$!obj.name</option>
+												#end
+												</select>
+											</div>
+										</div>
+										<div class="form-group" with="sequenceFlow"><!-- 连线 -->
+											<label class="col-sm-1 control-label">表达式</label>
+											<div class="col-sm-10">
+												<textarea class="form-control" name="condition" rows="5"></textarea>
+											</div>
+										</div>
+										<div class="form-group" with="userTask"><!-- 用户任务 -->
+											<label class="col-sm-1 control-label">执行人</label>
+											<div class="col-sm-10">
+												<select name="activiti:assignee" class="form-control">
+												<option value="">无</option>
+												#foreach($!obj in $!userList)
+												<option value="$!obj.id">$!obj.realName</option>
+												#end
+												</select>
+											</div>
+										</div>
+										<div class="form-group" with="userTask"><!-- 用户任务 -->
+											<label class="col-sm-1 control-label">候选人</label>
+											<div class="col-sm-10">
+												<select name="activiti:candidateUsers" class="form-control">
+												<option value="">无</option>
+												#foreach($!obj in $!userList)
+												<option value="$!obj.id">$!obj.realName</option>
+												#end
+												</select>
+											</div>
+										</div>
+										<div class="form-group" with="userTask"><!-- 用户任务 -->
+											<label class="col-sm-1 control-label">候选组</label>
+											<div class="col-sm-10">
+												<select name="activiti:candidateGroups" class="form-control">
+												<option value="">无</option>
+												#foreach($!obj in $!roleList)
+												<option value="$!obj.id">$!obj.name</option>
+												#end
+												</select>
+											</div>
+										</div>
+										<div class="form-group" with="userTask"><!-- 用户任务 -->
+											<label class="col-sm-1 control-label">截止日期</label>
+											<div class="col-sm-10">
+												<input type="text" name="activiti:dueDate" class="form-control">
+											</div>
+										</div>
+										<div class="form-group" with="userTask"><!-- 用户任务 -->
+											<label class="col-sm-1 control-label">优先级</label>
+											<div class="col-sm-10">
+												<input type="text" name="activiti:priority" class="form-control">
+											</div>
+										</div>
+										<div class="form-group" with="scriptTask"><!-- 脚本任务 -->
+											<label class="col-sm-1 control-label">脚本语言</label>
+											<div class="col-sm-10">
+												<select name="scriptFormat" class="form-control">
+													<option name="javascript">javascript</option>
+													<option name="groovy">groovy</option>
+												</select>
+											</div>
+										</div>
+										<div class="form-group" with="scriptTask"><!-- 脚本任务 -->
+											<label class="col-sm-1 control-label">脚本</label>
+											<div class="col-sm-10">
+												<textarea class="form-control" name="script" rows="5"></textarea>
+											</div>
+										</div>
+										<div class="form-group" with="mailTask"><!-- 邮件任务 -->
+											<label class="col-sm-1 control-label">收件人</label>
+											<div class="col-sm-10">
+												<input type="text" name="to" class="form-control">
+											</div>
+										</div>
+										<div class="form-group" with="mailTask"><!-- 邮件任务 -->
+											<label class="col-sm-1 control-label">发件人</label>
+											<div class="col-sm-10">
+												<input type="text" name="from" class="form-control">
+											</div>
+										</div>
+										<div class="form-group" with="mailTask"><!-- 邮件任务 -->
+											<label class="col-sm-1 control-label">主题</label>
+											<div class="col-sm-10">
+												<input type="text" name="subject" class="form-control">
+											</div>
+										</div>
+										<div class="form-group" with="mailTask"><!-- 邮件任务 -->
+											<label class="col-sm-1 control-label">抄送</label>
+											<div class="col-sm-10">
+												<input type="text" name="cc" class="form-control">
+											</div>
+										</div>
+										<div class="form-group" with="mailTask"><!-- 邮件任务 -->
+											<label class="col-sm-1 control-label">编码</label>
+											<div class="col-sm-10">
+												<input type="text" name="charset" class="form-control">
+											</div>
+										</div>
+										<div class="form-group" with="mailTask"><!-- 邮件任务 -->
+											<label class="col-sm-1 control-label">HTML</label>
+											<div class="col-sm-10">
+												<textarea class="form-control" name="html" rows="5"></textarea>
+											</div>
+										</div>
+										<div class="form-group" with="mailTask"><!-- 邮件任务 -->
+											<label class="col-sm-1 control-label">纯文本</label>
+											<div class="col-sm-10">
+												<textarea class="form-control" name="text" rows="5"></textarea>
+											</div>
+										</div>
+									</form>
+								</div>
+								<div class="tab-pane fade" id="documentation">
+									<form class="form-horizontal" role="form">
+										<div class="form-group" with="*">
+											<label class="col-sm-1 control-label">描述</label>
+											<div class="col-sm-10">
+												<textarea name="documentation" class="form-control" rows="5"></textarea>
+											</div>
+										</div>
+									</form>
+								</div>
+								<div class="tab-pane fade" id="form">
+									<form class="form-horizontal" role="form"  with="event,userTask,scriptTask,mailTask">
+										<div class="col-sm-10">
+											<table name="activiti:formProperty" class="table table-bordered table-striped">
+												<tr>
+													<th>Id</th>
+													<th>名称</th>
+													<th>类型</th>
+													<th>只读</th>
+													<th>只写</th>
+													<th>必须</th>
+												</tr>
+											</table>
+										</div>
+										<div class="col-sm-2">
+											<button type="button" class="btn btn-default btn-block">添加</button>
+											<button type="button" class="btn btn-default btn-block">#springMessage('system.common.edit')</button>
+											<button type="button" class="btn btn-default btn-block">#springMessage('system.common.delete')</button>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+                    </footer>
+                </section>
+            </section>
+        </div>
+        #required_js
+        <!-- 页面组件 -->
+        <script src="$!basePath/app/flowdesign/jquery-ui.min.js"></script>
+        <script src="$!basePath/app/flowdesign/jquery.jsPlumb-1.7.2-min.js"></script>
+        <script type="text/javascript" src="$!basePath/app/flowdesign/jquery.dragg.min.js"></script>
+        
+        <!-- 本页面脚本 -->
+        <script src="$!basePath/framework/js/view/toast.js"></script>
+        <script src="$!basePath/app/flowdesign/flowdesign.js"></script>
+        <script type="text/javascript">
+        	
+        </script>
+        #loading_close</body>
+</html>

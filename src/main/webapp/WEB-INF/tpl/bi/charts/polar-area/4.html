@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <title>${system_admin_title}</title>
+    #required_css
+    <link rel="stylesheet" href="$!basePath/app/charts/style.css">
+</head>
+<body>#loading
+
+<div class="app $!layout">
+    <!-- 头部菜单 -->#header
+    <section class="layout">
+        <!-- 菜单 -->#sidebar
+        <!-- 内容主体 -->
+        <section class="container">
+            <section class="main-content">
+                <div class="content-wrap">
+                    <div class="wrapper" style="background: #CCCCCC">
+                        <div class="row">
+                            <div class="col-lg-8 col-lg-offset-2">
+                                <div class="panel">
+                                    <div class="panel-heading">
+                                        <h4>结果展示（4/4）</h4>
+                                    </div>
+                                    <div class="panel-body">
+                                        <div class="row">
+                                            <div class="col-lg-6 col-lg-offset-3">
+                                                <canvas id="previewChart" style="width: 100%"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="panel-footer text-center">
+                                        <a class="btn btn-default" href="javascript:history.go(-1)">上一步</a>
+                                        <button type="button" id="btnNext" class="btn btn-primary" onclick="doComplete()">完成并保存</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </section>
+    </section>
+</div>
+#required_js
+<script src="$!basePath/framework/plugins/charts/chartjs/Chart.min.js"></script>
+<script src="$!basePath/app/charts/datasource.js"></script>
+<script src="$!basePath/app/charts/utils.js"></script>
+<script src="$!basePath/app/charts/adapter/polar-area.js"></script>
+<script type="text/javascript">
+    var configs = '$!configs';
+    $(function () {
+        var config = jQuery.parseJSON(configs);
+        adapter = new PolarAreaAdapter(config.datasource);
+        adapter.init($("#previewChart")[0], config.charts);
+    });
+
+    function doComplete(){
+        ns.tip.prompt("给您的图表起个名吧：", function(name){
+            ns.post("$!basePath/bi/charts/add/do",{name:name, type:'$!type', configs : configs}, function(success, data){
+               if(success){
+                   ns.tip.success("保存成功", function(){
+                       window.location.href = "$!basePath/bi/charts/add";
+                   });
+               }else{
+                   alert("请稍后重试！");
+               }
+            });
+        });
+    }
+</script>
+#loading_close
+</body>
+
+</html>

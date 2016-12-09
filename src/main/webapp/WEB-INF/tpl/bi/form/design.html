@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+        <title>可视化表单设计器 - ${system_admin_title}</title>#required_css</head>
+   	<style type="text/css">
+    	.wrapper .design {padding: 30px 10px 10px;height:90%;border: 1px solid #DDDDDD; border-radius: 4px; position:relative;}
+    	.wrapper .design:after {
+			background-color: #F5F5F5;
+			border: 1px solid #DDDDDD;
+			border-radius: 4px 0 4px 0;
+			color: #9DA0A4;
+			content: "表单容器";
+			font-size: 12px;
+			font-weight: bold;
+			left: -1px;
+			padding: 3px 7px;
+			position: absolute;
+			top: -1px;
+		}
+		.design-item{
+			min-height:40px;
+		}
+		.selected {
+			border: 1px solid #3B97E3 !important;
+			/* -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.2);
+			box-shadow: 0 0 5px rgba(0,0,0,0.2); */
+		}
+		a:hover {
+			color:black !important;
+		}
+		nav li a {
+			color:black !important;
+			background-color: #eee;
+		}
+	</style>
+    <body>#loading
+        <div class="app $!layout">
+            <section class="layout">
+            	<aside class="sidebar offscreen-left">
+					<header class="header navbar clearfix bg-default pl0 pr0">
+						<p class="navbar-text">控件列表</p>
+					</header>
+					<div class="content-wrap no-p">
+						<div class="wrapper">
+							<nav class="main-navigation bg-default" data-height="auto" data-size="6px" data-distance="0" data-rail-visible="true" data-wheel-step="10">
+								<ul class="nav">
+									<li class="open"><!-- 布局 -->
+										<a href="javascript:;">
+											<i class="toggle-accordion"></i>
+											<i class="ti-layers"></i>
+											<span>布局控件</span>
+										</a>
+										<ul class="sub-menu in" style="background-color: gainsboro;">
+											<li>
+												<a href="javascript:;">
+													<span>表格标题</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<center><h4 id="formTitle" class="bb" t="label">表单标题</h4></center>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<span>表格</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<table class="table table-bordered no-m" contenteditable="true" t="table">
+														<tr>
+															<td class="design-item"></td>
+															<td class="design-item"></td>
+															<td class="design-item"></td>
+															<td class="design-item"></td>
+														</tr>
+														<tr>
+															<td class="design-item"></td>
+															<td class="design-item"></td>
+															<td class="design-item"></td>
+															<td class="design-item"></td>
+														</tr>
+														<tr>
+															<td class="design-item"></td>
+															<td class="design-item"></td>
+															<td class="design-item"></td>
+															<td class="design-item"></td>
+														</tr>
+													</table>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<span>col-12</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<div class="row" contenteditable="true" t="col">
+														<div class="col-md-12 design-item bordered"></div>
+													</div>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<span>col-6,6</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<div class="row" contenteditable="true" t="col">
+														<div class="col-md-6 design-item bordered"></div>
+														<div class="col-md-6 design-item bordered"></div>
+													</div>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<span>col-4,4,4</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<div class="row" contenteditable="true" t="col">
+														<div class="col-md-4 design-item bordered"></div>
+														<div class="col-md-4 design-item bordered"></div>
+														<div class="col-md-4 design-item bordered"></div>
+													</div>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<span>col-3,3,3</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<div class="row" contenteditable="true" t="col">
+														<div class="col-md-3 design-item bordered"></div>
+														<div class="col-md-3 design-item bordered"></div>
+														<div class="col-md-3 design-item bordered"></div>
+														<div class="col-md-3 design-item bordered"></div>
+													</div>
+												</div>
+											</li>
+										</ul>
+									</li>
+									<li><!-- 基本控件 -->
+										<a href="javascript:;">
+											<i class="toggle-accordion"></i>
+											<i class="ti-layers"></i>
+											<span>基本控件</span>
+										</a>
+										<ul class="sub-menu in" style="background-color: gainsboro;">
+											<li>
+												<a href="javascript:;">
+													<span>标签</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<span contenteditable="true" t="label">标签：</span>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<span>文本框</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<input type="text" class="form-control" t="input" data-element/>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<span>密码框</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+														<input type="password" class="form-control" t="input" data-element/>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<span>多行文本</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<textarea class="form-control" t="textarea" data-element></textarea>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<span>单选下拉</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<select class="form-control" t="select" data-element>
+														<option>选项一</option>
+														<option>选项二</option>
+													</select>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<span>多选下拉</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<select class="form-control" multiple="multiple" t="select" data-element>
+														<option>选项一</option>
+														<option>选项二</option>
+													</select>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<span>单选框</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<label class="radio-inline" contenteditable="true" t="radio" data-element>
+													  <input type="radio"> 单选框
+													</label>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<span>复选框</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<label class="checkbox-inline" contenteditable="true" t="checkbox" data-element>
+													  <input type="checkbox"> 复选框
+													</label>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<span>普通按钮</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<button type="button" class="btn btn-default btn-block" t="button">按  钮</button>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<span>提交按钮</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<button type="submit" class="btn btn-default btn-block" t="button">提  交</button>
+												</div>
+											</li>
+										</ul>
+									</li>
+									<li><!-- 基本控件 -->
+										<a href="javascript:;">
+											<i class="toggle-accordion"></i>
+											<i class="ti-layers"></i>
+											<span>扩展控件</span>
+										</a>
+										<ul class="sub-menu in" style="background-color: gainsboro;">
+											<li>
+												<a href="javascript:;">
+													<span>数字框</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+												    <input type="number" class="form-control" t="input" data-element>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<span>Email</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+												    <input type="email" class="form-control" t="input" data-element>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<span>宏控件</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+												    <span class="disabled" t="macros" data-element>{宏控件}</span>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<span>流程变量</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+												    <span class="disabled" t="variable">{流程变量}</span>
+												</div>
+											</li>
+											<li>
+												<a href="javascript:;">
+													<span>列表控件</span>
+													<i class="form-element ti-move pull-right"></i>
+												</a>
+												<div class="view hide">
+													<span class="form-control" t="list">{列表控件}</span>
+												</div>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</nav>
+						</div>
+					</div>
+				</aside>
+                <!-- 内容主体 -->
+                <section class="main-content">
+                	<header class="header navbar bb">
+                		<button class="btn btn-default navbar-btn" onclick="mergeCell()"><i class="fa fa-th"></i> 合并单元格</button>
+                		<div class="btn-group navbar-btn">
+							<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-outdent"></i> 插入...
+								<span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li><a href="javascript:;" onclick="insertRow()"><i class="fa fa-arrow-up"></i> 插入一行</a></li>
+								<li><a href="javascript:;" onclick="insertRow2()"><i class="fa fa-arrow-down"></i> 插入一行</a></li>
+								<li><a href="javascript:;" onclick="insertCol()"><i class="fa fa-arrow-left"></i> 插入一列</a></li>
+								<li><a href="javascript:;" onclick="insertCol()"><i class="fa fa-arrow-right"></i> 插入一列</a></li>
+							</ul>
+						</div>
+                		<div class="pull-right">
+                			<button class="btn btn-danger navbar-btn" onclick="removeElement()"><i class="fa fa-trash"></i> 删除选中</button>
+							<button class="btn btn-default navbar-btn" onclick="clearHtml()"><i class="fa fa-rotate-left"></i> 重做</button>
+                		</div>
+					</header>
+                    <div class="content-wrap p10">
+                       	<div class="wrapper no-p" autoheight="false">
+                       		#if($!form)
+                       		$!form.source
+                       		#else
+                            <div class="design design-item">
+                            </div>
+                            #end
+                        </div>
+                        <a class="exit-offscreen"></a>
+                    </div>
+                </section>
+                <aside class="sidebar-250 canvas-right bg-default">
+                	<div class="box-tab no-b">
+	                    <ul class="nav nav-tabs nav-tabs nav-justified" role="tablist" id="propertyTab">
+	                        <li class="active"><a href="#formProperty" data-toggle="tab">表单属性</a>
+	                        </li>
+	                        <li><a href="#controlProperty" data-toggle="tab">控件属性</a>
+	                        </li>
+	                    </ul>
+	                    <div class="tab-content">
+	                    	<div class="tab-pane fade active in" id="formProperty">
+	                    		<form id="propertyForm1" role="form" onsubmit="return false;">
+			                		<div class="form-group">
+										<label>表单标题</label>
+										<input type="text" name="formTitle" class="form-control"  placeholder="表单名称" value="$!form.name"/>
+									</div>
+									<div class="form-group">
+										<label>字体大小</label>
+										<input type="text" name="formFontSize" class="form-control" placeholder="12px">
+									</div>
+									<div class="form-group">
+										<label>字体颜色</label>
+										<input type="text" name="formFontColor" class="form-control" placeholder="#FFFFF">
+									</div>
+									<div class="form-group">
+										<label>宽度</label>
+										<input type="text" name="formWidth" class="form-control" placeholder="auto/px">
+									</div>
+									<div class="form-group">
+										<label>背景颜色</label>
+										<input type="text" name="formBgColor" class="form-control" placeholder="#FFFFF">
+									</div>
+									<div class="form-group">
+										<label>样式</label>
+										<select class="form-control" name="formClass">
+											<option value="">无</option>
+											<optgroup label="背景">
+												<option value="bg-default">bg-default</option>
+												<option value="bg-primary">bg-primary</option>
+												<option value="bg-info">bg-info</option>
+												<option value="bg-warning">bg-warning</option>
+												<option value="bg-success">bg-success</option>
+												<option value="bg-danger">bg-danger</option>
+											</optgroup>
+											<optgroup label="文字">
+												<option value="text-muted">text-muted</option>
+												<option value="text-primary">text-primary</option>
+												<option value="text-info">text-info</option>
+												<option value="text-warning">text-warning</option>
+												<option value="text-success">text-success</option>
+												<option value="text-danger">text-danger</option>
+											</optgroup>
+										</select>
+									</div>
+									<div class="form-group">
+										<label>表单完成提示</label>
+										<textarea name="formTip" class="form-control">$!form.tip</textarea>
+									</div>
+									<div class="form-group">
+										<button id="btnSave" type="button" class="btn btn-primary form-control" onclick="saveForm()">保存到服务器</button>
+									</div>
+	                			</form>
+	                    	</div>
+	                        <div class="tab-pane fade" id="controlProperty">
+			                   <form id="propertyForm2" role="form" onsubmit="return false;">
+			                		<div class="form-group" with="input,radio,checkbox,textarea,select,macros,variable">
+										<label>控件名称</label>
+										<input type="text" name="controlName" class="form-control"  placeholder="控件名称"/>
+									</div>
+									<div class="form-group" with="input,radio,checkbox">
+										<label>控件值</label>
+										<input type="text" name="controlValue" class="form-control"  placeholder="控件名称"/>
+									</div>
+									<div class="form-group" with="input,textarea">
+										<label>必填项</label>
+										<select class="form-control" name="controlRequired">
+											<option value="false">否</option>
+											<option value="true">是</option>
+										</select>
+									</div>
+									<div class="form-group" with="textarea,label,radio,checkbox,button">
+										<label>显示文本</label>
+										<input type="text" name="controlText" class="form-control"  placeholder="控件名称"/>
+									</div>
+									<div class="form-group" with="textarea,input">
+										<label>提示文本</label>
+										<input type="text" name="controlPlaceholder" class="form-control" placeholder="提示">
+									</div>
+									<div class="form-group" with="input,button">
+										<label>控件类型</label>
+										<select class="form-control" name="controlDataType">
+											<optgroup label="文本框类型">
+												<option value="text">text</option>
+												<option value="password">password</option>
+												<option value="number">number</option>
+												<option value="email">email</option>
+												<option value="hidden">hidden</option>
+											</optgroup>
+											<optgroup label="按钮类型">
+												<option value="button">button</option>
+												<option value="submit">submit</option>
+											</optgroup>
+										</select>
+									</div>
+									<div class="form-group" with="macros">
+										<label>宏类型</label>
+										<select class="form-control" name="controlMacros">
+											<optgroup label="日期宏控件">
+												<option value="dt_yyyy-MM-dd HH:mm">当前日期+时间[1992-12-01 12:00]</option>
+												<option value="dt_yyyy-MM-dd HH:mm:ss">当前日期+时间[1992-12-01 12:00:00]</option>
+												<option value="dt_yyyy-MM-dd">当前日期[1997-01-01]</option>
+												<option value="dt_yyyy年MM月dd日">当前日期[1997年01月01日]</option>
+												<option value="dt_yyyy年MM月">当前日期[1997年01月]</option>
+												<option value="dt_MM月dd日">当前日期[01月01日]</option>
+												<option value="dt_yyyy">当前年份[1992]</option>
+												<option value="dt_yyyy年">当前年份[1992年]</option>
+												<option value="dt_HH:mm">当前时间[12:00]</option>
+												<option value="dt_HH:mm:ss">当前时间[12:00:00]</option>
+												<option value="dt_week">当前星期[星期一]</option>
+											</optgroup>
+											<optgroup label="常用参数">
+												<option value="user_id">当前用户ID</option>
+												<option value="user_realname">当前用户姓名</option>
+												<option value="user_unitname">当前用户部门名称</option>
+											</optgroup>
+										</select>
+									</div>
+									<div class="form-group" with="textarea,input,radio">
+										<label>默认值</label>
+										<input type="text" name="controlDefaultValue" class="form-control"  placeholder="默认值"/>
+									</div>
+									<div class="form-group" with="select">
+										<label>列表数据</label>
+										<button class="btn btn-info form-control" onclick="setListData()">数据设置</button>
+									</div>
+									<div class="form-group hide" with="table">
+										<label>行数</label>
+										<input type="number" name="controlTableRows" class="form-control"  placeholder="数字"/>
+									</div>
+									<div class="form-group hide" with="table">
+										<label>列数</label>
+										<input type="number" name="controlTableCols" class="form-control"  placeholder="数字"/>
+									</div>
+									<div class="form-group" with="*">
+										<label>对齐方式</label>
+										<select class="form-control" name="controlAlign">
+											<option value="left">左对齐</option>
+											<option value="center">居中对齐</option>
+											<option value="right">右对齐</option>
+										</select>
+									</div>
+									<div class="form-group" with="*">
+										<label>文字颜色</label>
+										<input type="text" name="controlFontColor" class="form-control"  placeholder="#FFFFFF"/>
+									</div>
+									<div class="form-group" with="*">
+										<label>样式</label>
+										<input type="text" name="controlClass" class="form-control"  placeholder="class='form-control'"/>
+									</div>
+									<div class="form-group" with="*">
+										<label>宽度</label>
+										<input type="text" name="controlWidth" class="form-control"  placeholder="px"/>
+									</div>
+									<div class="form-group" with="*">
+										<label>高度</label>
+										<input type="text" name="controlHeight" class="form-control"  placeholder="px"/>
+									</div>
+	                			</form>
+	                        </div>
+	                    </div>
+	                </div>
+            	</aside>
+            </section>
+        </div>
+        <div id="listDataModal" class="modal fade">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+		        <h4 class="modal-title">数据设置</h4>
+		      </div>
+		      <div class="modal-body">
+		      	<table class="table">
+		      		<thead>
+		      			<tr>
+		      				<th class="col-md-5">值</th>
+		      				<th class="col-md-5">文本</th>
+		      				<th></th>
+		      			</tr>
+		      		</thead>
+		      		<tbody></tbody>
+		      	</table>
+		      </div>
+		      <div class="modal-footer">
+		      	<div class="pull-left">
+		      		<button id="btnAddItem" type="button" class="btn btn-default">添加一项</button>
+		      	</div>
+		        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+		        <button id="btnOk" type="button" class="btn btn-primary">确  定</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+        #required_js
+        <!-- 页面组件 -->
+        <script type="text/javascript" src="$!basePath/app/formdesign/jquery.dragg.min.js"></script>
+        <script type="text/javascript" src="$!basePath/app/formdesign/mod_codebeautify.js"></script>
+        <!-- 本页面脚本 -->
+        <script type="text/javascript" src="$!basePath/app/formdesign/formdesign.js"></script>
+        <script type="text/javascript">
+            //保存form到服务器
+            function saveForm(){
+            	var id = "$!form.id";
+            	var form = $(".design");
+            	if(form.children().length == 0){
+            		alert("请添加控件到表单容器中！");
+            	}
+            	ns.showLoadingbar();
+            	var html = html_beautify(form.parent().html());
+            	jQuery.post("$!basePath/flow/form/save",{html:html,id:id},function(data){
+            		if(data.success == true){
+            			id = data.id;
+            			if(confirm("保存成功，是否立即测试？")){
+            				window.location.href="$!basePath/flow/form/test/"+id;
+            			}
+            			
+            		}else{
+            			alert(data.error);
+            		}
+            		ns.closeLoadingbar();
+            	});
+            }
+            #if($!form)
+            //初始化点击事件
+            bindEvents();
+            #end
+        </script>
+        #loading_close
+    </body>
+</html>

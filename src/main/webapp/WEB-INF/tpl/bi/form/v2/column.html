@@ -1,0 +1,126 @@
+<!DOCTYPE HTML>
+<html class="error-page no-js" lang="zh_CN">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+<title>可视化表单设计器2.0</title> #required_css
+</head>
+
+<body>
+	<div class="center-wrapper">
+		<div class="center-content text-center">
+			<div class="row no-m">
+				<div class="col-xs-10 col-xs-offset-2 col-sm-10 col-sm-offset-6 col-md-8 col-md-offset-2">
+					<form action="$!basePath/bi/form/column/save" method="post" onsubmit = "return check()">
+						<section class="panel bg-white no-b fadeIn animated shadow">
+							<div class="panel-heading">
+								<h4>管理数据字段</h4>
+								<span class="text-muted">只包含扩展字段</span>
+							</div>
+							<div class="panel-body text-left" style="height:300px; overflow: scroll; overflow-x: hidden;">
+								<table id="columnTable" class="table">
+									<thead>
+										<tr>
+											<th class="col-lg-3">字段名</th>
+											<th class="col-lg-2">类型</th> 
+											<th class="col-lg-6">备注</th>
+											<th class="col-lg-1"></th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr class="hide">
+											<td>
+												<input class="form-control" name="columnName" type="text"/>
+											</td>
+											<td>
+												<select name="columnType" class="form-control">
+													<option value="int">整数</option>
+													<option value="varchar">字符串</option>
+													<option value="text">长字符串</option>
+												</select>
+											</td>
+											<td>
+												<input class="form-control" name="comments" type="text"/>
+											</td>
+											<td>
+												<a href="javascript:;" onclick="removeColumn(this)"><i class="fa fa-trash"></i></a>
+											</td>
+										</tr>
+										#foreach($!obj in $!columns)
+										<tr>
+											<td>
+												<input name="id" type="hidden" value="$!obj.get(0)"/>
+												<input class="form-control" name="columnName" type="text" value="$!obj.get(1)"/>
+											</td>
+											<td>
+												<select name="columnType" class="form-control">
+													<option value="int" #if($!$!obj.get(2)=='int')selected="selected"#end>整数</option>
+													<option value="varchar" #if($!$!obj.get(2)=='varchar')selected="selected"#end>字符串</option>
+													<option value="text" #if($!$!obj.get(2)=='text')selected="selected"#end>长字符串</option>
+												</select>
+											</td>
+											<td>
+												<input class="form-control" name="comments" type="text" value="$!obj.get(3)"/>
+											</td>
+											<td>
+												<a href="javascript:;" onclick="removeColumn(this)"><i class="fa fa-trash"></i></a>
+											</td>
+										</tr>
+										#end
+									</tbody>
+								</table>
+							</div>
+							<div class="panel-footer">
+								<button type="button" class="btn btn-default" onclick="addNewColumn()">添加新字段</button>
+								<button class="btn btn-primary">保   存</button>
+								<a class="btn btn-default" href="javascript:window.close()">取   消</a>
+							</div>
+						</section>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	#required_js
+	<script type="text/javascript">
+		function addNewColumn(){
+			$("#columnTable tbody").append($("#columnTable tbody tr.hide").clone().removeClass("hide"));
+		}
+		function removeColumn(obj){
+			ns.tip.confirm("字段删除后，字段对应的值将无法保存显示，确定删除该字段吗？", function(){
+				$(obj).parent().parent().remove();
+			});
+		}
+		function check(){
+			ns.tip.confirm("确定保存吗？", function(){
+				//获取字段信息
+				var array = [];
+				$("#columnTable tbody tr:not(.hide)").each(function(i,n){
+					var tr = $(this);
+					var obj = {};
+					obj.id = tr.find("input[name='id']").val();
+					obj.columnName = tr.find("input[name='columnName']").val();
+					obj.columnType = tr.find("select[name='columnType']").val();
+					obj.comments = tr.find("input[name='comments']").val();
+					
+					if(obj.columnName.length > 0)
+						array.push(obj);
+					else
+						tr.remove();
+				});
+				ns.post("$!basePath/bi/form/column/save", {id:'$!id',data:JSON.stringify(array)}, function(success, data){
+					if(success){
+						alert("保存成功！");
+						window.location.reload();
+					}else{
+						alert("保存失败，"+data.error);
+					}
+				});
+			});
+			return false;
+		}
+	</script>
+</body>
+</html>
