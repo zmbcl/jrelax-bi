@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache name="com.jrelax" updateCheck="false">
+	<diskStore path="java.io.tmpdir" />
+	<defaultCache maxElementsInMemory="1000" eternal="false"
+		timeToIdleSeconds="3600" timeToLiveSeconds="3600" overflowToDisk="true">
+	</defaultCache>
+
+	<cache name="com.jrelax.web.entity.system.Role"
+		maxElementsInMemory="2000" eternal="false" timeToIdleSeconds="3600"
+		timeToLiveSeconds="3600" overflowToDisk="false">
+	</cache>
+	<cache name="com.jrelax.web.entity.system.User"
+		maxElementsInMemory="2000" eternal="false" timeToIdleSeconds="3600"
+		timeToLiveSeconds="3600" overflowToDisk="false">
+	</cache>
+	<cache name="com.jrelax.web.entity.system.Resource"
+		maxElementsInMemory="2000" eternal="false" timeToIdleSeconds="3600"
+		timeToLiveSeconds="3600" overflowToDisk="false">
+	</cache>
+	<cache name="com.jrelax.web.entity.system.Button"
+		maxElementsInMemory="2000" eternal="false" timeToIdleSeconds="3600"
+		timeToLiveSeconds="3600" overflowToDisk="false">
+	</cache>
+	<cache name="com.jrelax.web.entity.system.DataDict"
+		maxElementsInMemory="2000" eternal="false" timeToIdleSeconds="3600"
+		timeToLiveSeconds="3600" overflowToDisk="false">
+	</cache>
+	<cache name="com.jrelax.web.entity.system.DataDictItem"
+		maxElementsInMemory="2000" eternal="false" timeToIdleSeconds="3600"
+		timeToLiveSeconds="3600" overflowToDisk="false">
+	</cache>
+	<cache name="com.jrelax.web.entity.system.UserConfig"
+		maxElementsInMemory="2000" eternal="false" timeToIdleSeconds="3600"
+		timeToLiveSeconds="3600" overflowToDisk="false">
+	</cache>
+	<cache name="com.jrelax.web.entity.system.Version"
+		maxElementsInMemory="2000" eternal="false" timeToIdleSeconds="3600"
+		timeToLiveSeconds="3600" overflowToDisk="false">
+	</cache>
+	<cache name="com.jrelax.web.entity.system.UesrNotify"
+		maxElementsInMemory="2000" eternal="false" timeToIdleSeconds="3600"
+		timeToLiveSeconds="3600" overflowToDisk="false">
+	</cache>
+	<cache name="com.jrelax.web.entity.system.Log"
+		maxElementsInMemory="2000" eternal="false" timeToIdleSeconds="3600"
+		timeToLiveSeconds="3600" overflowToDisk="true">
+	</cache>
+	<cache name="org.hibernate.cache.StandardQueryCache"
+		maxElementsInMemory="5000" eternal="false" timeToLiveSeconds="3600"
+		overflowToDisk="false" />
+	<cache name="org.hibernate.cache.UpdateTimestampsCache"
+		maxElementsInMemory="5000" eternal="true" overflowToDisk="true" />
+</ehcache>
