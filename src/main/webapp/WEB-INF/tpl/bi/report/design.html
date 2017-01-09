@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <title>设计报表 - $!biReport.name</title>
+    #required_css
+    <link rel="stylesheet" href="$!resPath/app/report/css/bi-table.css">
+</head>
+<body>#loading
+
+<div class="app $!layout">
+    <!-- 头部菜单 -->#header
+    <section class="layout">
+        <!-- 菜单 -->#sidebar
+        <!-- 内容主体 -->
+        <section class="container">
+            <section class="main-content">
+                <!-- 主体操作栏 -->
+                <header class="header navbar shadow">
+                    <!-- 左按钮区 -->
+                    <div class="toolbar">
+                        <div class="btn-group">
+                            <button class="btn btn-default toolbar-item" onclick="document.execCommand('undo')" title="撤销"><i class="fa fa-mail-reply"></i></button>
+                            <button class="btn btn-default toolbar-item" onclick="document.execCommand('redo')" title="重做"><i class="fa fa-mail-forward"></i></button>
+                        </div>
+                        <div class="toolbar-divider"></div>
+                        <div class="btn-group">
+                            <button class="btn btn-default toolbar-item" onclick="table.removeRow();" title="删除整行"><i class="fa fa-times-circle"></i></button>
+                            <button class="btn btn-default toolbar-item" onclick="table.removeCol();" title="删除整列"><i class="fa fa-times-circle-o"></i></button>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-default toolbar-item" onclick="table.insertRow('top');" title="上方插入一行"><i class="fa fa-arrow-up"></i></button>
+                            <button class="btn btn-default toolbar-item" onclick="table.insertRow('bottom');" title="下方插入一行"><i class="fa fa-arrow-down"></i></button>
+                            <button class="btn btn-default toolbar-item" onclick="table.insertCol('left');" title="左方插入一列"><i class="fa fa-arrow-left"></i></button>
+                            <button class="btn btn-default toolbar-item" onclick="table.insertCol('right');" title="右方插入一列"><i class="fa fa-arrow-right"></i></button>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-default toolbar-item" onclick="table.merge('left');" title="向左跨列合并"><i class="fa fa-dedent"></i></button>
+                            <button class="btn btn-default toolbar-item" onclick="table.merge('right');" title="向右跨列合并"><i class="fa fa-indent"></i></button>
+                            <button class="btn btn-default toolbar-item" onclick="table.merge('top');" title="向上跨行合并"><i class="fa fa-dedent fa-rotate-90"></i></button>
+                            <button class="btn btn-default toolbar-item" onclick="table.merge('bottom');" title="向下跨行合并"><i class="fa fa-dedent fa-rotate-270"></i></button>
+                        </div>
+                        <div class="toolbar-divider"></div>
+                        <div class="btn-group">
+                            <button class="btn btn-default toolbar-item" type="button" onclick="document.execCommand('bold')" title="加粗"><i class="fa fa-bold"></i></button>
+                            <button class="btn btn-default toolbar-item" type="button" onclick="document.execCommand('italic')" title="斜体"><i class="fa fa-italic"></i></button>
+                            <button class="btn btn-default toolbar-item" type="button" onclick="document.execCommand('justifyLeft')" title="左对齐"><i class="fa fa-align-left"></i></button>
+                            <button class="btn btn-default toolbar-item" type="button" onclick="document.execCommand('justifyCenter')" title="居中对齐"><i class="fa fa-align-center"></i></button>
+                            <button class="btn btn-default toolbar-item" type="button" onclick="document.execCommand('justifyRight')" title="右对齐"><i class="fa fa-align-right"></i></button>
+                            <button class="btn btn-default toolbar-item" type="button" onclick="document.execCommand('justifyFull')" title="两端对齐"><i class="fa fa-align-justify"></i></button>
+                        </div>
+                    </div>
+                    <div class="pull-right toolbar">
+                        <button class="btn btn-primary toolbar-item" type="button" onclick="doSave()"><i class="fa fa-save"></i> 保存</button>
+                        <button class="btn btn-default toolbar-item" type="button" onclick="doView()"><i class="fa fa-eye"></i> 浏览</button>
+                    </div>
+                </header>
+                <div class="content-wrap">
+                    <div class="wrapper bg-default">
+                        <div class="row">
+                            <div class="col-lg-10">
+                                <div class="panel" id="designPanel">
+                                    <div class="panel-heading">
+                                        <i class="fa fa-code"></i> 报表设计区
+                                    </div>
+                                    <div class="panel-body">
+                                        #if($!biReport.source)
+                                        $!biReport.source
+                                        #else
+                                        <table id="$!biReport.id" class="table table-bordered" contenteditable="true">
+                                            #foreach($row in [1..4])
+                                            <tr>
+                                                #foreach($i in [1..5])
+                                                <td><br></td>
+                                                #end
+                                            </tr>
+                                            #end
+                                        </table>
+                                        #end
+                                    </div>
+                                </div>
+                            </div>
+                            <aside class="col-lg-2">
+                                <div class="panel">
+                                    <div class="panel-heading">
+                                        <i class="fa fa-magic"></i> 属性面板
+                                    </div>
+                                    <div class="panel-body">
+                                        <button class="btn btn-default btn-block" type="button" onclick="managerSrc()">管理数据源</button>
+                                        <select id="selSrc" class="form-control mt5">
+                                            <option value="">未设置数据源</option>
+                                        </select>
+                                        <select id="selField" class="form-control mt5">
+                                            <option value="">未设置字段</option>
+                                        </select>
+                                        <select id="selArrow" class="form-control mt5">
+                                            <option value="">未设置数据展开方向</option>
+                                            <option value="right">自此向右展开</option>
+                                            <option value="down">自此向下展开</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+                <a class="exit-offscreen"></a>
+            </section>
+
+        </section>
+    </section>
+</div>
+#required_js
+<script src="$!basePath/app/datasource/datasource.js"></script>
+<script src="$!basePath/app/report/bi.table.js"></script>
+<script src="$!basePath/app/report/bi.report.js"></script>
+<script type="text/javascript">
+    var table, report, dsList = [], columnMapper = {};
+    function doSave(callback) {
+        table.unSelectAll();
+        var source = jQuery.trim($("#designPanel").find(".panel-body").html());
+        var content = parseToContent();
+        var id = "$!biReport.id";
+        ns.post("$!basePath/bi/report/save", {id:id, source:source, content:content}, function(success, data){
+           if(success){
+               ns.tip.toast.success("已保存");
+               if(callback) callback();
+           }else{
+               ns.tip.toast.error(data.error);
+           }
+        });
+    }
+    //删除与实际无关的内容
+    function parseToContent(){
+        var content = $("#designPanel").find(".panel-body").clone();
+        var table = content.find("table");
+        table.removeAttr("contenteditable");
+        table.find("td").removeAttr("class");
+        table.find("td[data-binder]").html("<br/>");
+
+        return jQuery.trim(content.html());
+    }
+    //保存并预览
+    function doView() {
+        doSave(function(){
+            if (window.winView && !window.winView.closed) {
+                window.winView.location.reload();
+                window.winView.focus();
+            } else {
+                window.winView = window.open("$!basePath/bi/report/view/$!biReport.id");
+            }
+        });
+    }
+
+    function managerSrc() {
+        ns.view.showModal("$!basePath/bi/report/datasource", {
+            onShown: function (modal) {
+                var inputs = modal.find("table input:checkbox");
+                $.each(inputs, function (i, n) {
+                    var input = $(n);
+                    if (contains(input.val())) {
+                        input.prop("checked", true);
+                    }
+                });
+            },
+            onHidden: function (params) {
+                if (!params.ids) return;
+                var ids = params.ids;
+                selectedSrc(ids);
+            }
+        })
+    }
+
+    function selectedSrc(ids){
+        dsList = [];
+        columnMapper = {};
+        for (var i = 0; i < ids.length; i++) {
+            var obj = ids[i];
+            var ds = new DataSource(obj.id);
+            var columns = ds.getColumns();
+            dsList.push({
+                id: obj.id,
+                name: ds.getName(),
+                obj: ds
+            });
+            columnMapper[obj.id] = columns;
+        }
+
+        refreshControl();
+    }
+
+    function contains(id) {
+        for (var i = 0; i < dsList.length; i++) {
+            var ds = dsList[i].obj;
+            if (ds.getId() == id)
+                return true;
+        }
+        return false;
+    }
+
+    //刷新控件
+    function refreshControl() {
+        var srcHtml = "<option value=\"\">未设置数据源</option>";
+        for (var i = 0; i < dsList.length; i++) {
+            srcHtml += ns.String.format("<option value='%s'>%s</option>", [dsList[i].id, dsList[i].name]);
+        }
+        $("#selSrc").html(srcHtml);
+    }
+    //属性->控件
+    function propertyToControl() {
+        var cell = table.getSelectedCell();
+        var opt = report.getOptions();
+        if (cell[0]) {
+            var ds = cell.attr(opt.datasource);
+            var code = cell.attr(opt.code);
+            var arrow = cell.attr(opt.arrow);
+
+            $("#selSrc").val(ds);
+            loadFieldByDsId(ds);
+            $("#selField").val(code);
+            $("#selArrow").val(arrow);
+        }
+    }
+    //控件->属性
+    function controlToProperty() {
+        var cell = table.getSelectedCell();
+        var opt = report.getOptions();
+        if (cell[0]) {
+            var ds = $("#selSrc").val();
+            var code = $("#selField").val();
+            var arrow = $("#selArrow").val();
+
+            if (ds.length > 0 && code.length > 0 && arrow.length > 0) {
+                cell.attr(opt.datasource, ds);
+                cell.attr(opt.code, code);
+                cell.attr(opt.arrow, arrow);
+
+                cell.html("#"+code + "->" + arrow+"#");
+                cell.attr("data-binder", true);
+            } else {
+                cell.removeAttr(opt.datasource);
+                cell.removeAttr(opt.code);
+                cell.removeAttr(opt.arrow);
+                cell.removeAttr("data-binder");
+                cell.html("");
+            }
+        }
+    }
+
+    ns.ready(function () {
+        table = $("#designPanel table").BiTable({
+            onSelectCell: function (cell, table) {
+                propertyToControl();
+            }
+        });
+        report = new BiReport({target: table});
+
+        $("#selSrc").on("change", function () {
+            loadFieldByDsId($(this).val());
+            controlToProperty();
+        });
+        $("#selField, #selArrow").on("change", function () {
+            controlToProperty();
+        });
+        doInit();
+    });
+
+    function loadFieldByDsId(id){
+        //级联显示字段
+        var columns = columnMapper[id];
+        var fieldHtml = "<option value=\"\">未设置字段</option>";
+        if (columns) {
+            for (var i = 0; i < columns.length; i++) {
+                fieldHtml += ns.String.format("<option value='%s'>%s</option>", [columns[i], columns[i]])
+            }
+        }
+        $("#selField").html(fieldHtml);
+    }
+
+    function doInit(){
+        //获取数据源，并加载
+        var tag =report.getOptions().datasource;
+        var tds = table.find("td["+tag+"]");
+        var dsList = [], idList = [];
+        $.each(tds, function(i,n){
+            var td = $(n);
+            var dsId = td.attr(tag);
+            if(!idList.contains(dsId)){
+                dsList.push({id:dsId});
+                idList.push(dsId);
+            }
+        });
+        //刷新状态
+        selectedSrc(dsList);
+    }
+</script>
+#loading_close
+</body>
+
+</html>
