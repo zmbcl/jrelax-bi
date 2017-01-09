@@ -87,7 +87,7 @@
     </bean>
     <!-- 数据源自动切换 -->
     <aop:config>
-        <aop:pointcut id="dataSourceAdvicePointcut" expression="execution(* com.jrelax.web.service..*.*(..))"/>
+        <aop:pointcut id="dataSourceAdvicePointcut" expression="execution(* com.jrelax.web..*Service.*(..))"/>
         <aop:advisor pointcut-ref="dataSourceAdvicePointcut" advice-ref="multiDataSourceAdvice"></aop:advisor>
     </aop:config>
     <!-- 集成Hibernate -->
@@ -151,7 +151,7 @@
     </tx:advice>
     <aop:config expose-proxy="true">
         <!-- 只对Service层实施事务 -->
-        <aop:pointcut id="transactionPointcut" expression="execution(* com.jrelax.web.service..*.*(..))"/>
+        <aop:pointcut id="transactionPointcut" expression="execution(* com.jrelax.web..*Service.*(..))"/>
         <aop:advisor advice-ref="transactionAdvice" pointcut-ref="transactionPointcut"/>
     </aop:config>
     <!-- 配置ApplicationContextHelper -->
@@ -164,7 +164,7 @@
     <!-- 插件拦截器 -->
     <bean id="pluginAdvice" class="com.jrelax.core.plugin.PluginAdvice"/>
     <aop:config>
-        <aop:pointcut id="pluginAdvicePointcut" expression="execution(* com.jrelax.web..*.*(..))"/>
+        <aop:pointcut id="pluginAdvicePointcut" expression="execution(* com.jrelax.web..*(..))"/>
         <aop:advisor pointcut-ref="pluginAdvicePointcut" advice-ref="pluginAdvice"></aop:advisor>
     </aop:config>
     <!-- SQL日志记录 -->
