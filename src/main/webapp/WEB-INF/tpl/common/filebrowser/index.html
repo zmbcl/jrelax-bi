@@ -1,0 +1,44 @@
+<div class="modal-header">
+       <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+       <h4 class="modal-title"><i class="fa fa-cloud"></i> 文件浏览器</h4>
+   </div>
+   <div class="modal-body">
+     <ol id="nav" class="breadcrumb no-m">
+         <li><i class="ti-home"></i> <a href="javascript:;" onclick="zFileBrowser.root()">根目录</a></li>
+     </ol>
+      <table id="fileTable" class="table no-m">
+	      <thead>
+	          <tr>
+	              <th class="col-md-6 pd-l-lg">
+	                  <span class="pd-l-sm"></span>文件名</th>
+	              <th class="col-md-1">大小</th>
+	              <th class="col-md-4">修改时间</th>
+	              <th class="col-md-1">#springMessage('system.common.op')</th>
+	          </tr>
+	      </thead>
+	      <tbody>
+	      	#foreach($!obj in $!list)
+	          <tr>
+	              <td style="word-break: break-all;"><i class="$!obj.icon"></i>&nbsp;&nbsp;
+	              <a href="javascript:;" onclick="#if($!obj.type==1)zFileBrowser.select('$!obj.path')#else zFileBrowser.load('$!obj.path')#end">$!obj.name</a>
+	              </td>
+	              <td>$!obj.size</td>
+	              <td>$!obj.modifyTime</td>
+	              <td>
+	              	#if($!obj.type==1)
+	              		<a href="javascript:;" title="预览" onclick="zFileBrowser.preview('$!obj.path')"><i class="fa fa-eye mr10"></i></a>
+	              	#end
+	              	<a href="javascript:;" title="选择" onclick="zFileBrowser.select('$!obj.path')"><i class="fa fa-check"></i></a>
+	              </td>
+	          </tr>
+	          #end
+	      </tbody>
+	  </table>
+   </div>
+   <div class="modal-footer">
+   		<div class="pull-left">
+		<button id="prev" type="button" class="btn btn-primary" disabled="disabled"><i class="ti-back-right"></i> 返回上一级</button>
+		<button id="reload" type="button" class="btn btn-primary" onclick="zFileBrowser.reload()"><i class="ti-reload"></i> 刷新</button>
+		</div>
+        <button type="button" class="btn btn-default" data-dismiss="modal">关 闭</button>
+   </div>

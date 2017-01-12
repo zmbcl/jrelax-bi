@@ -1,0 +1,48 @@
+<script src="$!basePath/framework/js/form/checkbox.js"></script>
+<script src="$!basePath/framework/js/view/tree.js"></script>
+<div class="modal-header no-b">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h4 class="modal-title"><i class="fa fa-user"></i> 选择用户(机构)</h4>
+</div>
+<div class="modal-body">
+    <div class="row">
+        <div class="col-lg-4 col-md-4">
+            <div id="jsTreeUnit"></div>
+        </div>
+        <div class="col-lg-8 col-md-8">
+            <form id="userSelectByUnitForm" action="$!basePath/common/user/select-unit" method="post">
+
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button id="ok" type="submit" class="btn btn-primary">确认选择</button>
+    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+</div>
+<script>
+    function initCommonUserTreeView() {
+        $("#jsTreeUnit").jstree({
+            plugins: ["wholerow"],
+            core: {
+                data: {
+                    url: function (node) {
+                        return node.id === "#" ? "$!basePath/common/user/select-unit/unit/tree" : "$!basePath/common/user/select-unit/unit/tree" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("select_node.jstree", function (node, selected) {
+            var cid = selected.selected;
+            ns.asyncRequest("$!basePath/common/user/select-unit/user/" + cid+"?multi=$!multi", {}, "#userSelectByUnitForm");
+        }).on("loaded.jstree", function (node, jstree) {
+            var id = $(node.target).find("li:first").attr("id");
+            if (id)
+                jstree.instance.select_node(id);
+        });
+    }
+
+    ns.ready(function () {
+        initCommonUserTreeView();
+    });
+</script>

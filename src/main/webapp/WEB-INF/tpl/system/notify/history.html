@@ -1,0 +1,21 @@
+<form id="notifyForm" action="$!basePath/system/notify/history" method="post">
+	<div class="row mt15">
+		<div class="col-lg-12 col-md-12">
+			<table class="table no-m">
+				<tbody>
+					#foreach($!message in $!list)
+					<tr>
+						<td class="col-sm-10">$!message.html()</td>
+						<td>阅读于：$!message.readTime</td>
+					</tr>
+					#end
+				</tbody>
+			</table>
+		</div>
+	</div>
+	#if($!list.size()>0)
+	<div class="row">
+		<div class="col-lg-12 col-md-12">#pager_ajax</div>
+	</div>
+	#end
+</form>

@@ -1,0 +1,30 @@
+#foreach($!user in $!userList)
+<tr id="$!user.id" name="$!user.userName">
+    <td><input type="checkbox" data-icheck data-check-item name="id" value="$!user.id"></td>
+    <td><span class="pd-l-sm"></span><a href="javascript:ns.view.showModal('$!basePath/system/user/detail/info/$!user.id',{border:false})">$!user.userName</a></td>
+    <td><a href="javascript:;" data-type="text" data-title="输入新姓名" data-pk="$!user.id" data-placement="right" class="xeditable-realname">$!user.realName</a></td>
+    <td><a href="javascript:;" data-type="text" data-title="输入新号码" data-pk="$!user.id" data-placement="right" class="xeditable-mobile">$!user.mobile</a></td>
+    <td><!-- <a href="mailto:$!user.email"> --><a href="javascript:;" data-type="text" data-title="输入新邮箱" data-pk="$!user.id" data-placement="right" class="xeditable-email">$!user.email</a></td>
+    <td id="td_status_$!user.id">#if($!user.enabled)<i class="fa fa-circle text-success ml5">#else <i class="fa fa-circle text-danger ml5">#end</i></td>
+    <td>#if($!user.isOnline())<i class="fa fa-circle text-success ml5">#else <i class="fa fa-circle text-danger ml5">#end</i></td>
+    <td>
+        <div class="btn-group">
+      <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+      	<i class="ti-settings"></i>
+         	<span class="ti-angle-down"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+      	<li><a href="javascript:;" onclick="ns.view.showModal('$!basePath/system/user/detail/info/$!user.id',{border:false})">查看基本信息</a></li>
+      	<li><a href="javascript:;" onclick="ns.view.showModal('$!basePath/system/user/detail/right/$!user.id',{border:false,size:'modal-lg'})">查看资源权限</a></li>
+          <li class="divider"></li>
+          <li><a href="$!basePath/system/user/edit/$!user.id" data-pjax>修改信息</a></li>
+          <li><a href="javascript:;" onclick="resetPwd('$!user.id')">密码重置</a></li>
+         <li><a href="javascript:;" onclick="del('$!user.id')">#springMessage('system.common.delete')</a></li>
+         <li class="divider"></li>
+         <li><a href="javascript:;" onclick="enableUser('$!user.id')">#springMessage('system.common.enable')</a></li>
+         <li><a href="javascript:;" onclick="disableUser('$!user.id')">#springMessage('system.common.disable')</a></li>
+      </ul>
+ 	</div>
+    </td>
+</tr>
+#end

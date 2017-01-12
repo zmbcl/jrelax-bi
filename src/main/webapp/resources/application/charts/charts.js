@@ -18,10 +18,14 @@ if(!window.JChart){
             }
         }
         function display(data){
-            $("body").append("<script src='"+___path___+"/app/charts/adapter/"+data.type+".js'></script>");
-            adapter = Charts.Utils.createAdapter(data.type, data.configs.datasource);
-            adapter.init($("#"+__prefix__+id+"_"+timespan)[0], data.configs.charts);
-            $("#___tip___"+id).remove();
+            if(data.type){
+                $("body").append("<script src='"+___path___+"/app/charts/adapter/"+data.type+".js'></script>");
+                var adapter = Charts.Utils.createAdapter(data.type, data.configs.datasource);
+                adapter.init($("#"+__prefix__+id+"_"+timespan)[0], data.configs.charts);
+                $("#___tip___"+id).remove();
+            }else{
+                $("#___tip___"+id).text("初始化失败：图表未找到");
+            }
         }
     }
 }
@@ -42,14 +46,18 @@ function __init__(){
     if(!window.Chart)
         document.write("<script src='"+___path___+"/framework/plugins/charts/chartjs/Chart.min.js'></script>");
     if(!window.DataSource)
-        document.write("<script src='"+___path___+"/app/charts/datasource.js'></script>");
+        document.write("<script src='"+___path___+"/app/datasource/datasource.js'></script>");
     if(!window.Charts)
         document.write("<script src='"+___path___+"/app/charts/utils.js'></script>");
     var timespan = new Date().getTime();
     document.write("<canvas id='"+__prefix__+id+"_"+timespan+"' style='width: 100%'></canvas>")
 
+    if(window._time_ == undefined){
+        window._time_ = 0;
+
+    }
     setTimeout(function(){
         new JChart(id, timespan).init();
-    }, 500);
+    }, window._time_ += 100);
 }
 __init__();

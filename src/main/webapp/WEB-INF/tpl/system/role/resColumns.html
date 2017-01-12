@@ -1,0 +1,52 @@
+<table  class="table no-m">
+     <thead>
+         <tr>
+         	<th class="col-md-2">
+                	菜单名称
+         	</th>
+             <th class="col-md-2 pd-l-lg">
+                 <span class="pd-l-sm"></span>URL</th>
+             <th class="col-md-8">按钮</th>
+         </tr>
+     </thead>
+     <tbody>
+     	#foreach($!res in $!resList)
+		<tr>
+			<td>
+		 		$!res.name
+			</td>
+		    <td>
+		        <span class="pd-l-sm"></span>$!res.url</td>
+		    <td>
+                #if($!res.columns.size() == 0)
+                <span class="text-warning">未配置字段</span>
+                #else
+                <div class="row res-col" name="$!res.id">
+                    #if($!rrcMap)
+                        #foreach($!column in $!res.columns)
+                        #if($!rrcMap.get($!res.id))
+                        #if($!rrcMap.get($!res.id).get($!column.id))
+                        <div class="col-lg-2 mb5"><input type="checkbox"  value="$!column.id" class="icheck" skin="box-blue" title="$!column.name" checked="checked"></div>
+                        #else
+                        <div class="col-lg-2 mb5"><input type="checkbox"  value="$!column.id" class="icheck" skin="box-blue" title="$!column.name"></div>
+                        #end
+                        #else
+                        <div class="col-lg-2 mb5"><input type="checkbox"  value="$!column.id" class="icheck" skin="box-blue" title="$!column.name"></div>
+                        #end
+                        #end
+                    #else
+                        #foreach($!column in $!res.columns)
+                        <div class="col-lg-2 mb5"><input type="checkbox"  value="$!column.id" class="icheck" skin="box-blue" title="$!column.name" checked="checked"></div>
+                        #end
+                    #end
+                </div>
+                #end
+		    </td>
+		</tr>
+		#end
+     </tbody>
+ </table>
+ <script type="text/javascript">
+	$(".chosen").chosen();
+    ns.form.initCheckbox();
+ </script>

@@ -1,0 +1,42 @@
+<!-- 引入jquery.form -->
+<script src="$!basePath/framework/plugins/jquery.form.js"></script>
+<form id="uploadForm" role="form" action="$!basePath/common/upload/do" method="post" enctype="multipart/form-data">
+	<div class="modal-header no-b">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title"><i class="fa fa-cloud-upload"></i> 上传文件</h4>
+    </div>
+    <div class="modal-body">
+	      <div class="form-group">
+	          <label for="file">选择文件</label>
+	          <input name="file" type="file" class="form-control hide" multiple="multiple">
+	          <div class="input-group">
+	            <input id="filepath" class="form-control" type="text" placeholder="" disabled="disabled">
+		        <span class="input-group-btn" tabindex="0">
+			      <label class="btn btn-default ">
+			        <span class="fa fa-folder-open"></span>
+			        <span class="buttonText">选择文件...</span>
+		          </label>
+		        </span>
+	          </div>
+	      </div>
+	      <div class="form-group" style="display:none">
+	      	<div class="progress progress-striped active mb0">
+	      		<div class="progress-bar progress-bar-info done" style="width: 1%">
+	      			<div><span id="cur">0kb</span>/<span id="total">0kb</span></div>
+	      		</div>
+	      	</div>
+	      </div>
+	      <div class="form-group" style="display:none;">
+	          <label for="name">文件名（可选）</label>
+	          <input type="text" name="filename" class="form-control" />
+	      </div>
+	      <div class="form-group" style="display:none;">
+	          <label for="name">存放路径（可选）</label>
+	          <input type="text" name="filepath" class="form-control" />
+	      </div>
+    </div>
+    <div class="modal-footer">
+        <button id="ok" type="submit" class="btn btn-primary" data-loading-text="正在上传...">立即上传</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消上传</button>
+    </div>
+</form>

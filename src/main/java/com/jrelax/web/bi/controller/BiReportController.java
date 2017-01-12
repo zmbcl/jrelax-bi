@@ -199,11 +199,12 @@ public class BiReportController extends BaseController<BiReport> {
 
     /**
      * 设计报表
+     *
      * @param model
      * @return
      */
-    @RequestMapping(value="/design/{id}")
-    public String design(Model model, @PathVariable String id){
+    @RequestMapping(value = "/design/{id}")
+    public String design(Model model, @PathVariable String id) {
         detail(model, id);
 
         return TPL + "/design";
@@ -211,36 +212,50 @@ public class BiReportController extends BaseController<BiReport> {
 
     /**
      * 浏览报表
+     *
      * @param model
      * @param id
      * @return
      */
-    @RequestMapping(value="/view/{id}")
-    public String view(Model model, @PathVariable String id){
+    @RequestMapping(value = "/view/{id}")
+    public String view(Model model, @PathVariable String id) {
         detail(model, id);
         return TPL + "/view";
     }
 
     /**
      * 选择数据源
+     *
      * @param model
      * @return
      */
-    @RequestMapping(value="/datasource")
-    public String datasource(Model model){
+    @RequestMapping(value = "/datasource")
+    public String datasource(Model model) {
         model.addAttribute("dsList", biDatasourceService.list());
         return TPL + "/datasource";
     }
 
     /**
      * 保存设计
+     *
      * @param report
      * @return
      */
     @RequestMapping("/save")
     @ResponseBody
-    public JSONObject save(BiReport report){
+    public JSONObject save(BiReport report) {
         biReportService.executeBatch("update BiReport set source=?, content=? where id=?", report.getSource(), report.getContent(), report.getId());
         return WebResult.success();
+    }
+
+    /**
+     * 帮助说明
+     * @param model
+     * @param module
+     * @return
+     */
+    @RequestMapping(value = "/help/{module}")
+    public String help(Model model, @PathVariable String module) {
+        return TPL + "/help/" + module;
     }
 }

@@ -1,0 +1,21 @@
+.table {
+    width: auto;
+}
+
+table td {
+    width: 119px;
+    vertical-align: top;
+    /*border-width: 2px !important;*/
+}
+
+td.selected {
+    /*background-color: #edf5fa;*/
+    /*background-color: grey;*/
+    border: 2px solid #009dff !important;
+}
+
+.debug.hide{
+    display: block !important;
+    color: blue;
+    font-weight: bold;
+}

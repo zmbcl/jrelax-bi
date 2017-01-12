@@ -1,0 +1,34 @@
+<link type="text/css" rel="stylesheet" href="$!basePath/framework/plugins/jsmind/jsmind.css" />
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h4 class="modal-title">系统菜单 - 结构图</h4>
+</div>
+<div class="modal-body">
+    <div id="resChart" style="width: 100%;height:800px;">
+
+    </div>
+</div>
+<script src="$!basePath/framework/plugins/jsmind/jsmind.js"></script>
+<script>
+    $(function(){
+        var mind = {
+            "meta":{
+                "name":"res_chart",
+                "author":"jrelax",
+                "version":"0.2",
+            },
+            "format":"node_array",
+            "data":[
+                {"id":"-1", "isroot":true, "topic":"系统菜单"},
+                #foreach($!obj in $!list)
+                {"id":"$!obj.id", "parentid":"$!obj.parentId", "topic":"$!{obj.name}"},
+                #end
+            ]
+        };
+        var options = {
+            container:'resChart',
+            theme:'primary'
+        }
+        var jm = jsMind.show(options,mind);
+    });
+</script>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+<title>${system_admin_title}</title> #required_css
+<style>
+.tab-content{
+	font-size: 25px;
+}
+.tab-content span{
+	width: 50px;
+	height: 40px;
+}
+</style>
+</head>
+
+<body>
+	#loading
+	<div class="app $!layout">
+		<section class="layout">
+			<!-- 内容主体 -->
+			<section class="main-content">
+				<div class="content-wrap">
+					<div class="wrapper">
+						<div class="col-md-12 no-p">
+							<div class="box-tab no-m">
+								<ul class="nav nav-tabs">
+									<li class="active"><a href="#fontawesome" data-toggle="tab">Fontawesome</a></li>
+									<li><a href="#themify" data-toggle="tab">Themify</a></li>
+									<li><a href="#glyphicon" data-toggle="tab">Glyphicon</a></li>
+									<li><a href="#sli" data-toggle="tab">Simple Line Icons</a></li>
+								</ul>
+								<div class="tab-content">
+									<div class="tab-pane fade active in" id="fontawesome">
+										#foreach($!icon in $!fa) <span class="$!icon p5" icon="$!icon" title="$!icon"></span> #end
+									</div>
+									<div class="tab-pane fade" id="themify">
+										#foreach($!icon in $!ti) <span class="$!icon p5" icon="$!icon" title="$!icon"></span> #end
+									</div>
+									<div class="tab-pane fade" id="glyphicon">
+										#foreach($!icon in $!gly) <span class="$!icon p5" icon="$!icon" title="$!icon"></span> #end
+									</div>
+									<div class="tab-pane fade" id="sli">
+										#foreach($!icon in $!sli) <span class="$!icon p5" icon="$!icon" title="$!icon"></span> #end
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<a class="exit-offscreen"></a>
+			</section>
+		</section>
+	</div>
+	#required_js
+
+	<!-- 本页面脚本 -->
+	<script type="text/javascript">
+		$(".tab-content span").bind("click", function(){
+//			ns.tip.alert($(this).attr("title"));
+			prompt("图标", $(this).attr("title"));
+		});
+	</script>
+	#loading_close
+</body>
+</html>

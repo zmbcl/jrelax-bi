@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <title>${system_admin_title}</title>
+    <link rel="stylesheet" href="$!basePath/framework/plugins/stepy/jquery.stepy.css">
+    #required_css
+    <link rel="stylesheet" href="$!basePath/framework/css/ext/stepy.css">
+</head>
+
+<body>#loading
+<div class="app $!layout">
+    <!-- 头部菜单 -->
+    #header
+    <section class="layout">
+        <!-- 菜单 -->
+        #sidebar
+        <!-- 内容主体 -->
+        <section class="container">
+            <section class="main-content">
+                <!-- 主体操作栏 -->
+                <header class="header navbar">
+                    <!-- 左按钮区 -->
+                    <div class="btn-group tool-button">
+                        <a class="btn btn-primary navbar-btn" href="$!basePath/system/role" data-pjax><i
+                                class="ti-angle-left"></i> 返回</a>
+                    </div>
+                    <div class="pull-right">
+                        <div class="btn-group tool-button">
+                            <button class="btn btn-primary navbar-btn" onclick="complete()"><i class="ti-share"></i>
+                                立即完成
+                            </button>
+                        </div>
+                    </div>
+
+                </header>
+                <div class="content-wrap">
+                    <div class="wrapper">
+                        <div class="row mb15">
+                            <div class="col-lg-12 col-md-12">
+                                <form id="addRoleForm" class="stepy" method="post"
+                                      action="$!basePath/system/role/add/do">
+                                    <input type="hidden" name="resourceIds"/>
+                                    <input type="hidden" name="userIds"/>
+                                    <input type="hidden" name="resourceColIds"/>
+                                    <fieldset title="第 1 步&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;">
+                                        <legend>基本信息</legend>
+                                        <div class="form-group">
+                                            <label for="parentId" class="control-label">所属机构</label>
+                                            <div class="input-group">
+                                                <input id="unitName" name="unitId" type="text" class="form-control"
+                                                       validate="true" placeholder="点击右边选择按钮选择所属部门--->" disabled/>
+			                             		<span class="input-group-btn">
+			                             			<button type="button" class="btn btn-primary" data-toggle="modal"
+                                                            data-target="#dialogSelectUnit"><i
+                                                            class="ti-plus"></i> 选择</button>
+			                             		</span>
+                                            </div>
+                                            <input type="hidden" name="unit.id"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="name" class="control-label">名称</label>
+                                            <input type="text" class="form-control" name="name" validate="true"
+                                                   placeholder="角色名称">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="descript" class="control-label">描述</label>
+                                        <textarea name="descript" class="form-control" rows="3"
+                                                  placeholder="角色详细描述"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="enabled" class="control-label">是否启用</label>
+                                            <div class="switcha mr15">
+                                                <input type="checkbox" name="enabled"
+                                                       class="form-control js-switch-blue"
+                                                       checked="checked">
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset title="第 2 步&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;">
+                                        <legend>菜单权限</legend>
+                                        <div class="row">
+                                            <div class="form-group no-b">
+                                                <div class="col-sm-8">
+                                                    <div class="panel">
+                                                        <div class="panel-heading no-b">
+                                                            <h5>选择<b>菜单</b></h5>
+                                                        </div>
+                                                        <div class="panel-body">
+                                                            <div id="jsTreeMenu"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-4">
+                                                    <div class="panel">
+                                                        <div class="panel-heading no-b">
+                                                            <!--<h5>菜单<b>描述</b></h5>-->
+                                                        </div>
+                                                        <div id="menuDescript" class="panel-body">
+                                                            <div class='alert alert-info'>鼠标在左侧菜单树节点上悬浮，可以查看菜单描述</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset title="第 3 步&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;">
+                                        <legend>按钮权限</legend>
+                                        <div class="form-group no-b">
+                                            <div class="col-sm-12">
+                                                <section class="panel no-b">
+                                                    <div class="panel-heading no-b">
+                                                        <h5><span id="menuName">菜单</span><b>按钮权限</b></h5>
+                                                        <div id="checkAllMenuBtn" class="pull-right">
+                                                            <label for="selectAllBtn">全选：&nbsp;&nbsp;&nbsp;</label>
+                                                            <input type="checkbox" id="selectAllBtn"
+                                                                   class="js-switch-blue" checked="checked"/>
+                                                        </div>
+                                                    </div>
+                                                    <div id="divResBtn" class="panel-body">
+
+                                                    </div>
+                                                </section>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <fieldset title="第 4 步&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;">
+                                        <legend>字段权限</legend>
+                                        <div class="form-group no-b">
+                                            <div class="col-sm-12">
+                                                <section class="panel no-b">
+                                                    <div class="panel-heading no-b">
+                                                        <h5><span id="menuColumnsName">菜单</span><b>字段权限</b></h5>
+                                                        <div id="checkAllMenuColumns" class="pull-right">
+                                                            <label for="selectAllBtn">全选：&nbsp;&nbsp;&nbsp;</label>
+                                                            <input type="checkbox" id="selectAllColumns" class="js-switch-blue" checked="checked"/>
+                                                        </div>
+                                                    </div>
+                                                    <div id="divResColumns" class="panel-body">
+                                                        <!-- 根据选择的菜单动态生成 -->
+                                                    </div>
+                                                </section>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                    <button class="stepy-finish btn btn-primary pull-right" data-loading-text="正在提交...">
+                                        完成
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <a class="exit-offscreen"></a>
+            </section>
+            <!-- 选择机构 -->
+            <div id="dialogSelectUnit" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                            <h4 class="modal-title">选择机构</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col-xs-12">
+                                    <div id="jsTreeUnit" class="demo"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+                            <button type="button" class="btn btn-primary" onclick="selectParentMenu()">确认选择</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+</div>
+#required_js
+
+<!-- 页面组件脚本 -->
+<script src="$!basePath/framework/plugins/stepy/jquery.validate.min.js"></script>
+<script src="$!basePath/framework/plugins/stepy/jquery.stepy.js"></script>
+<script type="text/javascript">
+    ns.requireJS([
+            "/framework/js/form/checkbox.js",
+            "/framework/js/form/form.js",
+            "/framework/js/view/toast.js",
+            "/framework/js/plugins/json.js",
+            "/framework/js/view/tree.js",
+            "/framework/js/form/select.js"
+    ]);
+    function initTreeView() {
+        $("#jsTreeUnit").jstree({
+            plugins: ["wholerow"],
+            core: {
+                data: {
+                    url: function (node) {
+                        return node.id === "#" ? "$!basePath/system/unit/tree" : "$!basePath/system/unit/tree/" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("dblclick.jstree", function (node) {
+            selectParentMenu();
+        });
+    }
+    //选择父菜单
+    function selectParentMenu() {
+        var tree = $.jstree.reference("#jsTreeUnit");
+        var node = tree.get_selected(true);
+        $("#addRoleForm #unitName").val(node[0].text);
+        $("#addRoleForm input[name='unit.id']").val(node[0].id);
+
+        $("#dialogSelectUnit").modal("hide");
+    }
+    $(function () {
+        var jsTreeMenu;
+        $(".stepy").stepy({
+            backLabel: "上一步",
+            nextLabel: "下一步",
+            errorImage: true,
+            block: true,
+            validate: true,
+            legend: false,
+            select: function (idx) {
+                if (idx == 2) {
+                    var unitId = $("#addRoleForm input[name='unit.id']").val();
+                    //刷新树
+                    if (jsTreeMenu != undefined)
+                        $.jstree.reference("#jsTreeMenu").destroy();
+                    //初始化选择菜单树
+                    jsTreeMenu = $("#jsTreeMenu").jstree({
+                        plugins: ["wholerow", "checkbox"],
+                        core: {
+                            data: {
+                                url: function (node) {
+                                    return node.id === "#" ? "$!basePath/system/role/unit/res/tree/" + unitId : "$!basePath/system/role/unit/res/tree/" + unitId + "/" + node.id
+                                }
+                            }
+                        },
+                        checkbox: {
+                            three_state: false,
+                            cascade: 'down'
+                        }
+                    }).on("hover_node.jstree", function (e, data) {
+                        if (data.node.data)
+                            $("#menuDescript").text(data.node.data);
+                    }).on("dehover_node.jstree", function (e, data) {
+                        $("#menuDescript").html("<div class='alert alert-info'>鼠标在左侧菜单树节点上悬浮，可以查看菜单描述</div>");//清空菜单描述
+                    }).bind("loaded.jstree", function () {
+                        //立即加载树下所有节点， 并选中已选择的菜单
+                        $("#jsTreeMenu").jstree("load_all");
+                    });
+
+                } else if (idx == 3) {
+                    //获取所选菜单
+                    var tree = $.jstree.reference("#jsTreeMenu");
+                    var nodes = tree.get_selected();
+                    //查询所选节点的所有父节点
+                    for (var i = 0; i < nodes.length; i++) {
+                        var node = nodes[i];
+
+                        each(node, tree, nodes);
+                    }
+                    if (nodes.length > 0) {
+                        $("#checkAllMenuBtn").show();
+                        $("#divResBtn").html("<img src='$!basePath/framework/img/loading.gif'/>正在加载...");
+                        $.get("$!basePath/system/role/resbtn", {ids: nodes.toString()}, function (html) {
+                            $("#divResBtn").html(html);
+                        });
+                    } else {
+                        $("#divResBtn").html("<div class='alert alert-warning'>未分配任何菜单，如需分配菜单权限，请到第2步中选择菜单！</div>");
+                        $("#checkAllMenuBtn").hide();
+                    }
+                }else if(idx == 4){
+                    //获取所选菜单
+                    var tree = $.jstree.reference("#jsTreeMenu");
+                    var nodes = tree.get_selected();
+                    //查询所选节点的所有父节点
+                    for(var i=0;i<nodes.length;i++){
+                        var node = nodes[i];
+
+                        each(node,tree,nodes);
+                    }
+                    if(nodes.length>0){
+                        $("#checkAllMenuColumns").show();
+                        $("#divResColumns").html("<img src='$!basePath/framework/img/loading.gif'/>正在加载...");
+                        $.get("$!basePath/system/role/rescol", {ids:nodes.toString()}, function(html){
+                            $("#divResColumns").html(html);
+                        });
+                    }else{
+                        $("#divResColumns").html("<div class='alert alert-warning'>未分配任何菜单，如需分配菜单权限，请到第2步中选择菜单！</div>");
+                        $("#checkAllMenuColumns").hide();
+                    }
+                }
+            },
+            finish: function () {
+                //保存资源按钮数据
+                saveResource();
+            }
+        });
+        $(".stepy").validate({
+            errorPlacement: function (error) {
+                $(".stepy .stepy-errors").append(error)
+            },
+            rules: {
+                unitId: "required",
+                name: "required"
+            },
+            messages: {
+                unitId: {
+                    required: "请选择机构！"
+                },
+                name: {
+                    required: "请输入角色名称！"
+                }
+            }
+        });
+        //表单ajax提交
+        $("#addRoleForm").ajaxForm({
+            beforeSubmit: function (arr, $form, options) {
+                //获取选择的菜单
+                $form.find("button:submit").button("loading");
+                if ($form.attr("isSubmit") == undefined) {//与stepy结合使用时，要避免二次提交的问题
+                    $form.attr("isSubmit", true);
+                } else {
+                    $form.removeAttr("isSubmit");
+                    return false;
+                }
+            },
+            success: function (data, statusText, xhr, $form) {
+                if (data.success == true) {
+                    Toast.success("角色增加成功！");
+                    $form.resetForm();
+                    //回到第一个step
+                    $(".stepy").stepy("step", 1);
+                } else {
+                    Toast.error(data.error);
+                }
+                $form.find("button:submit").button("reset");
+            }
+        });
+
+        //绑定全选事件
+        $("#selectAllBtn").on("change", function () {
+            if($(this).is(":checked")){
+                $("#divResBtn .icheck").iCheck("check");
+            }else{
+                $("#divResBtn .icheck").iCheck("uncheck");
+            }
+        });
+        $("#selectAllColumns").on("change", function () {
+            if($(this).is(":checked")){
+                $("#divResColumns .icheck").iCheck("check");
+            }else{
+                $("#divResColumns .icheck").iCheck("uncheck");
+            }
+        });;
+        initTreeView();
+    });
+    function saveResource() {
+        var resourceBtns = [], resourceCols = [];
+        var objs = $("#divResBtn .res-btn");
+        $.each(objs, function (i, row) {
+            row = $(row);
+            var res = new JSONObject();
+            res.put("id", row.attr("name"));
+
+            var btnArr = [];
+            var btns = row.find("input[type='checkbox']:checked");
+            for(var i=0;i<btns.length;i++) btnArr.push(btns[i].value);
+            res.put("btns", "["+btnArr.toString()+"]");
+
+            resourceBtns.push(res.toString());
+        });
+        objs = $("#divResColumns .res-col");
+        $.each(objs, function(i, row){
+            row = $(row);
+            var res = new JSONObject();
+            res.put("id", row.attr("name"));
+
+            var colArr = [];
+            var cols = row.find("input[type='checkbox']:checked");
+            for(var i=0;i<cols.length;i++) colArr.push(cols[i].value);
+            res.put("cols", "["+colArr.toString()+"]");
+
+            resourceCols.push(res.toString());
+        });
+
+        $("#addRoleForm input[name='resourceIds']:hidden").val(resourceBtns.toString());
+        $("#addRoleForm input[name='resourceColIds']:hidden").val(resourceCols.toString());
+    }
+    function complete() {
+        saveResource();
+//        $('#addRoleForm').submit();
+    }
+    function each(node, tree, nodes) {
+        var p = tree.get_parent(node);
+        if (p.length > 1) {
+            if (!isExists(p, nodes))
+                nodes.push(p);
+            each(p, tree, nodes);
+        }
+    }
+    function isExists(p, nodes) {
+        for (var i = 0; i < nodes.length; i++) {
+            if (p == nodes[i])
+                return true;
+        }
+        return false;
+    }
+</script>
+#loading_close
+</body>
+</html>

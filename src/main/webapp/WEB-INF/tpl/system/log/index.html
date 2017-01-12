@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+    <title>${system_admin_title}</title>
+    <link rel="stylesheet" href="$!basePath/framework/plugins/daterangepicker/daterangepicker-bs3.css">
+    #required_css
+</head>
+
+<body>#loading
+
+
+<div class="app $!layout">
+    <!-- 头部菜单 -->
+    #header
+    <section class="layout">
+        <!-- 菜单 -->
+        #sidebar
+        <!-- 内容主体 -->
+        <section class="container">
+            <section class="main-content">
+                <!-- 主体操作栏 -->
+                <header class="header">
+                    <!-- 左按钮区 -->
+                    <div class="search-bar">
+                        <div class="search-item pull-left">
+                            <div class="input-prepend input-group" style="width: 420px;">
+                                <span class="add-on input-group-addon"><i class="ti-timer"></i></span>
+                                <input type="text" ns-model="reservation" name="reservation" id="reservationtime"
+                                       class="form-control" value="$!defaultTime">
+                                <span class="add-on input-group-addon" onclick="doSearch()" style="cursor: pointer;"><i
+                                        class="ti-search"></i> 查询</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary search-item" onclick="showAll()"><i class="ti-menu-alt"></i>
+                            显示全部</button>
+                    </div>
+                    <!-- 右按钮区 -->
+                    <div class="pull-right offscreen-right">
+                        <div class="btn-group" data-toggle="buttons">
+                            <label onclick="doSort(1)"
+                                   class="btn btn-primary navbar-btn level #if($!order=='asc')active#end">
+                                <input type="radio" name="options">
+                                <span>升序</span>
+                            </label>
+                            <label onclick="doSort(2)"
+                                   class="btn btn-primary navbar-btn level #if($!order=='desc')active#end">
+                                <input type="radio" name="options"/>
+                                <span>倒序</span>
+                            </label>
+                        </div>
+                    </div>
+                </header>
+                <div class="content-wrap">
+                    <div class="wrapper">
+                        <form id="logForm" action="$!basePath/system/log/" method="post">
+                            <input type="hidden" name="time" value="$!time"/>
+                            <input type="hidden" name="order" value="$!order"/>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 table-responsive">
+                                    <table id="userTable" class="table table-striped no-m">
+                                        <thead>
+                                        <tr>
+                                            <th class="col-md-2">功能模块</th>
+                                            <th class="col-md-3">事项</th>
+                                            <th class="col-md-1">日志等级</th>
+                                            <th class="col-md-2 pd-l-lg">
+                                                <span class="pd-l-sm"></span>时间
+                                            </th>
+                                            <th class="col-md-1">操作人</th>
+                                            <th class="col-md-1">IP</th>
+                                            <th class="col-md-1">Logger</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        #foreach($!obj in $!list)
+                                        <tr>
+                                            <td>$!obj.manipulateName</td>
+                                            <td onclick="showInfo(this)" desc="$!obj.content">#substring($!obj.content
+                                                30)
+                                            </td>
+                                            <td>
+                                                #if($!obj.type == "1")
+                                                <span class="label label-info">Info</span>
+                                                #elseif($!obj.type == "2")
+                                                <span class="label label-default">Debug</span>
+                                                #elseif($!obj.type == "3")
+                                                <span class="label label-danger">Error</span>
+                                                #end
+                                            </td>
+                                            <td>$!obj.time</td>
+                                            <td>$!obj.userName</td>
+                                            <td><a class="text-primary text-underline" href="http://ip.cn/index.php?ip=$!obj.iP"
+                                                   target="_blank">$!obj.iP</a>
+                                            </td>
+                                            <td>$!obj.className</td>
+                                        </tr>
+                                        #end
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12">
+                                    #pager_ajax("#logForm")
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <a class="exit-offscreen"></a>
+            </section>
+            <div id="sb-info" class="sidebar-panel from-right">
+                <div class="sidebar-panel-container shadow">
+                    <header class="sidebar-panel-header">
+                        <h4>日志详情</h4>
+                        <a href="javascript:$('.sidebar-panel').click();" class="sidebar-panel-close text-center"><i
+                                class="ti-close"></i> </a>
+                    </header>
+                    <div class="sidebar-panel-content">
+                        <form role="form">
+                            <div class="form-group">
+                                <p style="word-break: break-all;"></p>
+                            </div>
+                            <div class="form-group">
+                                <label for="time">时间</label>
+                                <p></p>
+                            </div>
+                            <div class="form-group">
+                                <label for="createUser">操作人</label>
+                                <p></p>
+                            </div>
+                            <div class="form-group">
+                                <label for="ip">IP地址</label>
+                                <p></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+</div>
+#required_js
+
+<!-- 页面组件脚本 -->
+<!-- 日期间隔选择插件 -->
+<script src="$!basePath/framework/plugins/moment.js"></script>
+<script src="$!basePath/framework/plugins/daterangepicker/daterangepicker.js"></script>
+<script src="$!basePath/framework/js/form/date.js"></script>
+<!-- 日期间隔选择插件 END -->
+
+<!-- 本页面脚本 -->
+<script type="text/javascript">
+    ns.requireJS("/framework/js/form/checkbox.js")
+    $("#reservationtime").daterangepicker({
+        timePicker: true,
+        timePickerIncrement: 1,
+        timePicker12Hour: false,
+        format: "YYYY-MM-DD HH:mm:ss"
+    });
+    function doSearch() {
+        var time = $("#reservationtime").val();
+        ns.asyncRequest("$!basePath/system/log/", {time: time}, "#logForm");
+    }
+    function showAll() {
+        ns.asyncRequest("$!basePath/system/log/", {}, "#logForm");
+    }
+    function doSort(t) {
+        var attrs = ns.formAttrs("#logForm");
+        attrs.order = t == 1 ? "asc" : "desc";
+        ns.asyncRequest("$!basePath/system/log/", attrs, "#logForm");
+    }
+
+    function showInfo(obj) {
+        var tr = $(obj).parent();
+        $("#sb-info p:eq(0)").text(tr.find("td:eq(1)").attr("desc"));
+        $("#sb-info p:eq(1)").text(tr.find("td:eq(3)").text());
+        $("#sb-info p:eq(2)").text(tr.find("td:eq(4)").text());
+        $("#sb-info p:eq(3)").text(tr.find("td:eq(5)").text());
+        ns.view.showSidebarStatic("#sb-info");
+    }
+</script>
+
+#loading_close
+</body>
+</html>

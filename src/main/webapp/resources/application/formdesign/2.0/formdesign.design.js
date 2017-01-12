@@ -365,7 +365,7 @@ fd.design = {
 		insertRow : function(arrow){
 			var selecteds = fd.design.view.currentView();
 			if (selecteds.length <= 0) {
-				alert("请先选中表格！");
+				alert("请先选中单元格！");
 				return;
 			}
 			var tagName = selecteds[0].tagName.toLowerCase();
@@ -396,7 +396,7 @@ fd.design = {
 		insertCol : function(arrow){
 			var selecteds = fd.design.view.currentView();
 			if (selecteds.length <= 0) {
-				alert("先选中表格！");
+				alert("先选中单元格！");
 				return;
 			}
 			var tagName = selecteds[0].tagName.toLowerCase();

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+    <title>${system_admin_title}</title>
+    #required_css
+</head>
+
+<body>#loading
+
+
+<div class="app $!layout">
+    <!-- 头部菜单 -->
+    #header
+    <section class="layout">
+        <!-- 菜单 -->
+        #sidebar
+        <section class="container">
+            <!-- 机构  -->
+            <aside class="sidebar-250 canvas-right bg-default ">
+                <header class="header navbar clearfix-default pl0 pr0">
+                    <p class="navbar-text"><i class="fa fa-sitemap mr5"></i> 组织结构</p>
+                </header>
+                <div class="content-wrap no-p">
+                    <div class="wrapper">
+                        <div id="jsTreeUnit"></div>
+                    </div>
+                </div>
+            </aside>
+            <!-- 内容主体 -->
+            <section class="main-content">
+                <!-- 主体操作栏 -->
+                <header class="header navbar">
+                    <!-- 左按钮区 -->
+                    <div class="btn-group tool-button">
+                        <a class="btn btn-primary navbar-btn" href="$!basePath/system/role/add" data-pjax><i
+                                class="fa fa-plus"></i> 新增角色</a>
+                        <button class="btn btn-danger navbar-btn" onclick="delSel()"><i class="fa fa-close"></i> 删除选中
+                        </button>
+                    </div>
+                </header>
+                <div class="content-wrap">
+                    <div class="wrapper">
+                        <div class="row mb15">
+                            <div class="col-lg-12 col-md-12">
+                                <table id="roleTable" class="table no-m">
+                                    <thead>
+                                    <tr>
+                                        <th>
+                                            <input type="checkbox" data-icheck data-check-all="data-check-item">
+                                        </th>
+                                        <th class="col-md-2 pd-l-lg">
+                                            <span class="pd-l-sm"></span>名称
+                                        </th>
+                                        <th class="col-md-6 offscreen-right">描述</th>
+                                        <th class="col-md-2">#springMessage('system.common.status')</th>
+                                        <th class="col-md-2">#springMessage('system.common.op')</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer>
+                    <div class="alert alert-info p10">
+                        <strong>提示：</strong>&nbsp;只可以看到当前用户所在机构下属的角色
+                    </div>
+                </footer>
+                <a class="exit-offscreen"></a>
+            </section>
+        </section>
+    </section>
+</div>
+#required_js
+
+<script type="text/javascript">
+    //导入js
+    ns.requireJS(["/framework/js/form/checkbox.js",
+        "/framework/js/view/toast.js",
+        "/framework/js/view/tree.js",
+        "/framework/js/view/treetable.js"]);
+    var cid;
+    function initTreeView() {
+        $("#jsTreeUnit").jstree({
+            plugins: ["wholerow"],
+            core: {
+                data: {
+                    url: function (node) {
+                        return node.id === "#" ? "$!basePath/system/unit/tree" : "$!basePath/system/unit/tree/" + node.id
+                    }
+                },
+                multiple: false
+            }
+        }).on("select_node.jstree", function (node, selected) {
+            cid = selected.selected;
+            loadRole();
+        }).on("loaded.jstree", function (node, jstree) {
+            var id = ns.data.sessionStorage.get("sys_role_tree_id");
+            if (!id)
+                id = $(node.target).find("li:first").attr("id");
+            if (id)
+                jstree.instance.select_node(id);
+        });
+    }
+    function loadRole() {
+        ns.asyncRequest("$!basePath/system/role/unitrole/" + cid, {}, "#roleTable tbody", function () {
+            ns.data.sessionStorage.set("sys_role_tree_id", cid);
+        });
+    }
+    function del(id) {
+        ns.tip.confirm("角色删除后无法恢复，并且角色下属用户将失去该角色的所有菜单权限！确定删除吗？", function () {
+            $.post("$!basePath/system/role/delete/" + id, {}, function (data) {
+                if (data.success == true) {
+                    ns.tip.toast.success("删除成功!");
+                    $("#" + id).remove();
+                } else {
+                    ns.tip.toast.error(data.error);
+                }
+            });
+        });
+    }
+    function delSel() {
+        var ids = ns.form.check("#roleTable").getChecks();
+        if (ids.length == 0) return ns.tip.toast.warning("请选择要删除的角色！");
+        ns.tip.confirm("确定要删除选中的角色吗？", function () {
+            ns.post("$!basePath/system/role/delete", {ids: ids.toString()}, function (success, data) {
+                if (success) {
+                    loadRole();
+                } else {
+                    return ns.tip.toast.error(data.error);
+                }
+            })
+        });
+    }
+    function enableRole(id) {
+        $.post("$!basePath/system/role/enable/" + id, {}, function (data) {
+            if (data.success == true) {
+                $("#td_status_" + id).find("i").attr("class", "fa fa-circle text-success ml5");
+            } else {
+                Toast.error(data.error);
+            }
+        });
+    }
+    function disableRole(id) {
+        $.post("$!basePath/system/role/disable/" + id, {}, function (data) {
+            if (data.success == true) {
+                $("#td_status_" + id).find("i").attr("class", "fa fa-circle text-danger ml5");
+            } else {
+                Toast.error(data.error);
+            }
+        });
+    }
+    $(function () {
+        initTreeView();
+        //删除页面缓存
+        $("#dialogDetail").on("hidden.bs.modal", function () {
+            $(this).removeData("bs.modal");
+        });
+    });
+</script>
+#loading_close
+</body>
+</html>

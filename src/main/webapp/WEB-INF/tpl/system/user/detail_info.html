@@ -1,0 +1,50 @@
+<div class="modal-body no-p">
+	<div class="row">
+		<div class="col-xs-12">
+			<section class="panel panel-primary no-b">
+	            <header class="panel-heading clearfix">
+	            	#if($!unitName)
+	            	<div class="pull-right">隶属于：$!unitName</div>
+	            	#end
+	                <div class="overflow-hidden">
+	                    <a href="javascript:;" class="h4 show no-m pt5"><i class="$!res.icon"></i> $!user.realName</a>
+	                    <small>$!user.userName - $!user.id</small>
+	                </div>
+	            </header>
+	            <table class="table table-bordered table-striped">
+	            	<tr>
+	            		<td>联系方式</td>
+	            		<td>$!user.mobile</td>
+	            		<td>电子邮箱</td>
+	            		<td>$!user.email</td>
+	            	</tr>
+	            	<tr>
+	            		<td>QQ</td>
+	            		<td>$!user.qq</td>
+	            		<td>页面风格</td>
+	            		<td>$!user.pageStyle</td>
+	            	</tr>
+	            	<tr>
+	            		<td>是否在线</td>
+	            		<td>#if($!user.isOnline())<i class="fa fa-circle text-success ml5">#else<i class="fa fa-circle text-danger ml5">#end</td>
+	            		<td>是否启用</td>
+	            		<td>#if($!user.enabled)<i class="fa fa-circle text-success ml5">#else<i class="fa fa-circle text-danger ml5">#end</td>
+	            	</tr>
+	            	<tr>
+	            		<td>最后登录时间</td>
+	            		<td>$!user.lastLoginTime</td>
+	            		<td>注册时间</td>
+	            		<td>$!user.createTime</td>
+	            	</tr>
+	            	<tr>
+	            		<td>角色列表</td>
+	            		<td colspan="3">$!roles</td>
+	            	</tr>
+	            </table>
+	        </section>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+	<button type="button" class="btn btn-primary btn-block" data-dismiss="modal">知道了</button>
+</div>

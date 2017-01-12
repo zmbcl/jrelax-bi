@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+    <title>编辑文件 - ${system_admin_title}</title>
+    #required_css
+</head>
+
+<body>#loading
+<div class="app $!layout">
+    <section class="layout">
+        <!-- 内容主体 -->
+        <section class="container">
+            <section class="main-content">
+                <!-- <header class="header navbar">
+                       左按钮区
+                   <div class="btn-group tool-button">
+                           <button type="button" class="btn btn-primary navbar-btn" onclick="save(this)" data-loading-text="正在保存..."><i class="ti-save"></i> 保存</button>
+                   </div>
+                 </header> -->
+                <div class="content-wrap">
+                    <div class="wrapper no-p">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12">
+                                <textarea id="content">$!content</textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a class="exit-offscreen"></a>
+            </section>
+        </section>
+    </section>
+</div>
+#required_js
+
+<!-- 本页面脚本 -->
+<script src="$!basePath/framework/js/view/toast.js"></script>
+<script src="$!basePath/framework/js/form/markdown.js"></script>
+
+<script type="text/javascript">
+    $(function () {
+        $("#content").markdown({
+            iconlibrary: "fa",
+            autofocus: true,
+            language: "zh",
+            savable: true,
+            onSave: function (e) {
+                jQuery.post("$!basePath/system/senior/sysfile/save", {
+                    path: "$!path",
+                    content: e.getContent()
+                }, function (data) {
+                    if (data.success == true) {
+                        Toast.success("保存成功！");
+                    } else {
+                        Toast.error(data.error);
+                    }
+                });
+            }
+        });
+        $("#content").css("height", $(document).height() - 90);
+        $(window).resize(function () {
+            $("#content").css("height", $(document).height() - 90);
+        });
+    });
+</script>
+#loading_close
+</body>
+</html>
