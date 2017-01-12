@@ -95,7 +95,7 @@
         <property name="dataSource" ref="multiDataSource"/>
         <property name="packagesToScan">
             <list>
-                <value>com.jrelax.web.entity</value>
+                <value>com.jrelax.web.**.entity</value>
             </list>
         </property>
         <property name="hibernateProperties">
