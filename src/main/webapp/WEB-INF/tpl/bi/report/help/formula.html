@@ -1,0 +1,37 @@
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h4 class="modal-title">使用说明：公式</h4>
+</div>
+<div class="modal-body">
+    <div class="panel">
+        <div class="panel-heading">
+            1. 单元格运算
+        </div>
+        <ul>
+            <li>基础运算：加(+)、减(-)、乘(*)、除(/)、取余(%)</li>
+        </ul>
+    </div>
+    <div class="panel">
+        <div class="panel-heading">
+            2. 公式运算，目前支持以下方式：
+        </div>
+        <ul>
+            <li>`sum`  求和</li>
+            <li>`avg`  平均数</li>
+            <li>`max`  最大值</li>
+            <li>`count` 计数</li>
+        </ul>
+        <div class="alert alert-warning">
+            <p>书写方式(以sum为例)：</p>
+            <ul>
+                <li>sum(A1,A2,B1) 等价于 A1+A2+B1</li>
+                <li>sum(A1 : B2) 等价于 A1 + A2 + B1 + B2 区域运算</li>
+                <li>sum(A1+) 等价于 A1 + A2 + A3 + A4 + ... + An 计算A1所在列，从A1开始的下方所有单元格的值</li>
+                <li>sum(A1-) 等价于 A1 + B1 + C1 + ... + N1 计算A1所在行，从A1开始右方所有的值</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default btn-block" data-dismiss="modal">知道了</button>
+</div>

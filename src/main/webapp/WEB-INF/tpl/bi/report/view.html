@@ -45,6 +45,7 @@
 <script src="$!basePath/app/datasource/datasource.js"></script>
 <script src="$!basePath/app/report/bi.table.js"></script>
 <script src="$!basePath/app/report/bi.report.js"></script>
+<script src="$!basePath/app/report/bi.report.formula.js"></script>
 <script type="text/javascript">
     function render() {
         var id = "$!biReport.id";
@@ -52,6 +53,7 @@
             target : $("#"+id)
         });
         report.render();
+//        report.renderFormual();
     }
 
     ns.ready(function(){

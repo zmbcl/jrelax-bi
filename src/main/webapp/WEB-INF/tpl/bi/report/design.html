@@ -44,12 +44,13 @@
                         </div>
                         <div class="toolbar-divider"></div>
                         <div class="btn-group">
-                            <button class="btn btn-default toolbar-item" type="button" onclick="document.execCommand('bold')" title="加粗"><i class="fa fa-bold"></i></button>
-                            <button class="btn btn-default toolbar-item" type="button" onclick="document.execCommand('italic')" title="斜体"><i class="fa fa-italic"></i></button>
-                            <button class="btn btn-default toolbar-item" type="button" onclick="document.execCommand('justifyLeft')" title="左对齐"><i class="fa fa-align-left"></i></button>
-                            <button class="btn btn-default toolbar-item" type="button" onclick="document.execCommand('justifyCenter')" title="居中对齐"><i class="fa fa-align-center"></i></button>
-                            <button class="btn btn-default toolbar-item" type="button" onclick="document.execCommand('justifyRight')" title="右对齐"><i class="fa fa-align-right"></i></button>
-                            <button class="btn btn-default toolbar-item" type="button" onclick="document.execCommand('justifyFull')" title="两端对齐"><i class="fa fa-align-justify"></i></button>
+                            <button class="btn btn-default toolbar-item" id="btnStyleBold" type="button" onclick="table.bold()" title="加粗"><i class="fa fa-bold"></i></button>
+                            <button class="btn btn-default toolbar-item" id="btnStyleItalic" type="button" onclick="table.italic()" title="斜体"><i class="fa fa-italic"></i></button>
+                            <button class="btn btn-default toolbar-item" id="btnStyleUnderline" type="button" onclick="table.underline()" title="下划线"><i class="fa fa-underline"></i></button>
+                            <button class="btn btn-default toolbar-item" id="btnStyleLineThrough" type="button" onclick="table.lineThrough()" title="删除线"><i class="fa fa-strikethrough"></i></button>
+                            <button class="btn btn-default toolbar-item" id="btnStyleAlignLeft" type="button" onclick="table.alignLeft()" title="左对齐"><i class="fa fa-align-left"></i></button>
+                            <button class="btn btn-default toolbar-item" id="btnStyleAlignCenter" type="button" onclick="table.alignCenter()" title="居中对齐"><i class="fa fa-align-center"></i></button>
+                            <button class="btn btn-default toolbar-item" id="btnStyleAlignRight" type="button" onclick="table.alignRight()" title="右对齐"><i class="fa fa-align-right"></i></button>
                         </div>
                     </div>
                     <div class="pull-right toolbar">
@@ -100,6 +101,30 @@
                                             <option value="right">自此向右展开</option>
                                             <option value="down">自此向下展开</option>
                                         </select>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group mt5">
+                                            <div>
+                                                <label>公式：</label>
+                                                <div class="pull-right">
+                                                    <a href="javascript:;" onclick="ns.view.showModal('$!basePath/bi/report/help/formula')" class="text-primary text-underline"><i class="fa fa-question"></i> 帮助</a>
+                                                </div>
+                                            </div>
+                                            <textarea id="txtFormula" class="form-control"></textarea>
+                                        </div>
+                                        <div class="form-group mt5">
+                                            <div>
+                                                <label>浮点数精度(四舍五入)：</label>
+                                            </div>
+                                            <select id="selPrecision" class="form-control">
+                                                <option value="">保持原精度</option>
+                                                <option value="0">0</option>
+                                                <option value="1">0.0</option>
+                                                <option value="2">0.00</option>
+                                                <option value="3">0.000</option>
+                                                <option value="4">0.0000</option>
+                                                <option value="5">0.00000</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </aside>
@@ -136,9 +161,11 @@
     function parseToContent(){
         var content = $("#designPanel").find(".panel-body").clone();
         var table = content.find("table");
-        table.removeAttr("contenteditable");
-        table.find("td").removeAttr("class");
         table.find("td[data-binder]").html("<br/>");
+        table.find("tr:eq(0)").remove();
+        table.find("td.rownum, td.colnum").remove();
+        table.find("td").removeAttr("class");
+        table.removeAttr("contenteditable");
 
         return jQuery.trim(content.html());
     }
@@ -213,14 +240,21 @@
         var cell = table.getSelectedCell();
         var opt = report.getOptions();
         if (cell[0]) {
-            var ds = cell.attr(opt.datasource);
-            var code = cell.attr(opt.code);
-            var arrow = cell.attr(opt.arrow);
+            //数据源信息
+            var ds = cell.attr(opt.dsTag);
+            var code = cell.attr(opt.codeTag);
+            var arrow = cell.attr(opt.arrowTag);
 
             $("#selSrc").val(ds);
             loadFieldByDsId(ds);
             $("#selField").val(code);
             $("#selArrow").val(arrow);
+
+            var formula = cell.attr(opt.formulaTag);
+            $("#txtFormula").val(formula);
+
+            var precision = cell.attr(opt.precisionTag);
+            $("#selPrecision").val(precision);
         }
     }
     //控件->属性
@@ -228,29 +262,49 @@
         var cell = table.getSelectedCell();
         var opt = report.getOptions();
         if (cell[0]) {
+            //数据源
             var ds = $("#selSrc").val();
             var code = $("#selField").val();
             var arrow = $("#selArrow").val();
 
             if (ds.length > 0 && code.length > 0 && arrow.length > 0) {
-                cell.attr(opt.datasource, ds);
-                cell.attr(opt.code, code);
-                cell.attr(opt.arrow, arrow);
+                cell.attr(opt.dsTag, ds);
+                cell.attr(opt.codeTag, code);
+                cell.attr(opt.arrowTag, arrow);
 
                 cell.html("#"+code + "->" + arrow+"#");
                 cell.attr("data-binder", true);
             } else {
-                cell.removeAttr(opt.datasource);
-                cell.removeAttr(opt.code);
-                cell.removeAttr(opt.arrow);
+                cell.removeAttr(opt.dsTag);
+                cell.removeAttr(opt.codeTag);
+                cell.removeAttr(opt.arrowTag);
                 cell.removeAttr("data-binder");
                 cell.html("");
+            }
+
+            //公式
+            var formula = jQuery.trim($("#txtFormula").val());
+            if(formula.length > 0){
+                cell.attr(opt.formulaTag, formula);
+                cell.addClass("formula");
+            } else{
+                cell.removeClass("formula");
+                cell.removeAttr(opt.formulaTag);
+            }
+
+            //精度
+            var precision = $("#selPrecision").val();
+            if(precision > -1){
+                cell.attr(opt.precisionTag, precision);
+            }else{
+                cell.removeAttr(opt.precisionTag);
             }
         }
     }
 
     ns.ready(function () {
-        table = $("#designPanel table").BiTable({
+        table = $("#designPanel").find("table").BiTable({
+            showHeader : true,
             onSelectCell: function (cell, table) {
                 propertyToControl();
             }
@@ -261,7 +315,10 @@
             loadFieldByDsId($(this).val());
             controlToProperty();
         });
-        $("#selField, #selArrow").on("change", function () {
+        $("#selField, #selArrow, #selPrecision").on("change", function () {
+            controlToProperty();
+        });
+        $("#txtFormula").on("keyup", function(){
             controlToProperty();
         });
         doInit();
@@ -281,7 +338,7 @@
 
     function doInit(){
         //获取数据源，并加载
-        var tag =report.getOptions().datasource;
+        var tag =report.getOptions().dsTag;
         var tds = table.find("td["+tag+"]");
         var dsList = [], idList = [];
         $.each(tds, function(i,n){
