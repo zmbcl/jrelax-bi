@@ -94,7 +94,7 @@
 							<label class="col-sm-2 control-label">用户头像</label>
 							<div class="col-sm-10">
 								#if($!user.headImage)
-								<img src="$!basePath/$!user.headImage?$!range" width="60" class="img-circle"/>
+								<img src="$!{basePath}$!user.headImage?$!range" width="60" class="img-circle"/>
 								<a class="btn btn-default" href="javascript:;" onclick="doUploadHeadImage()">更改头像</a>
 								#else
 								<a class="btn btn-default" href="javascript:;" onclick="doUploadHeadImage()">上传头像</a>

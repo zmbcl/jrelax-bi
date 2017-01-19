@@ -185,6 +185,8 @@ public class BiTableController {
 						eqTable.removeColumn(i);
 					}
 					platform.alterTables(db, false);
+
+					conn.close();
 				}
 
 				conn.close();
