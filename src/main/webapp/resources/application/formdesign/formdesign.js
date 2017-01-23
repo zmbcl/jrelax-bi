@@ -420,10 +420,10 @@ function initPropertyForm() {
 	$("#propertyForm2 select").bind("change", function(e) {
 		_initPropertyForm2(this.name, $(this).val());
 	});
-	//设置属性编辑器滚动条
-	$("#propertyForm1,#propertyForm2").slimScroll({
-		height:($(document).height()-100)+"px"
-	});
+	// //设置属性编辑器滚动条
+	// $("#propertyForm1,#propertyForm2").slimScroll({
+	// 	height:($(document).height()-100)+"px"
+	// });
 }
 //表单属性设置生效
 function _initPropertyForm(name, value){

@@ -1,6 +1,6 @@
 /**
- * 柱状图适配器
- * Created by Administrator on 2016-12-01.
+ * 气泡图适配器
+ * Created by zengchao on 2016-12-01.
  */
 function BubbleAdapter(configs){
     var _dsArray = [], _ctx, _chart, _options;
@@ -51,21 +51,23 @@ function BubbleAdapter(configs){
                 var d = dsData[j];
 
                 data.push({
-                    x : d[config.xAxis],
-                    y : d[config.yAxis],
-                    r : d[config.rAxis]
+                    x : parseFloat(d[config.xAxis]),
+                    y : parseFloat(d[config.yAxis]),
+                    r : parseFloat(d[config.rAxis])
                 });
             }
             var dataset = {
                 label : config.name,
                 data : data,
-                borderWidth: 1,
-                backgroundColor : Charts.Utils.getBC(data.length)[i],
-                borderColor : Charts.Utils.getBC(data.length)[i]
+                // borderWidth: 1,
+                backgroundColor : Charts.Utils.getBC(data.length)[0],
+                hoverBackgroundColor : Charts.Utils.getBC(data.length)[0]
             };
 
             datasets.push(dataset);
         }
+
+        console.dir(datasets)
         return datasets;
     }
     this.init = function(ctx, opt){

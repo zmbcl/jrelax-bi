@@ -3,7 +3,7 @@
 }
 
 table td {
-    width: 119px;
+    min-width: 119px;
     vertical-align: top;
     /*border-width: 2px !important;*/
 }
@@ -27,7 +27,7 @@ td.colnum{
 td.rownum{
     background-color: #eaecf6;
     text-align: center;
-    width:30px;
+    max-width:30px;
 }
 
 td.formula:before{

@@ -10,6 +10,11 @@ function BiReport(opt) {
         arrowTag: "arrow",//展开方向
         formulaTag : "formula",//公式标签
         precisionTag : "precision",//精度标签
+        conditionSymbolTag: "condition-symbo",
+        conditionValueTag: "condition-value",
+        conditionTargetTag: "condition-target",
+        conditionTypeTag: "condition-type",
+        conditionColorTag: "condition-color",
         nodeClass: "bi-node",
         target: undefined
     };
@@ -48,12 +53,22 @@ function BiReport(opt) {
         return opt.target;
     }
 
-    this.render = function (data) {
+    this.render = function () {
         if (!opt.target) alert("target undefined");
         //重置
         this.reset();
         //加载数据
         this.loadData();
+
+        //渲染
+        this.renderGrid();
+        this.renderFormual();
+        this.renderPrecision();
+        this.renderCondition();
+    }
+
+    //解析表格
+    this.renderGrid = function(){
         //渲染列
         var codeEl = opt.target.find("[" + opt.codeTag + "][" + opt.arrowTag + "='right']");
         $.each(codeEl, function (i, n) {
@@ -101,20 +116,34 @@ function BiReport(opt) {
             var code = el.attr(opt.codeTag);
             var dsId = el.attr(opt.dsTag);
             var list = dataOfColumn(dsId, code);
-            var style = el.attr("style");//复制样式
-            var precision = el.attr("precision");//复制精度
+
+            //需要复制的属性值
+            var copyTags = ["style",
+                opt.precisionTag,
+                opt.conditionSymbolTag,
+                opt.conditionValueTag,
+                opt.conditionTargetTag,
+                opt.conditionTypeTag,
+                opt.conditionColorTag
+            ]
+            var copyTagValue = {};
+            for(var i=0;i<copyTags.length;i++){
+                var tag = copyTags[i];
+                copyTagValue[tag] = el.attr(tag);
+            }
 
             if (list.length > 0) {
                 el.text(list[0]);
             }
             for (var j = 1; j < list.length; j++) {
                 tr = tr.next();
-                tr.find("td,th").eq(idx).text(list[j]).attr("style", style).attr("precision", precision);
+                var td = tr.find("td,th").eq(idx).text(list[j]);
+                for(var i=0;i<copyTags.length;i++){
+                    var tag = copyTags[i];
+                     td.attr(tag, copyTagValue[tag]);
+                }
             }
         });
-
-        this.renderFormual();
-        this.renderPrecision();
     }
 
     //解析公式，需要注意公式计算先后顺序问题
@@ -149,6 +178,30 @@ function BiReport(opt) {
         });
     }
 
+    //条件运算
+    this.renderCondition = function(){
+        var conditionEl = opt.target.find("["+opt.conditionSymbolTag+"]");
+        $.each(conditionEl, function(i, n){
+            var td = $(n);
+
+            var conditionSymbol = td.attr(opt.conditionSymbolTag);
+            var conditionValue = td.attr(opt.conditionValueTag);
+            var conditionTarget = td.attr(opt.conditionTargetTag);
+            var conditionType = td.attr(opt.conditionTypeTag);
+            var conditionColor = td.attr(opt.conditionColorTag);
+
+            if(isNumber(conditionValue)){
+                var result = eval(td.text() + conditionSymbol + conditionValue);
+                if(result){
+                    if(!conditionTarget || conditionTarget == "cell")
+                        td.css(conditionType, conditionColor);
+                    else if(conditionTarget == "row")
+                        td.parents("tr").css(conditionType, conditionColor);
+                }
+            }
+        });
+    }
+
     //重置
     this.reset = function () {
         opt.target.find("." + opt.nodeClass).remove();
@@ -180,5 +233,10 @@ function BiReport(opt) {
                 _data[dsId] = ds;
             }
         });
+    }
+
+    //判断是否是数字（包含整数和浮点数）
+    function isNumber(str){
+        return /^(-?\d+)(\.\d+)?$/.test(str);
     }
 }

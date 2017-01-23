@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+        <title>表单数据显示</title>#required_css</head>
+        
+    <body>#loading
+        <div class="app $!layout">
+            <section class="layout">
+            	<!-- 内容主体 -->
+                <section class="main-content">
+                	<header class="header navbar">
+                		<div class="btn-group tool-button">
+                			<a href="$!basePath/bi/form/v2/design/preview/$!form.id" class="btn btn-primary navbar-btn"><i class="ti-angle-left"></i> 返回</a>
+						</div>
+					</header>
+                    <div class="content-wrap">
+                       	<div class="wrapper no-p bg-default">
+                       		#foreach($key in $!map.keySet())
+                       		#set($value = $!map.get($!key))
+                       		<div class="row">
+                       			<div class="col-lg-2"></div>
+                       			<div class="col-lg-8 bordered mt20 pt20 pb20 bg-white">
+                       				<div class="h4 text-center">$!value.get(2)</div>
+                       				<table class="table">
+                       					<thead>
+	                       					<tr>
+	                       						#foreach($!obj in $!value.get(0))
+	                       						<th>$!obj</th>
+	                       						#end
+	                       					</tr>
+                       					</thead>
+                       					<tbody>
+                       						#foreach($!row in $!value.get(1))
+                       						<tr>
+                       							#foreach($!col in $!row)
+                       							<td>$!col</td>
+                       							#end
+                       						</tr>
+                       						#end
+                       					</tbody>
+                       				</table>
+                       			</div>
+                       			<div class="col-lg-2"></div>
+                       		</div>
+                       		#end
+                        </div>
+                        <a class="exit-offscreen"></a>
+                    </div>
+                </section>
+        	</section>
+        </div>
+        #required_js
+        <!-- 页面组件 -->
+        
+        <script type="text/javascript">
+        	
+        </script>
+        #loading_close
+    </body>
+</html>

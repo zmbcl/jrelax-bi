@@ -1,5 +1,6 @@
 /**
- * Created by Administrator on 2016-12-03.
+ * 图表工具类
+ * Created by zengchao on 2016-12-03.
  */
 var Charts = {
     Utils: {//工具集

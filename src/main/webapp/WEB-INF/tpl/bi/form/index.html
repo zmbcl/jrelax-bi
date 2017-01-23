@@ -24,8 +24,6 @@
                     <div class="btn-group tool-button">
                         <a href="$!basePath/bi/form/design" class="btn btn-primary navbar-btn" target="_blank"><i
                                 class="ti-plus"></i> 新建表单</a>
-                        <a href="$!basePath/bi/form/design/v2/table" class="btn btn-primary navbar-btn" target="_blank"><i
-                                class="ti-plus"></i> 新建表单 2.0</a>
                     </div>
                     <!-- 右按钮区 -->
                     <div class="btn-group pull-right"></div>
@@ -60,25 +58,10 @@
                                                     <ul class="dropdown-menu" role="menu">
                                                         <li><a href="javascript:;" onclick="ns.data.copy('$!obj.id')">复制ID</a>
                                                         </li>
-                                                        #if($!obj.version == "1.0")
-                                                        <li><a href="$!basePath/bi/form/edit/$!obj.id" target="_blank">#springMessage('system.common.edit')</a>
+                                                        <li><a href="$!basePath/bi/form/design/edit/$!obj.id" target="_blank">#springMessage('system.common.edit')</a>
                                                         </li>
-                                                        #else
-                                                        <li><a href="$!basePath/bi/form/design/v2/edit/$!obj.id"
-                                                               target="_blank">#springMessage('system.common.edit')</a>
-                                                        </li>
-                                                        #end
                                                         <li><a href="javascript:;" onclick="del('$!obj.id')">#springMessage('system.common.delete')</a>
                                                         </li>
-                                                        #if($!obj.version == "2.0")
-                                                        <li class="divider"></li>
-                                                        <li><a href="$!basePath/bi/form/design/v2/preview/$!obj.id"
-                                                               target="_blank">浏览</a></li>
-                                                        <li><a href="$!basePath/bi/form/datalist20/$!obj.id"
-                                                               target="_blank">查询表单数据</a></li>
-                                                        <li><a href="$!basePath/bi/form/column/$!obj.id"
-                                                               target="_blank">管理数据字段</a></li>
-                                                        #end
                                                     </ul>
                                                 </div>
                                             </td>

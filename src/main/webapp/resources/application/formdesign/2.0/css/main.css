@@ -1,7 +1,7 @@
-.wrapper .containers {padding: 30px 10px 10px;height:90%;border: 1px solid #DDDDDD; border-radius: 4px; position:relative;}
+.wrapper .containers {padding: 30px 10px 10px;min-height:600px;border: 1px solid #eeeff8; border-radius: 4px; position:relative;}
 .wrapper .containers:after {
 	background-color: #F5F5F5;
-	border: 1px solid #DDDDDD;
+	border: 1px solid #eeeff8;
 	border-radius: 4px 0 4px 0;
 	color: #9DA0A4;
 	content: "表单容器";

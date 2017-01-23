@@ -1,0 +1,108 @@
+<form id="biDatabaseAddForm" class="parsley-form" data-parsley-validate role="form" method="post" action="$!basePath/bi/database/add/do">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title">新增配置</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="form-group">
+                    <label class="control-label">配置名称</label>
+                    <input type="text" class="form-control" name="name" data-parsley-required="true" placeholder="数据库名称">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="form-group">
+                    <label class="control-label">数据库类型</label>
+                    <select name="type" class="form-control" data-parsley-required="true">
+                        #foreach($!obj in $!dbType.entrySet())
+                        <option value="$!obj.key">$!obj.value</option>
+                        #end
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-8 col-md-8">
+                <div class="form-group">
+                    <label class="control-label">主机地址</label>
+                    <input type="text" class="form-control" name="host" data-parsley-required="true" placeholder="主机地址">
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4">
+                <div class="form-group">
+                    <label class="control-label">端口</label>
+                    <input type="text" class="form-control" data-mask-alias="integer" name="port" data-parsley-required="true" placeholder="端口">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="form-group">
+                    <label class="control-label">数据库名</label>
+                    <input type="text" class="form-control" name="dbName" data-parsley-required="true" placeholder="数据库名">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="form-group">
+                    <label class="control-label">数据库用户名</label>
+                    <input type="text" class="form-control" name="username" data-parsley-required="true" placeholder="数据库用户名">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="form-group">
+                    <label class="control-label">数据库密码</label>
+                    <input type="text" class="form-control" name="password" placeholder="数据库密码">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="button" class="btn btn-warning" onclick="doTestDb(this)" data-loading-text="正在测试..."><i class="fa fa-link"></i> 测试连接</button>
+        </div>
+        <button id="ok" type="submit" class="btn btn-primary btn-form-submit" data-loading-text="正在保存...">提 交</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+    </div>
+</form>
+<script type="text/javascript">
+    ns.ready(function () {
+        ns.requireJS("/framework/js/form/form.js");
+        ns.requireJS("/framework/js/form/form-mask.js");
+        ns.requireJS("/framework/js/form/validator.js");
+        var dialog = ns.view.Dialog.getCur("#biDatabaseAddForm");
+
+        $("#biDatabaseAddForm").ajaxForm({
+            beforeSubmit: function (arr, $form, options) {
+                $form.find("#ok").button("loading");
+            },
+            success: function (data, statusText, xhr, $form) {
+                if (data.success == true) {
+                    ns.tip.toast.success("增加成功！");
+                    ns.view.Dialog.close($form, {isSaved: true});
+                } else {
+                    ns.tip.toast.error(data.error);
+                }
+                $form.find("#ok").button("reset");
+            }
+        });
+    });
+
+    function doTestDb(btn) {
+        $(btn).button("loading");
+        ns.post("$!basePath/bi/database/test", ns.formAttrs("#biDatabaseAddForm"), function (success, data) {
+            if (success) {
+                ns.tip.toast.successCenter("连接成功");
+            } else {
+                ns.tip.toast.errorCenter(data.error);
+            }
+            $(btn).button("reset");
+        });
+    }
+</script>

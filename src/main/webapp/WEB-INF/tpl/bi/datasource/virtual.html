@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+
+    <title>${system_admin_title}</title>
+    #required_css
+    <style>
+        #html table {
+            width: auto;
+        }
+    </style>
+</head>
+
+<body>#loading
+<div class="app $!layout">
+    <!-- 头部菜单 -->
+    #header
+    <section class="layout">
+        <!-- 菜单 -->
+        #sidebar
+        <!-- 内容主体 -->
+        <section class="container">
+            <section class="main-content">
+                <div class="content-wrap">
+                    <div class="wrapper pt20">
+                        <form id="biDatasourceAddForm" role="form" class="parsley-form" data-parsley-validate
+                              action="$!basePath/bi/datasource/virtual/add/do" method="post">
+                            <input type="hidden" name="virtualLinkIds">
+                            <section class="panel">
+                                <div class="panel-heading">
+                                    <h5>配置</h5>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label class="control-label">数据源名称：</label>
+                                                <input type="text" class="form-control" data-parsley-required="true"
+                                                       name="name">
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label">SQL语句：</label>
+                                                <textarea id="sql" name="sqlCmd" rows="5" class="form-control" data-parsley-required="true"
+                                                          placeholder="select a.id, b.name from tb_a as a left join tb_b as b on a.id = b.id"></textarea>
+                                            </div>
+                                            <div class="alert alert-warning">
+                                                <ul>
+                                                    <li>SQL语句中的表名使用占位符代替：<code>{0}</code>，括号中的数字标识右侧关联数据源中的序号。</li>
+                                                    <li>数据源的关联，可以使用数据库 的 <code>LEFT JOIN/RIGHT JOIN/INNER JOIN</code>等方式</li>
+                                                    <li>避免出现查询结果中出现相同名称的列，多个相同名称的列只会显示一列。（建议采用数据库别名形式）</li>
+                                                </ul>
+                                            </div>
+                                            <button class="btn btn-primary" onclick="doPreviewData()" type="button">
+                                                <i class="fa fa-eye"></i> 预览数据
+                                            </button>
+                                            <button id="ok" class="btn btn-primary btn-parsley" data-loading-text="正在保存...">
+                                                <i class="fa fa-save"></i> 保存数据源
+                                            </button>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                <label class="control-label">关联数据源配置</label>
+                                                <div class="row p15">
+                                                    <table id="datasouceTable"
+                                                           class="table table-condensed bg-white">
+                                                        <thead>
+                                                        <tr>
+                                                            <th>序号</th>
+                                                            <th class="col-lg-5">ID</th>
+                                                            <th class="col-lg-4">名称</th>
+                                                            <th class="col-lg-2"></th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody></tbody>
+                                                    </table>
+                                                    <button class="btn btn-default" onclick="selectDataSource()" type="button">
+                                                        选择数据源
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </section>
+                            <section class="panel">
+                                <div class="panel-heading">
+                                    数据预览
+                                </div>
+                                <div class="panel-body">
+                                    <div class="nav-tabs-custom no-b">
+                                        <ul class="nav nav-tabs" role="tablist">
+                                            <li class="active"><a href="#html" data-toggle="tab">HTML</a></li>
+                                            <li><a href="#json" data-toggle="tab">JSON</a></li>
+                                            <li><a href="#xml" data-toggle="tab">XML</a></li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div class="tab-pane fade active in" id="html"></div>
+                                            <div class="tab-pane fade" id="json"></div>
+                                            <div class="tab-pane fade" id="xml"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </form>
+                    </div>
+                </div>
+                <a class="exit-offscreen"></a>
+            </section>
+        </section>
+    </section>
+</div>
+</body>
+#required_js
+<script src="$!basePath/framework/js/form/form.js"></script>
+<script src="$!basePath/framework/js/view/toast.js"></script>
+<script src="$!basePath/framework/js/form/validator.js"></script>
+<script src="$!basePath/app/datasource/datasource.js"></script>
+
+<script type="text/javascript">
+    var data = [], json, xml, html, keys = [], dsList = [];
+    var params = [];
+    ns.ready(function () {
+        $("#biDatasourceAddForm").ajaxForm({
+            beforeSubmit: function (arr, form, options) {
+                var ids = getDataSourceIds();
+                if (ids.length < 2) {
+                    ns.tip.toast.error("请选择两个以上关联数据源");
+                    return false;
+                }
+                form.find("input[name='virtualLinkIds']").val(ids.toString());
+                form.find("#ok").button("loading");
+            },
+            success: function (data, statusText, xhr, $form) {
+                if (data.success == true) {
+                    ns.tip.toast.success("保存成功！");
+                } else {
+                    ns.tip.toast.error(data.error);
+                }
+                $form.find("#ok").button("reset");
+            }
+        });
+    });
+    //预览数据
+    function doPreviewData() {
+        var ids = getDataSourceIds();
+        ns.view.showProgress();
+        ns.post("$!basePath/bi/datasource/virtual/exec", {
+            type: $("#type").val(),
+            sql: $("#sql").val(),
+            ids: ids.toString(),
+        }, function (success, response) {
+            ns.view.closeProgress();
+            if (success) {
+                $("#html").html(response.html);
+                $("#json").html(response.json);
+                $("#xml").html(response.xml);
+            } else {
+                ns.tip.error("SQL语句错误", response.error);
+            }
+        });
+    }
+
+    function getDataSourceIds() {
+        var ids = [];
+        for (var i = 0; i < dsList.length; i++) ids.push(dsList[i].id);
+        return ids;
+    }
+
+    function selectDataSource() {
+        ns.view.showModal("$!basePath/bi/datasource/select?virtual=false", {
+            onShown: function (modal) {
+                var inputs = modal.find("table input:checkbox");
+                $.each(inputs, function (i, n) {
+                    var input = $(n);
+                    if (contains(input.val())) {
+                        input.prop("checked", true);
+                    }
+                });
+            },
+            onHidden: function (params) {
+                if (!params.ids) return;
+                var ids = params.ids;
+                showDataSource(ids);
+            }
+        });
+
+        function contains(id) {
+            for (var i = 0; i < dsList.length; i++) {
+                if (dsList[i].id == id)
+                    return true;
+            }
+            return false;
+        }
+    }
+
+    function showDataSource(ids) {
+        dsList = [];
+        var tbody = "";
+        for (var i = 0; i < ids.length; i++) {
+            var obj = ids[i];
+            dsList.push({
+                id: obj.id,
+                name: obj.name,
+                obj: new DataSource(obj.id)
+            });
+            tbody += ns.String.format("<tr><td>%s</td><td>%s</td><td>%s</td><td><a class='text-primary text-underline' href='javascript:;' onclick='showMetadata(\"%s\")'>显示数据结构</a></td></tr>", [i, obj.id, obj.name, obj.id]);
+        }
+        $("#datasouceTable").find("tbody").html(tbody);
+    }
+
+    function showMetadata(id){
+        window.open("$!basePath/bi/datasource/metadata/"+id);
+    }
+
+</script>
+#loading_close
+</html>

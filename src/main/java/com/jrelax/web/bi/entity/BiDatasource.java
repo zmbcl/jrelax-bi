@@ -30,10 +30,18 @@ public class BiDatasource implements Serializable {
     private String id; //ID
     @Column
     @NotNull
+    private String db; //db
+    @Column
+    @NotNull
     private String name; //name
     @Column
     @NotNull
     private String sqlCmd; //sqlCmd
+    @Column
+    @NotNull
+    private boolean virtuald = false;//虚拟标识
+    @Column
+    private String virtualLinkIds;//虚拟数据源关联
     @Column
     @NotNull
     private String createUser; //创建人
@@ -70,6 +78,22 @@ public class BiDatasource implements Serializable {
     }
 
     /**
+     * 获取 db
+     * @return
+     */
+    public String getDb() {
+        return db;
+    }
+
+    /**
+     * 设置Db
+     * @param db
+     */
+    public void setDb(String db) {
+        this.db = db;
+    }
+
+    /**
      * 获取 sqlCmd
      */
     public String getSqlCmd() {
@@ -81,6 +105,22 @@ public class BiDatasource implements Serializable {
      */
     public void setSqlCmd(String sqlCmd) {
         this.sqlCmd = sqlCmd;
+    }
+
+    public boolean isVirtuald() {
+        return virtuald;
+    }
+
+    public void setVirtuald(boolean virtuald) {
+        this.virtuald = virtuald;
+    }
+
+    public String getVirtualLinkIds() {
+        return virtualLinkIds;
+    }
+
+    public void setVirtualLinkIds(String virtualLinkIds) {
+        this.virtualLinkIds = virtualLinkIds;
     }
 
     /**

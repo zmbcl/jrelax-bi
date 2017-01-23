@@ -52,6 +52,31 @@
                             <button class="btn btn-default toolbar-item" id="btnStyleAlignCenter" type="button" onclick="table.alignCenter()" title="居中对齐"><i class="fa fa-align-center"></i></button>
                             <button class="btn btn-default toolbar-item" id="btnStyleAlignRight" type="button" onclick="table.alignRight()" title="右对齐"><i class="fa fa-align-right"></i></button>
                         </div>
+                        <div class="toolbar-divider"></div>
+                        <div class="btn-group">
+                            <button class="btn btn-default toolbar-item" id="btnStyleFontSizeUp" type="button" onclick="table.fontSize('+')" title="字体增大"><i class="fa fa-font"></i>+</button>
+                            <button class="btn btn-default toolbar-item" id="btnStyleFontSizeDown" type="button" onclick="table.fontSize('-')" title="字体缩小"><i class="fa fa-font"></i>-</button>
+                            <div class="btn-group toolbar-item">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-life-bouy"></i>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <div id="divStyleFontColor"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="btn-group toolbar-item">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-magic"></i>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <div id="divStyleBackgroundColor"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                     <div class="pull-right toolbar">
                         <button class="btn btn-primary toolbar-item" type="button" onclick="doSave()"><i class="fa fa-save"></i> 保存</button>
@@ -106,7 +131,8 @@
                                             <div>
                                                 <label>公式：</label>
                                                 <div class="pull-right">
-                                                    <a href="javascript:;" onclick="ns.view.showModal('$!basePath/bi/report/help/formula')" class="text-primary text-underline"><i class="fa fa-question"></i> 帮助</a>
+                                                    <a href="javascript:;" onclick="ns.view.showModal('$!basePath/bi/report/help/formula')" class="text-primary text-underline"><i
+                                                            class="fa fa-question"></i> 帮助</a>
                                                 </div>
                                             </div>
                                             <textarea id="txtFormula" class="form-control"></textarea>
@@ -116,7 +142,7 @@
                                                 <label>浮点数精度(四舍五入)：</label>
                                             </div>
                                             <select id="selPrecision" class="form-control">
-                                                <option value="">保持原精度</option>
+                                                <option value="-1">保持原精度</option>
                                                 <option value="0">0</option>
                                                 <option value="1">0.0</option>
                                                 <option value="2">0.00</option>
@@ -124,6 +150,52 @@
                                                 <option value="4">0.0000</option>
                                                 <option value="5">0.00000</option>
                                             </select>
+                                        </div>
+                                        <div class="form-group mt5 form-inline">
+                                            <div>
+                                                <label>条件运算：</label>
+                                            </div>
+                                            <div>
+                                                当值
+                                                <select id="conditionSymbol" class="form-control" style="width: 100px">
+                                                    <option value=">">大于</option>
+                                                    <option value="<">小于</option>
+                                                    <option value="==">等于</option>
+                                                    <option value=">=">大于等于</option>
+                                                    <option value="<=">小于等于</option>
+                                                </select>
+                                                <input id="conditionValue" type="text" class="form-control" style="width: 100px">
+                                                时
+                                            </div>
+                                            <div class="mt5">
+                                                改变
+                                                <select id="conditionType" class="form-control" style="width: 100px">
+                                                    <option value="backgroundColor">背景色</option>
+                                                    <option value="color">字体颜色</option>
+                                                    <option value="borderColor">边框颜色</option>
+                                                </select>
+                                                <select id="conditionTarget" class="form-control" style="width: 100px">
+                                                    <option value="cell">单元格</option>
+                                                    <option value="row">整行</option>
+                                                </select>
+                                                为
+                                            </div>
+                                            <div class="mt5">
+                                                <div class="input-group">
+                                                    <input id="conditionColor" type="text" class="form-control" style="width: 100%">
+                                                    <div class=input-group-btn>
+                                                        <button type=button class="btn btn-default dropdown-toggle" data-toggle=dropdown><span class=caret></span></button>
+                                                        <ul class="dropdown-menu pull-right">
+                                                            <li>
+                                                                <div id="divConditionColor"></div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mt5">
+                                            <button class="btn btn-primary btn-block" type="button" onclick="controlToProperty(true)"><i class="fa fa-check"></i> 应用设置</button>
                                         </div>
                                     </div>
                                 </div>
@@ -133,14 +205,19 @@
                 </div>
                 <a class="exit-offscreen"></a>
             </section>
-
         </section>
     </section>
+</div>
+<div id="slider" class="">
+    <div class="sliders slider-primary" style="width: 250px;"><input data-slider-value=1 value=12></div>
 </div>
 #required_js
 <script src="$!basePath/app/datasource/datasource.js"></script>
 <script src="$!basePath/app/report/bi.table.js"></script>
 <script src="$!basePath/app/report/bi.report.js"></script>
+
+<script src="$!basePath/framework/plugins/bootstrap-colorpalette/bootstrap-colorpalette.js"></script>
+<link rel="stylesheet" href="$!basePath/framework/plugins/bootstrap-colorpalette/bootstrap-colorpalette.css">
 <script type="text/javascript">
     var table, report, dsList = [], columnMapper = {};
     function doSave(callback) {
@@ -148,17 +225,17 @@
         var source = jQuery.trim($("#designPanel").find(".panel-body").html());
         var content = parseToContent();
         var id = "$!biReport.id";
-        ns.post("$!basePath/bi/report/save", {id:id, source:source, content:content}, function(success, data){
-           if(success){
-               ns.tip.toast.success("已保存");
-               if(callback) callback();
-           }else{
-               ns.tip.toast.error(data.error);
-           }
+        ns.post("$!basePath/bi/report/save", {id: id, source: source, content: content}, function (success, data) {
+            if (success) {
+                ns.tip.toast.success("已保存");
+                if (callback) callback();
+            } else {
+                ns.tip.toast.error(data.error);
+            }
         });
     }
     //删除与实际无关的内容
-    function parseToContent(){
+    function parseToContent() {
         var content = $("#designPanel").find(".panel-body").clone();
         var table = content.find("table");
         table.find("td[data-binder]").html("<br/>");
@@ -171,7 +248,7 @@
     }
     //保存并预览
     function doView() {
-        doSave(function(){
+        doSave(function () {
             if (window.winView && !window.winView.closed) {
                 window.winView.location.reload();
                 window.winView.focus();
@@ -182,7 +259,7 @@
     }
 
     function managerSrc() {
-        ns.view.showModal("$!basePath/bi/report/datasource", {
+        ns.view.showModal("$!basePath/bi/datasource/select", {
             onShown: function (modal) {
                 var inputs = modal.find("table input:checkbox");
                 $.each(inputs, function (i, n) {
@@ -197,10 +274,10 @@
                 var ids = params.ids;
                 selectedSrc(ids);
             }
-        })
+        });
     }
 
-    function selectedSrc(ids){
+    function selectedSrc(ids) {
         dsList = [];
         columnMapper = {};
         for (var i = 0; i < ids.length; i++) {
@@ -255,10 +332,22 @@
 
             var precision = cell.attr(opt.precisionTag);
             $("#selPrecision").val(precision);
+
+            //条件运算
+            var conditionSymbol = cell.attr(opt.conditionSymbolTag);
+            $("#conditionSymbol").val(conditionSymbol);
+            var conditionValue = cell.attr(opt.conditionValueTag);
+            $("#conditionValue").val(conditionValue);
+            var conditionTarget = cell.attr(opt.conditionTargetTag);
+            $("#conditionTarget").val(conditionTarget);
+            var conditionType = cell.attr(opt.conditionTypeTag);
+            $("#conditionType").val(conditionType);
+            var conditionColor = cell.attr(opt.conditionColorTag);
+            $("#conditionColor").val(conditionColor);
         }
     }
     //控件->属性
-    function controlToProperty() {
+    function controlToProperty(tip) {
         var cell = table.getSelectedCell();
         var opt = report.getOptions();
         if (cell[0]) {
@@ -272,7 +361,7 @@
                 cell.attr(opt.codeTag, code);
                 cell.attr(opt.arrowTag, arrow);
 
-                cell.html("#"+code + "->" + arrow+"#");
+                cell.html("#" + code + "->" + arrow + "#");
                 cell.attr("data-binder", true);
             } else {
                 cell.removeAttr(opt.dsTag);
@@ -284,27 +373,53 @@
 
             //公式
             var formula = jQuery.trim($("#txtFormula").val());
-            if(formula.length > 0){
+            if (formula.length > 0) {
                 cell.attr(opt.formulaTag, formula);
                 cell.addClass("formula");
-            } else{
+            } else {
                 cell.removeClass("formula");
                 cell.removeAttr(opt.formulaTag);
             }
 
             //精度
             var precision = $("#selPrecision").val();
-            if(precision > -1){
+            if (precision > -1) {
                 cell.attr(opt.precisionTag, precision);
-            }else{
+            } else {
                 cell.removeAttr(opt.precisionTag);
             }
-        }
+
+            //条件运算
+            var conditionSymbol = $("#conditionSymbol").val();
+            var conditionValue = $("#conditionValue").val();
+            var conditionTarget = $("#conditionTarget").val();
+            var conditionType = $("#conditionType").val();
+            var conditionColor = $("#conditionColor").val();
+            if (conditionSymbol && conditionValue.length > 0 && conditionTarget && conditionType && conditionColor.length > 0) {
+                cell.attr(opt.conditionSymbolTag, conditionSymbol);
+                cell.attr(opt.conditionValueTag, conditionValue);
+                cell.attr(opt.conditionTargetTag, conditionTarget);
+                cell.attr(opt.conditionTypeTag, conditionType);
+                cell.attr(opt.conditionColorTag, conditionColor);
+            } else {
+                cell.removeAttr(opt.conditionSymbolTag);
+                cell.removeAttr(opt.conditionValueTag);
+                cell.removeAttr(opt.conditionTargetTag);
+                cell.removeAttr(opt.conditionTypeTag);
+                cell.removeAttr(opt.conditionColorTag);
+            }
+            if(tip)
+                ns.tip.toast.successCenter("已应用");
+      }
     }
 
     ns.ready(function () {
         table = $("#designPanel").find("table").BiTable({
-            showHeader : true,
+            showHeader: true,
+            dragColumnSize: true,
+            onBeforeSelectCell : function(){
+                controlToProperty();
+            },
             onSelectCell: function (cell, table) {
                 propertyToControl();
             }
@@ -313,18 +428,11 @@
 
         $("#selSrc").on("change", function () {
             loadFieldByDsId($(this).val());
-            controlToProperty();
-        });
-        $("#selField, #selArrow, #selPrecision").on("change", function () {
-            controlToProperty();
-        });
-        $("#txtFormula").on("keyup", function(){
-            controlToProperty();
         });
         doInit();
     });
 
-    function loadFieldByDsId(id){
+    function loadFieldByDsId(id) {
         //级联显示字段
         var columns = columnMapper[id];
         var fieldHtml = "<option value=\"\">未设置字段</option>";
@@ -336,21 +444,36 @@
         $("#selField").html(fieldHtml);
     }
 
-    function doInit(){
+    function doInit() {
         //获取数据源，并加载
-        var tag =report.getOptions().dsTag;
-        var tds = table.find("td["+tag+"]");
+        var tag = report.getOptions().dsTag;
+        var tds = table.find("td[" + tag + "]");
         var dsList = [], idList = [];
-        $.each(tds, function(i,n){
+        $.each(tds, function (i, n) {
             var td = $(n);
             var dsId = td.attr(tag);
-            if(!idList.contains(dsId)){
-                dsList.push({id:dsId});
+            if (!idList.contains(dsId)) {
+                dsList.push({id: dsId});
                 idList.push(dsId);
             }
         });
         //刷新状态
         selectedSrc(dsList);
+
+        //字体颜色选择
+        $('#divStyleFontColor').colorPalette().on('selectColor', function (e) {
+            table.fontColor(e.color);
+        });
+        //背景颜色选择
+        $('#divStyleBackgroundColor').colorPalette().on('selectColor', function (e) {
+            table.backgroundColor(e.color);
+        });
+        //背景颜色选择
+        $('#divConditionColor').colorPalette().on('selectColor', function (e) {
+            $("#conditionColor").val(e.color);
+        });
+
+
     }
 </script>
 #loading_close

@@ -46,6 +46,8 @@ public class BiTableController {
 			String catalog = conn.getCatalog();
 			Database db = platform.readModelFromDatabase(catalog);
 			model.addAttribute("tables", db.getTables());
+
+			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -67,6 +69,8 @@ public class BiTableController {
 			String catalog = conn.getCatalog();
 			model.addAttribute("catalog", catalog);
 			model.addAttribute("schema", "");
+
+			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -107,6 +111,8 @@ public class BiTableController {
 			Database db2 = new Database();
 			db2.addTable(table);
 			platform.createTables(db2, false, false);
+
+			conn.close();
 			return WebResult.success();
 		}catch(Exception e){
 			e.printStackTrace();
@@ -129,6 +135,8 @@ public class BiTableController {
 			Database db = platform.readModelFromDatabase(catalog);
 			Table table = db.findTable(name);
 			model.addAttribute("table", table);
+
+			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -178,6 +186,8 @@ public class BiTableController {
 					}
 					platform.alterTables(db, false);
 				}
+
+				conn.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
@@ -198,6 +208,8 @@ public class BiTableController {
 			Table table = db.findTable(name);
 			model.addAttribute("table", table);
 			model.addAttribute("tables", db.getTables());
+
+			conn.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -221,6 +233,8 @@ public class BiTableController {
 				
 				array.add(obj);
 			}
+
+			conn.close();
 			return array;
 		}catch(Exception e){
 			logger.error(e.toString());

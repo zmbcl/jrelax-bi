@@ -207,7 +207,7 @@ public class BiReportController extends BaseController<BiReport> {
     public String design(Model model, @PathVariable String id) {
         detail(model, id);
 
-        return TPL + "/design";
+        return TPL + "design";
     }
 
     /**
@@ -220,19 +220,7 @@ public class BiReportController extends BaseController<BiReport> {
     @RequestMapping(value = "/view/{id}")
     public String view(Model model, @PathVariable String id) {
         detail(model, id);
-        return TPL + "/view";
-    }
-
-    /**
-     * 选择数据源
-     *
-     * @param model
-     * @return
-     */
-    @RequestMapping(value = "/datasource")
-    public String datasource(Model model) {
-        model.addAttribute("dsList", biDatasourceService.list());
-        return TPL + "/datasource";
+        return TPL + "view";
     }
 
     /**
@@ -256,6 +244,6 @@ public class BiReportController extends BaseController<BiReport> {
      */
     @RequestMapping(value = "/help/{module}")
     public String help(Model model, @PathVariable String module) {
-        return TPL + "/help/" + module;
+        return TPL + "help/" + module;
     }
 }

@@ -42,7 +42,7 @@ function DataSource(id, opt) {
     //刷新数据
     this.flush = function (params) {
         opt.onBefore();
-        loadRemoteData(getBasePath() + "/bi/ds/data/" + opt.type + "/" + id, params, function (success, response) {
+        loadRemoteData(getBasePath() + "/bi/datasource/data/" + opt.type + "/" + id, params, function (success, response) {
             _data = response;
             _data = jQuery.parseJSON(_data);
             opt.onLoaded(_data);
@@ -52,7 +52,7 @@ function DataSource(id, opt) {
     //获取列集合
     this.getColumns = function () {
         if (!_columns) {
-            loadRemoteData(getBasePath() + "/bi/ds/metadata/" + id, {}, function (success, response) {
+            loadRemoteData(getBasePath() + "/bi/datasource/metadata/" + id, {}, function (success, response) {
                 var data = eval(response);
                 _columns = data.columns;
                 _name = data.name;

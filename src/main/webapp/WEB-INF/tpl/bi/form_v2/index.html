@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <title>${system_admin_title}</title>#required_css
+</head>
+
+<body>#loading
+
+<div class="app $!layout">
+    <!-- 头部菜单 -->
+    #header
+    <section class="layout">
+        <!-- 菜单 -->
+        #sidebar
+        <!-- 内容主体 -->
+        <section class="container">
+            <section class="main-content">
+                <!-- 主体操作栏 -->
+                <header class="header navbar">
+                    <!-- 左按钮区 -->
+                    <div class="btn-group tool-button">
+                        <a href="$!basePath/bi/form/v2/design/table" class="btn btn-primary navbar-btn" target="_blank"><i
+                                class="ti-plus"></i> 新建表单</a>
+                    </div>
+                    <!-- 右按钮区 -->
+                    <div class="btn-group pull-right"></div>
+                </header>
+                <div class="content-wrap">
+                    <div class="wrapper">
+                        <form id="flowFormForm" action="$!basePath/flow/form" method="post">
+                            <div class="row clearfix">
+                                <div class="col-md-12 column">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th class="col-lg-6">表单名称</th>
+                                            <th class="col-lg-2">创建者</th>
+                                            <th class="col-lg-2">最后修改时间</th>
+                                            <th>#springMessage('system.common.op')</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        #foreach($!obj in $!list)
+                                        <tr>
+                                            <td>$!obj.name</td>
+                                            <td>$!obj.createUser</td>
+                                            <td>$!obj.createTime</td>
+                                            <td>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle"
+                                                            data-toggle="dropdown">
+                                                        <i class="ti-settings"></i>
+                                                        <span class="ti-angle-down"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu" role="menu">
+                                                        <li><a href="javascript:;" onclick="ns.data.copy('$!obj.id')">复制ID</a></li>
+                                                        <li><a href="javascript:;" onclick="del('$!obj.id')">#springMessage('system.common.delete')</a></li>
+                                                        <li><a href="$!basePath/bi/form/v2/design/edit/$!obj.id" target="_blank">设计表单</a></li>
+                                                        <li><a href="$!basePath/bi/form/v2/design/preview/$!obj.id" target="_blank">浏览表单</a></li>
+                                                        <li class="divider"></li>
+                                                        <li><a href="$!basePath/bi/form/v2/datalist/$!obj.id" target="_blank">查询表单数据</a></li>
+                                                        <li><a href="$!basePath/bi/form/v2/column/$!obj.id" target="_blank">管理数据字段</a></li>
+
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        #end
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    #pager_ajax
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <a class="exit-offscreen"></a>
+                </div>
+            </section>
+        </section>
+    </section>
+</div>
+#required_js
+<!-- 页面组件 -->
+
+<!-- 本页面脚本 -->
+<script type="text/javascript" src="$!basePath/framework/js/view/toast.js"></script>
+<script type="text/javascript">
+    function del(id) {
+        ns.confirm("已绑定流程的表单删除后会影响流程，确定删除吗？", function () {
+            ns.post("$!basePath/bi/form/v2/delete/" + id, {}, function (success, data) {
+                if (success) {
+                    ns.tip.toast.success("删除成功!");
+                    ns.back("$!basePath/bi/form/v2", 1000);
+                } else {
+                    ns.tip.toast.error(data.error);
+                }
+            });
+        });
+    }
+</script>
+#loading_close
+</body>
+</html>

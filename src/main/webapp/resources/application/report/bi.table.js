@@ -15,6 +15,9 @@ $.fn.BiTable = function (options) {
         rowClass: "rownum",
         colClass: "colnum",
         showHeader: false,//显示表头，类似于Excel形式 A1 A2 B1 B2
+        dragColumnSize : false,//拖拽调整列宽
+        onBeforeSelectCell: function () {
+        },//当选中单元格时
         onSelectCell: function () {
         }//当选中单元格时
     }
@@ -27,6 +30,9 @@ $.fn.BiTable = function (options) {
         initEvents();
         if (options.showHeader) {
             initHeader();
+        }
+        if(options.dragColumnSize){
+            this.enableDragColumnSize();
         }
     }
 
@@ -50,7 +56,7 @@ $.fn.BiTable = function (options) {
             var firstTd = tr.find("td").eq(0);
             firstTd.attr("contenteditable", false);
             firstTd.attr("class", options.rowClass);
-            if(i>0)
+            if (i > 0)
                 firstTd.text(i);
         });
 
@@ -81,6 +87,7 @@ $.fn.BiTable = function (options) {
         } else {
             tds.on("click", function () {
                 recordPosition($(this));
+                options.onBeforeSelectCell();
                 table.unSelectAll();
                 select($(this));
             });
@@ -450,6 +457,45 @@ $.fn.BiTable = function (options) {
         }
     }
 
+    //开启拖拽调整列宽
+    this.enableDragColumnSize = function () {
+        var tTD, table = $table[0];
+        for (j = 0; j < table.rows[0].cells.length; j++) {
+            table.rows[0].cells[j].onmousedown = function () {
+                tTD = this;//记录单元格
+                if (event.offsetX > tTD.offsetWidth - 10) {
+                    tTD.mouseDown = true;
+                    tTD.oldX = event.x;
+                    tTD.oldWidth = tTD.offsetWidth;
+                }
+            };
+            table.rows[0].cells[j].onmouseup = function () {
+                if (tTD == undefined) tTD = this;
+                tTD.mouseDown = false;
+                tTD.style.cursor = 'default';
+            };
+            table.rows[0].cells[j].onmousemove = function () {
+                if (event.offsetX > this.offsetWidth - 10)
+                    this.style.cursor = 'col-resize';
+                else
+                    this.style.cursor = 'default';
+                if (tTD == undefined) tTD = this;
+                if (tTD.mouseDown != null && tTD.mouseDown == true) {
+                    tTD.style.cursor = 'default';
+                    if (tTD.oldWidth + (event.x - tTD.oldX) > 0)
+                        tTD.width = tTD.oldWidth + (event.x - tTD.oldX);
+                    tTD.style.width = tTD.width;
+                    tTD.style.cursor = 'col-resize';
+                    table = tTD;
+                    while (table.tagName != 'TABLE') table = table.parentElement;
+                    for (j = 0; j < table.rows.length; j++) {
+                        table.rows[j].cells[tTD.cellIndex].width = tTD.width;
+                    }
+                }
+            };
+        }
+    }
+
     this.clear = function () {
         //清理空tr
         var trs = $table.find("tr");
@@ -469,62 +515,86 @@ $.fn.BiTable = function (options) {
         return this.getSelectedCell().parents("tr");
     }
 
-    this.bold = function(){
+    this.bold = function () {
         var cell = this.getSelectedCell();
-        if(cell[0]){
-            if(cell.css("fontWeight") != "bold"){
+        if (cell[0]) {
+            if (cell.css("fontWeight") != "bold") {
                 cell.css("fontWeight", "bold");
-            }else{
+            } else {
                 cell.css("fontWeight", "normal");
             }
         }
     }
 
-    this.italic = function(){
+    this.italic = function () {
         var cell = this.getSelectedCell();
-        if(cell[0]){
-            if(cell.css("fontStyle") != "italic"){
+        if (cell[0]) {
+            if (cell.css("fontStyle") != "italic") {
                 cell.css("fontStyle", "italic");
-            }else{
+            } else {
                 cell.css("fontStyle", "normal");
             }
         }
     }
-    
-    this.alignLeft = function(){
+
+    this.alignLeft = function () {
         document.execCommand('justifyLeft');
     }
-    
-    this.alignCenter = function(){
+
+    this.alignCenter = function () {
         document.execCommand('justifyCenter');
     }
-    
-    this.alignRight = function(){
+
+    this.alignRight = function () {
         document.execCommand('justifyRight');
     }
 
-    this.underline = function(){
+    this.underline = function () {
         var cell = this.getSelectedCell();
-        if(cell[0]){
-            if(cell.css("textDecoration") != "underline"){
+        if (cell[0]) {
+            if (cell.css("textDecoration") != "underline") {
                 cell.css("textDecoration", "underline");
-            }else{
+            } else {
                 cell.css("textDecoration", "none");
             }
         }
     }
 
-    this.lineThrough = function(){
+    this.lineThrough = function () {
         var cell = this.getSelectedCell();
-        if(cell[0]){
-            if(cell.css("textDecoration") != "line-through"){
+        if (cell[0]) {
+            if (cell.css("textDecoration") != "line-through") {
                 cell.css("textDecoration", "line-through");
-            }else{
+            } else {
                 cell.css("textDecoration", "none");
             }
         }
     }
 
-    _init();
+    //调整字体大小
+    this.fontSize = function (type) {
+        var cell = this.getSelectedCell();
+        var fontSize = parseInt(cell.css("fontSize"));
+        if (type == "+") {//字体增加
+            fontSize++;
+        } else if (type == "-") {//字体缩小
+            fontSize--;
+        }
+        cell.css("fontSize", fontSize + "px");
+    }
+
+    //字体颜色
+    this.fontColor = function (color) {
+        var cell = this.getSelectedCell();
+        cell.css("color", color);
+    }
+
+    //字体颜色
+    this.backgroundColor = function (color) {
+        var cell = this.getSelectedCell();
+        cell.css("backgroundColor", color);
+    }
+
+    $.proxy(_init, this)();
     return this;
 }

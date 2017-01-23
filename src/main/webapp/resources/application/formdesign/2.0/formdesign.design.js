@@ -153,9 +153,9 @@ fd.design = {
 		
 		//#6 美化
 		//设置属性编辑器滚动条
-		$(fd.config.propertiesPanel).slimScroll({
-			height:($(document).height()-100)+"px"
-		});
+		// $(fd.config.propertiesPanel).slimScroll({
+		// 	height:($(document).height()-100)+"px"
+		// });
 		//隐藏所有属性，点击后出现
 		fd.design.properties.hideAll();
 	},
