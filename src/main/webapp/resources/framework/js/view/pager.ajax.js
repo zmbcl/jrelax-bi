@@ -30,9 +30,9 @@ ns.view.pager_ajax = function (pageCount, currentPage, formId, hash) {
         this.currentPage = page;
         //判断是否是当前页
         ns.showLoadingbar($(".main-content"));
-        var params = ns.formAttrs(this.form);
+        var params = ns.form.serialize(this.form);
         if (this.form.attr("paramsLink")) {//联合其他表单的参数
-            var attrs = ns.formAttrs(form.attr("paramsLink"));
+            var attrs = ns.form.serialize(form.attr("paramsLink"));
             $.each(attrs, function (i, n) {
                 params[i] = n;
             });
@@ -45,25 +45,27 @@ ns.view.pager_ajax = function (pageCount, currentPage, formId, hash) {
         var fid = this.form.attr("id");
         jQuery.post(this.form.attr("action"), params, function (data) {
             clearTimeout(timer);
-            if (data.indexOf("<HTML".toLowerCase()) >= 0)
-                data = data.substring(data.indexOf("<HTML".toLowerCase()));
-            else
-                data = "<div>" + data + "</div>";
-            if (fid) {
-                var content = $("#" + fid, data).html();
-                pager.form.html(content);
-            } else {
-                var action = form.attr("action");
-                var content = $("form[action='" + action + "']", data).html();
-                pager.form.html(content);
+            if (typeof(data) == "string") {
+                if (data.indexOf("<HTML".toLowerCase()) >= 0)
+                    data = data.substring(data.indexOf("<HTML".toLowerCase()));
+                else
+                    data = "<div>" + data + "</div>";
+                if (fid) {
+                    var content = $("#" + fid, data).html();
+                    pager.form.html(content);
+                } else {
+                    var action = form.attr("action");
+                    var content = $("form[action='" + action + "']", data).html();
+                    pager.form.html(content);
+                }
+                if (pager.form) {
+                    var __pager = $("#__pager_" + hash, data).html();
+                    $("#__pager_" + hash).html(__pager);
+                }
+                ns.closeLoadingbar($(".main-content"));
+                ns.initCustomControls();
+                ns.execReadyEvents();
             }
-            if (pager.form) {
-                var __pager = $("#__pager_" + hash, data).html();
-                $("#__pager_" + hash).html(__pager);
-            }
-            ns.closeLoadingbar($(".main-content"));
-            ns.initCustomControls();
-            ns.execReadyEvents();
         });
     };
 

@@ -20,6 +20,7 @@
                 <header class="header navbar">
                     <!-- 左按钮区 -->
                     <div class="toolbar">
+                        <a class="btn btn-primary toolbar-item" href="$!basePath/bi/datasource"><i class="fa fa-reply"></i> 返回</a>
                         <a class="btn btn-primary toolbar-item" onclick="doAddBiDatabase()"><i class="fa fa-plus"></i> 新增数据库配置</a>
                     </div>
                     <div class="pull-right toolbar">
@@ -110,7 +111,7 @@
                     ns.tip.toast.success("数据已删除");
                     dgBiDatabase.reload();
                 } else {
-                    ns.tip.toast.error(data.error);
+                    ns.tip.toast.error(data.message);
                 }
             });
         });

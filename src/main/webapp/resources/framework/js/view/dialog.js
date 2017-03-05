@@ -19,15 +19,17 @@ ns.ready(function () {
             showClose: true,
             remote: false,//远程访问
             remoteUrl: null,//远程URL
-            onShown: function () {},
-            onHidden: function () {},
-            onLoaded: function () {}
+            cache : false,//是否缓存
+            onShown: function () {},//显示完成触发
+            onHidden: function () {},//隐藏后触发
+            onClose: function () {},//关闭时触发
+            onLoaded: function () {}//加载完成后触发
         }
 
         options = $.extend(_def, options);
         if(!options.border) options.border = "no-b";
         else options.border = "bordered";
-        var begin = "<div id='" + options.id + "' class='modal fade bs-" + options.size+" "+options.theme + "' role='dialog' aria-hidden='true'><div class='modal-dialog " + options.size + "'><div class='modal-content " + options.border + "'>";
+        var begin = "<div id='" + options.id + "' class='modal fade " + options.theme + "' role='dialog' aria-hidden='true'><div class='modal-dialog " + options.size + "'><div class='modal-content " + options.border + "'>";
         var end = "</div></div></div>";
         //模态窗头部
         var header = "<div class='modal-header no-b'>";
@@ -38,7 +40,7 @@ ns.ready(function () {
         //模态窗主体
         var body = "<div class='modal-body'><div class='row'>" + options.content + "</div></div>";
         if (options.remote) {
-            body = "<div class=\"modal-body\"><div class=\"row\"><div class=\"col-xs-12\"><center><img src='" + ns.getBasePath() + "/framework/img/refresh.gif'/>正在加载中...</center></div></div></div>";
+            body = "<div class=\"modal-body\"><div class=\"row\"><div class=\"col-xs-12\"><center>"+ns.tip.progress.circle()+"<h4>正在加载...</h4></center></div></div></div>";
         }
         //模态窗底部
         var footer = "<div class='modal-footer p10 no-b'>";
@@ -73,15 +75,17 @@ ns.ready(function () {
 
         this.show = function () {
             $("body").append(this.html());
-            //$(".app").addClass("blur");
+
             dialog = $("#" + options.id);
             dialog.on("loaded.bs.modal", function(e){
                 options.onLoaded(dialog, this);
             });
             dialog.on("show.bs.modal", function(){
                 //防止遮罩层重叠
-                dialog.next().css("zIndex", parseInt(dialog.css("zIndex")) + $(".modal").length * 2);
                 dialog.css("zIndex", parseInt(dialog.css("zIndex")) + $(".modal").length * 4);
+                //改动：修改bootstrap.js文件，直接在生成遮罩层时添加z-index值，浏览效果更好
+                // dialog.next().css("zIndex", parseInt(dialog.css("zIndex")) - 1);
+                // $(".app").addClass("blur");
             });
             dialog.on("shown.bs.modal", function () {
                 //设置焦点
@@ -89,13 +93,21 @@ ns.ready(function () {
                 options.onShown(dialog, this);
             });
             dialog.on("hidden.bs.modal", function () {
-                $(this).remove();
-                //$(".app").removeClass("blur");
+                // $(".app").removeClass("blur");
                 options.onHidden(dialog, this);
-                delete top._openDialogs_[dialog.attr("id")];
+                options.onClose(dialog, this);
+                if(!options.cache){
+                    $(this).remove();
+                    delete top._openDialogs_[dialog.attr("id")];
+                }
             });
-            dialog.close = function(){
+            dialog.close = function(options){
                 dialog.modal("hide");
+                if(options){
+                    for(var op in options){
+                        dialog[op] = options[op];
+                    }
+                }
             }
             if (options.remote) {
                 dialog.modal({
@@ -127,12 +139,7 @@ ns.ready(function () {
     ns.view.Dialog.close = function(element, options){
         var dialog = ns.view.Dialog.getCur(element);
         if(dialog){
-            if(options){
-                for(var op in options){
-                    dialog[op] = options[op];
-                }
-            }
-            dialog.close();
+            dialog.close(options);
         }
     }
 });

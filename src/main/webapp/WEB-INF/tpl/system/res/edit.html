@@ -132,7 +132,7 @@
                                     </div>
                                     <div class="col-lg-3 col-md-3">
                                         <div class="form-group">
-                                            <label for="enabled" class="col-sm-4 control-label">Beta</label>
+                                            <label for="enabled" class="col-sm-4 control-label">新功能</label>
                                             <div class="col-sm-6 switcha">
                                                 <div class="mr15">
                                                     <input type="checkbox" name="beta" class="js-switch-blue"
@@ -253,7 +253,7 @@
                         window.location.href = "$!basePath/system/res";
                     }, 3000);
                 } else {
-                    Toast.error(data.error);
+                    Toast.error(data.message);
                     $form.find("button:submit").button("reset");
                 }
 

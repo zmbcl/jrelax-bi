@@ -23,10 +23,12 @@
                 <header class="header navbar">
                     <!-- 左按钮区 -->
                     <div class="btn-group tool-button">
-                        <a class="btn btn-primary navbar-btn" href="$!basePath/system/res/add" data-pjax><i class="ti-plus"></i>
-                            新增菜单</a>
-                        <a class="btn btn-primary navbar-btn" href="javascript:;" onclick="showSortMenu()"><i
-                                class="ti-exchange-vertical"></i> 排序</a>
+                        #ifAuthButton("btnAdd")
+                        <a class="btn btn-primary navbar-btn" href="$!basePath/system/res/add"><i class="ti-plus"></i>新增菜单</a>
+                        #end
+                        #ifAuthButton("#btnSort")
+                        <a class="btn btn-primary navbar-btn" href="javascript:;" onclick="showSortMenu()"><i class="ti-exchange-vertical"></i> 排序</a>
+                        #end
                     </div>
                     <!-- 右按钮区 -->
                     <div class="pull-right offscreen-right">
@@ -66,20 +68,24 @@
                                         )data-tt-parent-id="$!obj.parentId"
                                         #end data-tt-branch="$!obj.hasChildren">
                                         <td>
-                                            <span class="pd-l-sm"></span><i class="$!obj.icon mr5"></i> <a href="javascript:;" data-type="text" data-title="输入新名称"
-                                                                                                           data-pk="$!obj.id"
-                                                                                                           data-placement="right" class="xeditable-name">$!obj.name</a>
+                                            <span class="pd-l-sm"></span>
+                                            <i class="$!obj.icon mr5"></i>
+                                            <a href="javascript:;" data-type="text" data-title="输入新名称" data-pk="$!obj.id" data-placement="right" class="xeditable-name">$!obj.name</a>
                                             #if($!obj.beta)
-                                            <div class="badge badge-top bg-warning"><span>未完成</span></div>
+                                            <div class="badge badge-top bg-danger"><span>新功能</span></div>
                                             #end #if($!obj.newWindow)<span class="badge bg-info">新窗口</span>#end
                                         </td>
-                                        <td class="offscreen-right"><a href="javascript:;" data-type="text"
-                                                                       data-title="输入新URL" data-pk="$!obj.id"
-                                                                       data-emptytext="未设置" data-placement="right"
-                                                                       class="xeditable-url">$!obj.url</a></td>
-                                        <td id="td_status_$!obj.id">#if($!obj.enabled)<i
-                                                class="fa fa-circle text-success ml5">#else <i
-                                                class="fa fa-circle text-danger ml5">#end</i></td>
+                                        <td class="offscreen-right">
+                                            <a href="javascript:;" data-type="text" data-title="输入新URL" data-pk="$!obj.id" data-emptytext="未设置" data-placement="right" class="xeditable-url">$!obj.url</a>
+                                        </td>
+                                        <td id="td_status_$!obj.id">
+                                            #if($!obj.enabled)
+                                            <i class="fa fa-circle text-success ml5">
+                                            #else
+                                            <iclass="fa fa-circle text-danger ml5">
+                                            #end
+                                            </i>
+                                        </td>
                                         <td>
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-default btn-xs dropdown-toggle"
@@ -91,21 +97,27 @@
                                                     <li><a href="javascript:;"
                                                            onclick="ns.view.showModal('$!basePath/system/res/detail/$!obj.id',{border:false})">#springMessage('system.common.view')</a>
                                                     </li>
-                                                    <li><a href="$!basePath/system/res/edit/$!obj.id" data-pjax>#springMessage('system.common.edit')</a>
+                                                    <li><a href="$!basePath/system/res/edit/$!obj.id">#springMessage('system.common.edit')</a>
                                                     </li>
+                                                    #ifAuthButton("btnRemove")
                                                     #if($!obj.url != "/index")
                                                     <li><a href="javascript:;" onclick="del('$!obj.id')">#springMessage('system.common.delete')</a>
                                                     </li>
                                                     #end
+                                                    #end
                                                     <li class="divider"></li>
-                                                    <li><a href="javascript:;" onclick="enableRes('$!obj.id')">#springMessage('system.common.enable')</a>
-                                                    </li>
-                                                    <li><a href="javascript:;" onclick="disableRes('$!obj.id')">#springMessage('system.common.disable')</a>
-                                                    </li>
+                                                    #ifAuthButton("btnEnable")
+                                                    <li><a href="javascript:;" onclick="enableRes('$!obj.id')">#springMessage('system.common.enable')</a></li>
+                                                    #end
+                                                    #ifAuthButton("btnDisable")
+                                                    <li><a href="javascript:;" onclick="disableRes('$!obj.id')">#springMessage('system.common.disable')</a></li>
+                                                    #end
                                                     <li class="divider"></li>
-                                                    <li><a href="$!basePath/system/res/add?pid=$!obj.id" data-pjax>添加子菜单</a></li>
+                                                    #ifAuthButton("btnAdd")
+                                                    <li><a href="$!basePath/system/res/add?pid=$!obj.id">添加子菜单</a></li>
+                                                    #end
                                                     <li><a href="javascript:;" onclick="ns.view.showModal('$!basePath/system/res/columns?id=$!obj.id')">管理字段</a></li>
-
+                                                    <li><a href="javascript:;" onclick="ns.view.showModal('$!basePath/system/res/buttons?id=$!obj.id')">管理按钮</a></li>
                                                 </ul>
                                             </div>
                                         </td>
@@ -147,7 +159,7 @@
                     //从表格中移除此行
                     menuTreeTable.treetable("removeNode", id);
                 } else {
-                    Toast.error(data.error);
+                    Toast.error(data.message);
                 }
             });
         });
@@ -157,7 +169,7 @@
             if (data.success == true) {
                 $("#td_status_" + id).find("i").attr("class", "fa fa-circle text-success ml5");
             } else {
-                Toast.error(data.error);
+                Toast.error(data.message);
             }
         });
     }
@@ -166,7 +178,7 @@
             if (data.success == true) {
                 $("#td_status_" + id).find("i").attr("class", "fa fa-circle text-danger ml5");
             } else {
-                Toast.error(data.error);
+                Toast.error(data.message);
             }
         });
     }

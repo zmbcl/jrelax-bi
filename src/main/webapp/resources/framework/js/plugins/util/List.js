@@ -38,8 +38,7 @@ function List(){
 	};
 	this.iterator = function(){
 		try{
-			var iter = new Iterator(this);
-			return iter;
+			return new Iterator(this);
 		}catch(e){
 			top.Dialog.error("请先引入Itertor.js文件!");
 		}

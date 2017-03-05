@@ -46,7 +46,7 @@ $.fn.searchForm = function (options) {
         if(target && $.isFunction(target)){
             btnSubmit.attr("data-loading-text", options.loadingText);
             btnSubmit.button("loading");
-            target(options.target.handler, ns.formAttrs(form), btnSubmit);
+            target(options.target.handler, ns.form.serialize(form), btnSubmit);
         }
     }
     $(this).each(function (i, n) {

@@ -28,27 +28,9 @@
                 <div class="content-wrap">
                     <div class="wrapper">
                         <div class="row clearfix">
-                            <div class="col-md-12 column">
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th>编号</th>
-                                        <th>流程名称</th>
-                                        <th>流程描述</th>
-                                        <th>#springMessage('system.common.op')</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    #foreach($!obj in $!list)
-                                    <tr>
-                                        <td>$!velocityCount</td>
-                                        <td>$!obj.name</td>
-                                        <td>$!obj.description</td>
-                                        <td><a href="javascript:;" onclick="start('$!obj.id')">启动流程</a></td>
-                                    </tr>
-                                    #end
-                                    </tbody>
-                                </table>
+                            <div class="col-lg-12 col-md-12">
+                                <table id="dgFlowApply"></table>
+                                <div id="dgFlowApplyPager"></div>
                             </div>
                         </div>
                     </div>
@@ -64,12 +46,46 @@
 <!-- 本页面脚本 -->
 <script src="$!basePath/framework/js/view/toast.js"></script>
 <script type="text/javascript">
-    function start(id) {
+    ns.requireJS([
+        "/framework/js/form/checkbox.js",
+        "/framework/js/view/datagrid.js",
+        "/framework/js/form/search.form.js"]);
+    var dgFlowApply;
+    ns.ready(function () {
+        dgFlowApply = $("#dgFlowApply").jqGrid({
+            url: '$!basePath/bi/flow/apply/data',
+            colModel: [
+                {label: 'ID', name: 'id', key: true, hidden: true, align: "left"},
+                {label: '流程名称', name: 'name', width: 100},
+                {label: '流程Key', name: 'key', width: 100},
+                {label: '描述', name: 'descript', width: 300},
+                {
+                    label: '操作', width: 50, formatter: function (val, node, data) {
+                    return ns.view.datagrid.renderOp([{
+                        title: "启动流程", onclick: function () {
+                            doStart(data.id);
+                        }
+                    }]);
+                }
+                }
+            ],
+            height: $(".main-content .wrapper").height() - ns.view.datagrid.offsetHeight,
+            pager: "#dgFlowApplyPager",
+            rownumbers: true,
+//            searchForm : "#searchForm",
+        });
+    });
+
+    function doStart(id) {
         jQuery.post("$!basePath/bi/flow/apply/start/" + id, {}, function (data) {
             if (data.success == true) {
-                Toast.success("流程启动成功！");
+                if (data.type == "form") {
+                    window.open("$!basePath/bi/form/design/preview/" + data.formKey + "?tid=" + id + "&start=true");
+                } else {
+                    Toast.success("流程启动成功！");
+                }
             } else {
-                Toast.error(data.error);
+                Toast.error(data.message);
             }
         });
     }

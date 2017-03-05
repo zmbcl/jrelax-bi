@@ -59,7 +59,7 @@
                     ns.tip.toast.success("更新成功！");
                     ns.view.Dialog.close($form, {isEdited: true});
                 } else {
-                    ns.tip.toast.error(data.error);
+                    ns.tip.toast.error(data.message);
                 }
                 $form.find("#ok").button("reset");
             }

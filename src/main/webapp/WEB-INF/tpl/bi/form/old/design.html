@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <title>可视化表单设计器 - ${system_admin_title}</title>#required_css
+    <link rel="stylesheet" href="$!basePath/app/formdesign/css/main.css">
+</head>
+<body>#loading
+<div class="app $!layout">
+    <section class="layout">
+        <section class="main-content">
+            <header class="header navbar">
+                <button class="btn btn-default navbar-btn" onclick="mergeCell()"><i class="fa fa-th"></i> 合并单元格</button>
+                <div class="btn-group navbar-btn">
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><i class="fa fa-outdent"></i> 插入...
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="javascript:;" onclick="insertRow()"><i class="fa fa-arrow-up"></i> 插入一行</a></li>
+                        <li><a href="javascript:;" onclick="insertRow2()"><i class="fa fa-arrow-down"></i> 插入一行</a></li>
+                        <li><a href="javascript:;" onclick="insertCol()"><i class="fa fa-arrow-left"></i> 插入一列</a></li>
+                        <li><a href="javascript:;" onclick="insertCol()"><i class="fa fa-arrow-right"></i> 插入一列</a></li>
+                    </ul>
+                </div>
+                <div class="pull-right">
+                    <button type="button" class="btn btn-primary navbar-btn" onclick="saveForm()"><i class="fa fa-save"></i> 保存</button>
+                    <button class="btn btn-danger navbar-btn" onclick="removeElement()"><i class="fa fa-trash"></i> 删除选中</button>
+                    <button class="btn btn-default navbar-btn" onclick="clearHtml()"><i class="fa fa-rotate-left"></i> 重做</button>
+                </div>
+            </header>
+            <div class="content-wrap p10">
+                <div class="wrapper bg-default">
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <div class="panel">
+                                <div class="panel-heading"><i class="fa fa-th-large"></i> 控件面板</div>
+                                <div class="panel-body" style="min-height: 630px;">
+                                    <section class="panel bg-none">
+                                        <div class="panel-group" id="accordion">
+                                            <div class="panel bordered">
+                                                <div class="panel-heading"><a data-toggle="collapse" data-parent="#accordion" href="#panelLayout" aria-expanded="false" class="collapsed"><i class="fa fa-trello"></i> 布局控件 </a></div>
+                                                <div id="panelLayout" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                                                    <div class="panel-body">
+                                                        #parse("bi/form/control/layout.html")
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel bordered">
+                                                <div class="panel-heading"><a data-toggle="collapse" data-parent="#accordion" href="#panelBase" class="collapsed" aria-expanded="false"><i class="fa fa-list-ul"></i> 基本控件 </a>
+                                                </div>
+                                                <div id="panelBase" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                                                    <div class="panel-body">
+                                                        #parse("bi/form/control/base.html")
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="panel bordered">
+                                                <div class="panel-heading"><a data-toggle="collapse" data-parent="#accordion" href="#panelExt" class="collapsed" aria-expanded="false"><i class="fa fa-plug"></i> 扩展控件 </a></div>
+                                                <div id="panelExt" class="panel-collapse collapse" aria-expanded="false">
+                                                    <div class="panel-body">
+                                                        #parse("bi/form/control/ext.html")
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-8">
+                            <div class="panel">
+                                <div class="panel-heading"><i class="fa fa-code"></i> 表单设计区</div>
+                                <div class="panel-body">
+                                    #if($!form)
+                                    $!form.source
+                                    #else
+                                    <div class="design design-item"></div>
+                                    #end
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-2">
+                            <div class="panel">
+                                <div class="panel-heading"><i class="fa fa-magic"></i> 属性面板</div>
+                                <div class="panel-body">
+                                    <div class="nav-tabs-custom bg-white no-shadow">
+                                        <ul class="nav nav-tabs nav-justified" role="tablist" id="propertyTab">
+                                            <li class="active"><a href="#formProperty" data-toggle="tab">表单属性</a>
+                                            </li>
+                                            <li><a href="#controlProperty" data-toggle="tab">控件属性</a></li>
+                                        </ul>
+                                        <div class="tab-content">
+                                            <div class="tab-pane fade active in" id="formProperty">
+                                                <form id="propertyForm1" role="form" onsubmit="return false;">
+                                                    #parse("bi/form/property/form.html")
+                                                </form>
+                                            </div>
+                                            <div class="tab-pane fade" id="controlProperty">
+                                                <form id="propertyForm2" role="form" onsubmit="return false;">
+                                                    #parse("bi/form/property/control.html")
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </section>
+</div>
+<div id="listDataModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">数据设置</h4>
+            </div>
+            <div class="modal-body">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th class="col-md-5">值</th>
+                        <th class="col-md-5">文本</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <div class="pull-left">
+                    <button id="btnAddItem" type="button" class="btn btn-default">添加一项</button>
+                </div>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button id="btnOk" type="button" class="btn btn-primary">确 定</button>
+            </div>
+        </div>
+    </div>
+</div>
+#required_js
+<!-- 页面组件 -->
+<script type="text/javascript" src="$!basePath/app/formdesign/jquery.dragg.min.js"></script>
+<script type="text/javascript" src="$!basePath/app/formdesign/mod_codebeautify.js"></script>
+<!-- 本页面脚本 -->
+<script type="text/javascript" src="$!basePath/app/formdesign/formdesign.js"></script>
+<script type="text/javascript">
+    //保存form到服务器
+    function saveForm() {
+        var id = "$!form.id";
+        var form = $(".design");
+        if (form.children().length == 0) {
+            alert("请添加控件到表单容器中！");
+            return;
+        }
+        ns.showLoadingbar();
+        var html = html_beautify(form.parent().html());
+        jQuery.post("$!basePath/bi/form/save", {html: html, id: id}, function (data) {
+            if (data.success == true) {
+                id = data.id;
+                if (confirm("保存成功，是否立即测试？")) {
+                    window.location.href = "$!basePath/bi/form/preview/" + id;
+                }
+            } else {
+                alert(data.message);
+            }
+            ns.closeLoadingbar();
+        });
+    }
+    ns.ready(function () {
+        var form = $(".design");
+        if (form.children().length > 0) {
+            bindEvents();
+        }
+    });
+</script>
+#loading_close
+</body>
+</html>

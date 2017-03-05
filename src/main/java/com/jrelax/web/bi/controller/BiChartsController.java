@@ -1,6 +1,7 @@
 package com.jrelax.web.bi.controller;
 
 import com.jrelax.core.web.support.WebResult;
+import com.jrelax.core.web.transform.DataGridTransforms;
 import com.jrelax.kit.ObjectKit;
 import com.jrelax.orm.query.PageBean;
 import com.jrelax.web.support.BaseController;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 图表
  * Created by zengc on 2016-05-05.
  */
 @Controller
@@ -44,11 +46,22 @@ public class BiChartsController extends BaseController<Object> {
      * @return
      */
     @RequestMapping(method = {RequestMethod.GET})
-    public String index(Model model, PageBean pageBean) {
-        List<BiCharts> list = chartsService.list(pageBean);
-        model.addAttribute("list", list);
-        model.addAttribute("chartsType", getDataDict().getMap("bi_charts_type"));
+    public String index(Model model) {
+        model.addAttribute("chartsType", JSONObject.fromObject(getDataDict().getMap("bi_charts_type")));
         return TPL + "index";
+    }
+
+    /**
+     * 数据
+     * @param pageBean
+     * @return
+     */
+    @RequestMapping("/data")
+    @ResponseBody
+    public Map<String, Object> data(PageBean pageBean){
+        List<BiCharts> list = chartsService.list(pageBean);
+
+        return DataGridTransforms.JQGRID.transform(list, pageBean);
     }
 
     /**

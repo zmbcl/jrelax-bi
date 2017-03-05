@@ -31,7 +31,7 @@
 			emptyrecords: "无数据显示",
 			loadtext: "正在加载...",
 			savetext: "正在保存...",
-			pgtext : " {0} 共 {1} 页",
+			pgtext : " 第 {0} 共 {1} 页",
 			pgfirst : "第一页",
 			pglast : "最后一页",
 			pgnext : "下一页",

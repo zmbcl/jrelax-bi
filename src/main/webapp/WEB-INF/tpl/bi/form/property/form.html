@@ -1,26 +1,7 @@
-<div class="form-group">
-    <label>表单标题</label>
-    <input type="text" name="formTitle" class="form-control" placeholder="表单名称" value="$!form.name"/>
-</div>
-<div class="form-group">
-    <label>字体大小</label>
-    <input type="text" name="formFontSize" class="form-control" placeholder="12px">
-</div>
-<div class="form-group">
-    <label>字体颜色</label>
-    <input type="text" name="formFontColor" class="form-control" placeholder="#FFFFF">
-</div>
-<div class="form-group">
-    <label>宽度</label>
-    <input type="text" name="formWidth" class="form-control" placeholder="auto/px">
-</div>
-<div class="form-group">
-    <label>背景颜色</label>
-    <input type="text" name="formBgColor" class="form-control" placeholder="#FFFFF">
-</div>
-<div class="form-group">
-    <label>样式</label>
-    <select class="form-control" name="formClass">
+<div class="properties">
+    <div class="form-group">
+        <label>样式</label> <select class="form-control" name="formClass"
+                                  onchange="$(fd.config.containerPanel).attr('class', 'containers fd-view-drag-in '+this.value)">
         <option value="">无</option>
         <optgroup label="背景">
             <option value="bg-default">bg-default</option>
@@ -39,8 +20,13 @@
             <option value="text-danger">text-danger</option>
         </optgroup>
     </select>
-</div>
-<div class="form-group">
-    <label>表单完成提示</label>
-    <textarea name="formTip" class="form-control">$!form.tip</textarea>
+    </div>
+    <div class="form-group">
+        <label>背景颜色</label> <input type="text" name="formBgColor" class="form-control colorPicker" placeholder="#FFFFF"
+                                   onblur="$(fd.config.containerPanel).css('backgroundColor', this.value)">
+    </div>
+    <div class="form-group">
+        <label>表单完成提示</label>
+        <textarea name="formTip" class="form-control" onchange="$(fd.config.containerPanel).attr('tip', this.value)">$!form.tip</textarea>
+    </div>
 </div>

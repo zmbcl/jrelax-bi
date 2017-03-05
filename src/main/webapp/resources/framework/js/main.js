@@ -35,14 +35,16 @@ var offscreen = function () {
 
     function fixSlimScroll() {
         if (!$.browser.mobile && !ns.view.checkBreakout()) {
+            var offscreenLeft = $(".offscreen-left");
+            var offscreenRight = $(".offscreen-right");
             if (canvasDirection === "ltr") {
-                if ($(".offscreen-left").find(".slimScrollDiv").length !== 0) {
-                    $(".offscreen-left").find(".main-navigation, .slimscroll").slimScroll({height: "auto"})
+                if (offscreenLeft.find(".slimScrollDiv").length !== 0) {
+                    offscreenLeft.find(".main-navigation, .slimscroll").slimScroll({height: "auto"})
                 }
             }
             if (canvasDirection === "rtl") {
-                if ($(".offscreen-right").find(".slimScrollDiv").length !== 0) {
-                    $(".offscreen-right").find(".main-navigation, .slimscroll").slimScroll({height: "auto"})
+                if (offscreenRight.find(".slimScrollDiv").length !== 0) {
+                    offscreenRight.find(".main-navigation, .slimscroll").slimScroll({height: "auto"})
                 }
             }
         }
@@ -79,10 +81,9 @@ var ns = function () {
         maxHeight = 0;
 
     function events() {
-        $(".offscreen-left, .main-navigation").ontouchstart = function () {
-        };
+        $(".offscreen-left, .main-navigation").ontouchstart = function () {};
         $(".accordion > dd").hide();
-        $(window).resize(function () {
+        $(window).on("resize", function () {
             equalHeightWidgets();
             if (!$.browser.mobile && !checkBreakout()) {
                 $(".no-touch .main-navigation").slimScroll({
@@ -95,14 +96,6 @@ var ns = function () {
             }
             ns.view.initContentWrap();
             ns.view.initDropdownMenuDirection();
-            //记录窗口大小变化量
-            ns.resizeDiff = {
-                width: $(document).width() - ns.lastDocumentWidth,
-                height: $(document).height() - ns.lastDocumentHeight
-            }
-            ns.lastDocumentHeight = $(document).height();
-            ns.lastDocumentWidth = $(document).width();
-            //记录窗口大小变化量 END
         });
         $(document).mouseup(function () {
             if (searchOpen === true) {
@@ -114,6 +107,33 @@ var ns = function () {
         });
         $(".header-search").mouseup(function () {
             return false
+        });
+
+        //定义全局异步请求
+        $(document).bind("ajaxComplete", function (event, xhr, settings) {
+            //判断响应内容是否是json格式
+            if (/^\[|^\{/m.test(xhr.responseText)) {
+                try {
+                    var data = jQuery.parseJSON(xhr.responseText);
+                    if (data.type == "sessionTimeout") {//响应超时
+                        ns.alert(data.message, function () {
+                            top.window.location.reload();
+                        });
+                        return false;
+                    } else if (data.type == "noPermission" || data.type == "needPassword" || data.type == "notEnable" || data.type == "notAllow") {
+                        settings.success({success: false, message: data.message}, xhr.status, xhr);
+                        return false;
+                    }
+                } catch (e) {
+                    console.dir(e);
+                }
+            }
+        });
+        $(document).bind("ajaxError", function (event, xhr, settings) {
+            if ($.isFunction(settings.success))
+                settings.success({success: false, message: '网络请求异常：' + xhr.status}, xhr.status, xhr);
+            else
+                ns.error('网络请求异常：' + xhr.status);
         });
     }
 
@@ -127,8 +147,9 @@ var ns = function () {
 
     function initAnimationAPI() {//UI动画
         if (!$.browser.mobile && $.fn.appear) {
-            $("[data-animation]").appear({interval: 100});
-            $("[data-animation]").on("appear", function () {
+            var animations = $("[data-animation]");
+            animations.appear({interval: 100});
+            animations.on("appear", function () {
                 var elm = $(this),
                     animation = elm.data("animation") || "fadeIn",
                     delay = elm.data("delay") || 0;
@@ -139,7 +160,6 @@ var ns = function () {
                 }
             })
         } else {
-            sh
             $("[data-animation]").each(function () {
                 var elm = $(this),
                     animation = elm.data("animation") || "fadeIn";
@@ -152,8 +172,9 @@ var ns = function () {
 
     function initAnimateProgressBars() {//进度条动画
         if (!$.browser.mobile && $.fn.appear) {
-            $(".progress-bar").appear();
-            $(".progress-bar").on("appear", function () {
+            var progressBar = $(".progress-bar");
+            progressBar.appear();
+            progressBar.on("appear", function () {
                 var elm = $(this),
                     percent = elm.data("percent");
                 if (!elm.hasClass("done")) {
@@ -171,24 +192,12 @@ var ns = function () {
         }
     }
 
-    function initBrowserFix() {//修复火狐样式
-        if (navigator.userAgent.search("Firefox") >= 0) {
-            $(".layout > aside, .layout > section").wrapInner(
-                '<div class="fffix"/>')
-        }
-    }
-
-    function initFuelUX() {//初始化
-        if ($.isFunction($.fn.wizard)) {
-            $(".wizard").wizard()
-        }
-        if ($.isFunction($.fn.pillbox)) {
-            $(".pillbox").pillbox()
-        }
-        if ($.isFunction($.fn.spinner)) {
-            $(".spinner").spinner()
-        }
-    }
+    // function initBrowserFix() {//修复火狐样式
+    //     if (navigator.userAgent.search("Firefox") >= 0) {
+    //         $(".layout > aside, .layout > section").wrapInner(
+    //             '<div class="fffix"/>')
+    //     }
+    // }
 
     function equalHeightWidgets() {//计算高度
         $(".equal-height-widgets").each(function () {
@@ -271,13 +280,13 @@ var ns = function () {
         });
         if (!$.browser.mobile) {
             //自动添加滚动条，除非有no-scroll样式
-            // $(".notifications .dropdown-menu .panel .content,.content-wrap .wrapper").each(function () {
-            //     if (!$(this).hasClass("no-scroll")) {
-            //         $(this).slimScroll({
-            //             alwaysVisible: false
-            //         });
-            //     }
-            // });
+            $(".notifications .dropdown-menu .panel .content").each(function () {
+                if (!$(this).hasClass("no-scroll")) {
+                    $(this).slimScroll({
+                        alwaysVisible: false
+                    });
+                }
+            });
         }
 
     }
@@ -336,7 +345,7 @@ var ns = function () {
             });
         });
         //初始化二级菜单显示
-        $("ul.vertical li>ul>li a").hover(function (e) {
+        $("ul.vertical li>ul>li a").hover(function () {
             $(this).parent().parent().find(".open:first").removeClass("open");
             if ($(this).attr("data-toggle")) {
                 var submenu = $(this).next();
@@ -386,15 +395,9 @@ var ns = function () {
         })
     }
 
-    function initSlider() {
-        if ($.isFunction($.fn.slider)) {
-            $(".sliders input").slider()
-        }
-    }
-
     function initExtPrototype() {
         Array.prototype.contains = function (item) {
-            return RegExp(item).test(this);
+            return this.indexOf(item) >= 0;
         };
         String.prototype.startsWith = function (str) {
             var reg = new RegExp("^" + str);
@@ -428,8 +431,8 @@ var ns = function () {
     }
 
     function initDropdownMenuDirection() {// 初始化下拉菜单方向，上下左右
-        $(".btn-group>.dropdown-menu").each(function (i, n) {
-            var w = $(this).width() + 15;//15为padding
+        $(".btn-group>.dropdown-menu").each(function () {
+            var w = $(this).width() + 20;//15为padding
             var h = $(this).height();
             var l = $(this).prev().offset().left;
             var t = $(this).prev().offset().top;
@@ -459,29 +462,22 @@ var ns = function () {
 
     //选项卡链接
     function initTabsLink() {
-        $("a[data-tabs-link], a.tabs-link").each(function (i, n) {
-            $(n).unbind("click");
-            $(n).bind("click", function () {
-                var target = $(this);
-                var link = target.attr("data-tabs-link") || target.attr("href");
-                var title = target.attr("data-tabs-title") || target.attr("title") || target.text();
-                var icon = target.attr("data-tabs-icon") || target.attr("icon") || "fa fa-file";
-
-                if (top.Tabs) {
+        if (top.Tabs) {
+            $("a[data-tabs-link], a.tabs-link").each(function (i, n) {
+                $(n).unbind("click");
+                $(n).bind("click", function () {
+                    var target = $(this);
+                    var link = target.attr("data-tabs-link") || target.attr("href");
+                    var title = target.attr("data-tabs-title") || target.attr("title") || target.text();
+                    var icon = target.attr("data-tabs-icon") || target.attr("icon") || "fa fa-file";
                     top.Tabs.add(link, title, icon);
-                } else {
-                    if (target.attr("target") == "_blank")
-                        window.open(link);
-                    else
-                        window.location.href = link;
-                }
-
+                });
+                var link = $(n).attr("data-tabs-link") || $(n).attr("href");
+                $(n).attr("data-tabs-link", link);
+                $(n).attr("href", "javascript:;");
+                $(n).removeAttr("target");
             });
-            var link = $(n).attr("data-tabs-link") || $(n).attr("href");
-            $(n).attr("data-tabs-link", link);
-            $(n).attr("href", "javascript:;");
-            $(n).removeAttr("target");
-        });
+        }
     }
 
     //box展开/收缩、关闭功能
@@ -498,19 +494,18 @@ var ns = function () {
                 }))
         });
         $("[data-box-trigger='remove']").on("click", function () {
-            alert("123");
-            $(this).parents(".box").remove()
+            $(this).parents(".box").remove();
         });
     }
 
     return {
+        readyEvents: [],
         getBasePath: function () { //项目路径
             var path = $("#__basePath").val();
             if (path == undefined)
                 path = "/nspms";
             return path;
         },
-        readyEvents: [],
         checkBreakout: checkBreakout,
         initContentWrap: initContentWrap,
         initDropdownMenuDirection: initDropdownMenuDirection,//下拉菜单方向
@@ -528,9 +523,7 @@ var ns = function () {
             initContentWrap();
             initFooterFix();
             equalHeightWidgets();
-            initFuelUX();
             initPlacehoderFallback();
-            initSlider();
             initDropdownMenuDirection();//下拉菜单方向
             initTabsLink();
             initExtPrototype();
@@ -567,7 +560,7 @@ var ns = function () {
         showProgressbar: function (title) {
             top.ns.requireJS("/framework/js/view/dialog.js");
             var id = "__divAlert" + new Date().getTime();
-            var content = "<div class=\"progress progress-striped active\"> <div class=\"progress-bar progress-bar-info done\" style=\"width: 0%\"><span class=\"sr-only\">20% Complete</span> </div> </div>";
+            var content = "<div class=\"progress progress-striped active\"> <div class=\"progress-bar progress-bar-info done\" style=\"width: 0px\"><span class=\"sr-only\">20% Complete</span> </div> </div>";
             var options = {
                 id: id,
                 title: title,
@@ -605,7 +598,7 @@ var ns = function () {
             if (typeof (obj) == "string")
                 obj = $(obj);
             obj = obj || $("body");
-            obj.prepend("<div id=\"loadingbar\"></div>");
+            obj.prepend("<div id=\"loadingbar\" class='loadingbar'></div>");
             $("#loadingbar").addClass(clz).append($("<dt/><dd/>"));
             var width = (15 + Math.random() * 30);
             $("#loadingbar").width(width + "%");
@@ -632,7 +625,7 @@ var ns = function () {
             obj.find("#loadingbar").width("101%").delay(200).fadeOut(400, function () {
                 var interval = $(this).attr("interval");
                 clearInterval(interval);
-                $("#loadingbar").remove();
+                obj.find(".loadingbar").remove();
             });
         },
         alert: function (content, ok) { //提示
@@ -643,7 +636,7 @@ var ns = function () {
                 content: "<div class='modal-alert col-lg-12 col-md-12 col-xs-12'>" + content + "</div>",
                 showFooter: true
             };
-            if (content.length <= 18)
+            if (ns.String.html_decode(content).length <= 18)
                 options.size = "modal-sm";
 
             options.onShown = function (dialog, target) {
@@ -670,7 +663,7 @@ var ns = function () {
                 showFooter: true,
                 showCancel: true
             };
-            if (content.length <= 18)
+            if (ns.String.html_decode(content).length <= 18)
                 options.size = "modal-sm";
 
             options.onShown = function (dialog, target) {
@@ -681,7 +674,8 @@ var ns = function () {
                 });
                 if (typeof (cancel) == "function") {
                     dialog.find("#cancel").bind("click", function () {
-                        cancel()
+                        dialog.cancel = true;
+                        dialog.modal("hide");
                     });
                 }
             }
@@ -689,35 +683,53 @@ var ns = function () {
                 if (dialog.ok && typeof (ok) == "function") {
                     ok();
                 }
+                if (dialog.cancel && typeof(cancel) == "function")
+                    cancel();
             }
             var modal = new top.ns.view.Dialog(options);
             return modal.show();
         },
-        prompt: function (title, ok, cancel) {
+        prompt: function (title, ok, cancel, opt) {
             top.ns.requireJS("/framework/js/view/dialog.js");
             var id = "__divPrompt" + new Date().getTime();
+            var _def = {
+                password: false,
+                textarea: false,
+                size: 'modal-sm'
+            }
+            opt = jQuery.extend(_def, opt);
+            var content = "<input type='text' class='form-control' autofocus />";
+            if (opt.password)
+                content = "<input type='password' class='form-control' autofocus />";
+            if (opt.textarea)
+                content = "<textarea class='form-control' autofocus></textarea>";
+
             var options = {
                 id: id,
                 title: title,
-                content: "<div class='col-lg-12 col-md-12'><textarea class='form-control' autofocus></textarea></div>",
+                content: "<div class='col-lg-12 col-md-12'>" + content + "</div>",
                 showHeader: true,
                 showFooter: true,
-                showCancel: true
+                showCancel: true,
+                size: opt.size
             };
 
             options.onShown = function (dialog, target) {
-                dialog.find("textarea").focus();
+                dialog.find("textarea,input").focus();
                 dialog.find("#ok").click(function () {
                     dialog.modal("hide");
                     dialog.ok = true;
                 });
-                if (typeof (cancel) == "function") {
-                    dialog.cancel = true;
+                if (typeof(cancel) == "function") {
+                    dialog.find("#cancel").click(function () {
+                        dialog.modal("hide");
+                        dialog.cancel = true;
+                    });
                 }
             }
             options.onHidden = function (dialog, target) {
                 if (dialog.ok && typeof(ok) == "function")
-                    ok(dialog.find("textarea").val());
+                    ok(dialog.find("textarea,input").val());
                 if (dialog.cancel && typeof(cancel) == "function")
                     cancel();
             }
@@ -796,6 +808,7 @@ var ns = function () {
                 size: "",
                 border: false,
                 theme: "",
+                cache : false,
                 onShown: function () {
                 },
                 onHidden: function () {
@@ -811,32 +824,6 @@ var ns = function () {
             }
             var modal = new top.ns.view.Dialog(options);
             return modal.show();
-        },
-        __notify: function () {
-            $.get(ns.getBasePath() + "/system/notify/header", {}, function (data) {
-                var oNotify = $(".notifications ul");
-                oNotify.html(data);
-            });
-            //移除点击方法
-            //$(".notifications a:first").removeAttr("onclick");
-        },
-        __readNotify: function (id, obj) {
-            $.post(ns.getBasePath() + "/system/notify/read", {
-                id: id
-            }, function (data) {
-                $(obj).find("a").css("color", "#ccc");
-                $(obj).removeAttr("onclick");
-
-                // 提示数字减1
-                var number = $(".notifications .badge span").text();
-                number = parseInt(number);
-                number = number - 1;
-                if (number <= 0) {
-                    $(".notifications .badge").hide();
-                } else {
-                    $(".notifications .badge span").text(number);
-                }
-            });
         },
         get: function (url, callback) {
             jQuery.ajax({
@@ -859,9 +846,9 @@ var ns = function () {
         },
         /**
          * 异步提交 POST方式
-         * @param 地址
-         * @param 参数列表
-         * @param 回调函数，成功时第一个参数为true，失败是false， 第二个参数为服务器返回的数据
+         * @param url地址
+         * @param param 参数列表
+         * @param callback 回调函数，成功时第一个参数为true，失败是false， 第二个参数为服务器返回的数据
          * @returns
          */
         post: function (url, param, callback) { //异步Post提交
@@ -884,6 +871,7 @@ var ns = function () {
                 }
             });
         },
+        //同步get请求方法
         syncGet: function (url, callback) {
             jQuery.ajax({
                 type: "GET",
@@ -905,6 +893,7 @@ var ns = function () {
                 }
             });
         },
+        //同步post请求
         syncPost: function (url, param, callback) {
             jQuery.ajax({
                 type: "POST",
@@ -928,15 +917,23 @@ var ns = function () {
             });
         },
         load: function (elementId, url, param, callback) {
-            if ($(elementId).length == 0) return ns.tip.alert("<i class='fa fa-close text-danger'></i> DOM对象不存在！");
-            $(elementId).load(url, param, callback);
+            ns.showLoadingbar(".main-content");
+            var timer = setTimeout(function () {
+                $(elementId).html(ns.tip.progress.wave());
+            }, 100);//延迟显示，提高网速顺畅时的浏览体验
+            $(elementId).load(url, param, function (response,status,xhr) {
+                clearTimeout(timer);
+                if($.isFunction(callback))
+                    callback(response,status,xhr);
+                ns.closeLoadingbar(".main-content");
+            });
         },
         /**
          * 异步获取内容，并加载到页面上
-         * @param 地址
-         * @param 参数列表
-         * @param 目标对象ID
-         * @param 加载完成后的回调函数
+         * @param url 地址
+         * @param param 参数列表
+         * @param elementId 目标对象ID
+         * @param fn 加载完成后的回调函数
          * @returns
          */
         asyncRequest: function (url, param, elementId, fn) {
@@ -975,28 +972,6 @@ var ns = function () {
                 }
                 ns.closeLoadingbar(".main-content");
             });
-        },
-        /**
-         * 获取form参数列表
-         * @param form
-         * @returns
-         */
-        formAttrs: function (form) {
-            var attrs = {};
-            if (typeof(form) == "string")
-                form = $(form);
-            var elements = form.find("*[name]");
-            $.each(elements, function (i, e) {
-                e = $(e);
-                if (e.attr("type") == "radio" || e.attr("type") == "checkbox") {
-                    if (e.is(":checked")) {
-                        attrs[e.attr("name")] = e.val();
-                    }
-                } else {
-                    attrs[e.attr("name")] = e.val();
-                }
-            });
-            return attrs;
         },
         back: function (url, delay) { //延迟返回指定路径
             setTimeout(function () {
@@ -1146,6 +1121,10 @@ ns.ready(function () {
             sidebar.hide = function () {
                 this.removeClass("is-visible");
             }
+            //关闭
+            sidebar.find(".sidebar-panel-close").on("click", function () {
+                sidebar.click();
+            })
             return sidebar;
         },
         showSidebarRemote: function (url, param, options) {//创建并加载远程侧边栏
@@ -1188,9 +1167,33 @@ ns.ready(function () {
         }
     };
     ns.form = { //form组件
+        get: ns.get,
         post: ns.post,
         asyncRequest: ns.asyncRequest,
-        formAttrs: ns.formAttrs, //获取form表单中的参数，返回json
+        serialize: function (form) {//表单参数序列化为json
+            var attrs = {};
+            if (typeof(form) == "string")
+                form = $(form);
+            var elements = form.serializeArray();
+            $.each(elements, function() {
+                attrs[this.name] = this.value;
+            });
+            return attrs;
+        },
+        load : function(form, data){//加载JSON数据到form表单中
+            if (typeof(form) == "string")
+                form = $(form);
+            $.each(data, function(i,n){
+                var element = form.find("[name='"+i+"']");
+                if(element[0]){
+                    if(element.is(":checkbox") || element.is(":radio")){
+                        form.find("[name='"+i+"'][value='"+n+"']").prop("checked", "checked");
+                    }else{
+                        element.val(n);
+                    }
+                }
+            });
+        },
         check: function (target) {
         }/*checkbox选择、全选/反选，具体实现在form/checkbox.js中*/
     };
@@ -1275,9 +1278,10 @@ ns.ready(function () {
         copy: function (data) {
             if (window.clipboardData) {
                 window.clipboardData.setData("text", data);
-                ns.tip.alert("复制成功！");
+                ns.tip.alert("已复制！");
             } else {
-                ns.tip.alert("您的浏览器不支持复制到粘贴板！");
+                // ns.tip.alert("您的浏览器不支持复制到粘贴板！");
+                prompt("由于浏览器的限制，请您手动复制：", data);
             }
         }
     };
@@ -1315,13 +1319,19 @@ ns.ready(function () {
         //字符串格式化，占位符
         //str：字符串
         //params Array
-        format : function(str, params){
-            for(var i=0;i<params.length;i++){
+        format: function (str, params) {
+            for (var i = 0; i < params.length; i++) {
                 str = str.replace("%s", params[i])
             }
             return str;
+        },
+        //去除html标签
+        html_decode: function (str) {
+            return str.replace(/<\/?[^>]*>/g, "");
         }
     }
+
+
     /**************业务相关**************/
     ns.userCenter = function () { //个人中心
         ns.__showModal(ns.getBasePath() + "/uc", {border: false});
@@ -1329,16 +1339,44 @@ ns.ready(function () {
     ns.setting = function () { //设置
         ns.tip.alert("此功能暂未开放！");
     };
-    ns.checkUpdate = function () {
+    ns.checkUpdate = function () {//检查更新
         ns.tip.alert("当前无可用更新！");
     };
-    ns.exit = function () {
+    ns.exit = function () {//退出
         var exitObj = ns.tip.confirm("您确定要退出系统吗？", function () {
             window.location.href = ns.getBasePath() + "/signout";
         });
         var dialog = exitObj.find(".modal-dialog");
         dialog.addClass("modal-sm");
         dialog.css("padding-top", "200px");
+    };
+    ns.__notify = function () {//获取通知
+        $.get(ns.getBasePath() + "/system/notify/header", {}, function (data) {
+            var oNotify = $(".notifications ul");
+            oNotify.html(data);
+        });
+        //移除点击方法
+        //$(".notifications a:first").removeAttr("onclick");
+    };
+    ns.__readNotify = function (id, obj) {//阅读通知
+        $.post(ns.getBasePath() + "/system/notify/read", {
+            id: id
+        }, function (data) {
+            if (obj) {
+                $(obj).find("a").css("color", "#ccc");
+                $(obj).removeAttr("onclick");
+            }
+
+            // 提示数字减1
+            var number = $(".notifications").find(".badge span").text();
+            number = parseInt(number);
+            number = number - 1;
+            if (number <= 0) {
+                $(".notifications .badge").hide();
+            } else {
+                $(".notifications .badge span").text(number);
+            }
+        });
     };
     var offset = $(".sub-menu li.active").offset();
     if (offset) {
@@ -1351,7 +1389,7 @@ ns.ready(function () {
         }
     }
     ns.initCustomControls();
-    setTimeout(ns.initPreLoad, 300)
+    setTimeout(ns.initPreLoad, 300);
     // $(".layout-v .vertical>li").hover(function () {
     //     $(".layout-v .vertical>li").removeClass("open");
     //     $(this).addClass("open");

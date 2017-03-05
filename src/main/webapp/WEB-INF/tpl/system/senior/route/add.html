@@ -77,7 +77,7 @@
                     ns.tip.toast.success("增加成功！");
                     ns.view.Dialog.close($form, {isSaved: true});
                 } else {
-                    ns.tip.toast.error(data.error);
+                    ns.tip.toast.error(data.message);
                 }
                 $form.find("#ok").button("reset");
             }

@@ -7,3 +7,5 @@
 .toast-info { background-color: #15acdc }
 .toast-warning { background-color: #daac16 }
 #toast-container>:hover { -webkit-box-shadow: none; box-shadow: none }
+.toast-center { top: 50%; left: 50%; margin-left: -75px; margin-top: -50px; }
+.toast-center>div { width: 150px !important; }

@@ -96,6 +96,7 @@
 <script src="$!basePath/framework/js/form/select.js"></script>
 <script src="$!basePath/app/datasource/datasource.js"></script>
 <script src="$!basePath/app/charts/utils.js"></script>
+<script src="$!basePath/app/charts/adapter.js"></script>
 <script src="$!basePath/app/charts/adapter/bubble.js"></script>
 <script type="text/javascript">
     var adapter;
@@ -108,7 +109,7 @@
         adapter.init(document.getElementById("previewChart"));
     }
     function doApply() {
-        var attrs = ns.formAttrs($("#configMap"));
+        var attrs = ns.form.serialize($("#configMap"));
 
         adapter.update(attrs);
     }

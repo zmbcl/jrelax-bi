@@ -240,7 +240,7 @@
             }
             var btn = $(this);
             btn.button("loading");
-            $.post("$!basePath/system/datadict/save", ns.formAttrs("#saveForm"), function (data) {
+            $.post("$!basePath/system/datadict/save", ns.form.serialize("#saveForm"), function (data) {
                 if (data.success == true) {
                     Toast.success("保存成功!");
                     //刷新树
@@ -249,7 +249,7 @@
                     $("#saveForm").resetForm();
                     loadCategory();//刷新分类
                 } else {
-                    Toast.error(data.error);
+                    Toast.error(data.message);
                 }
                 //重置按钮状态，关闭提示框
                 btn.button("reset");
@@ -276,7 +276,7 @@
                         //刷新树
                         $.jstree.reference("#jsTreeDataDict").refresh();
                     } else {
-                        Toast.error(data.error);
+                        Toast.error(data.message);
                     }
                 });
             });
@@ -289,7 +289,7 @@
                         //刷新树
                         $.jstree.reference("#jsTreeDataDict").refresh();
                     } else {
-                        Toast.error(data.error);
+                        Toast.error(data.message);
                     }
                 });
             });
@@ -369,7 +369,7 @@
                         }, 3000);
                     }, 4000);
                 } else {
-                    Toast.error(data.error);
+                    Toast.error(data.message);
                 }
                 btn.button("reset");
             }
@@ -383,7 +383,7 @@
             if (data.success == true) {
                 Toast.success("同步成功!");
             } else {
-                Toast.error(data.error);
+                Toast.error(data.message);
             }
             btn.button("reset");
         });

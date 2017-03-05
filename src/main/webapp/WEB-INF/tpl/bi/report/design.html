@@ -230,7 +230,7 @@
                 ns.tip.toast.success("已保存");
                 if (callback) callback();
             } else {
-                ns.tip.toast.error(data.error);
+                ns.tip.toast.error(data.message);
             }
         });
     }
@@ -240,6 +240,7 @@
         var table = content.find("table");
         table.find("td[data-binder]").html("<br/>");
         table.find("tr:eq(0)").remove();
+        table.find(".debug").remove();
         table.find("td.rownum, td.colnum").remove();
         table.find("td").removeAttr("class");
         table.removeAttr("contenteditable");
@@ -361,14 +362,14 @@
                 cell.attr(opt.codeTag, code);
                 cell.attr(opt.arrowTag, arrow);
 
-                cell.html("#" + code + "->" + arrow + "#");
+                cell.html("<div class='debug'>#" + code + "->" + arrow + "#</div>");
                 cell.attr("data-binder", true);
             } else {
                 cell.removeAttr(opt.dsTag);
                 cell.removeAttr(opt.codeTag);
                 cell.removeAttr(opt.arrowTag);
                 cell.removeAttr("data-binder");
-                cell.html("");
+                cell.find(".debug").remove();
             }
 
             //公式

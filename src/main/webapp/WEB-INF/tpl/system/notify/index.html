@@ -50,7 +50,8 @@
                         </nav>
                         <div class="m15">
                             <button class="btn btn-primary btn-block offscreen-right" onclick="readAll()"><i
-                                    class="ti-check-box"></i> 全部标记为已读</button>
+                                    class="ti-check-box"></i> 标记为已读
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -70,36 +71,12 @@
                 </header>
                 <div class="content-wrap">
                     <div class="wrapper">
-                        <form id="notifyForm" action="$!basePath/system/notify/new" method="post">
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12">
-                                    #if($!list.size()>0)
-                                    <table id="unreadNotifyTable" class="table no-m">
-                                        <tbody>
-                                        #foreach($!message in $!list)
-                                        <tr onclick="ns.__readNotify('$!message.id',this)">
-                                            <td>
-                                                $!message.html()
-                                            </td>
-                                        </tr>
-                                        #end
-                                        </tbody>
-                                    </table>
-                                    #else
-                                    <div class="alert text-center">
-                                        最近没有收到任何新通知哦。
-                                    </div>
-                                    #end
-                                </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <table id="dgNotify"></table>
+                                <div id="dgNotifyPager"></div>
                             </div>
-                            #if($!list.size()>0)
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12">
-                                    #pager_ajax
-                                </div>
-                            </div>
-                            #end
-                        </form>
+                        </div>
                     </div>
                 </div>
                 <a class="exit-offscreen"></a>
@@ -114,21 +91,51 @@
 
 <!-- 本页面脚本 -->
 <script type="text/javascript">
-    function readAll() {
-        var trs = $("#unreadNotifyTable tr");
-        $.each(trs, function (i, tr) {
-            tr.click();
+    //导入js
+    ns.requireJS([
+        "/framework/js/form/checkbox.js",
+        "/framework/js/view/datagrid.js"]);
+    var dgNotify;
+    ns.ready(function () {
+        dgNotify = $("#dgNotify").jqGrid({
+            url: '$!basePath/system/notify/data',
+            colModel: [
+                {label: 'ID', name: 'id', key: true, hidden: true, align: "left"},
+                {label: '标题', name: 'title', width: 300},
+                {label: '内容', name: 'content', width: 300},
+                {label: '时间', name: 'timespan', width: 100},
+                {label: '发送者', name: 'createUser', width: 100}
+            ],
+            height: $(".main-content .wrapper").height() - ns.view.datagrid.offsetHeight,
+            pager: "#dgNotifyPager",
+            icheckbox: true,
+            multiselect: true,
+            multiboxonly : true,
+            postData: {type: 1}
         });
+    });
+
+    function readAll() {
+        var ids = dgNotify.getSelectRows();
+        if(ids.length == 0){
+            return ns.tip.toast.warning("请选择要标记的通知");
+        }
+        $.each(ids, function (i, id) {
+            ns.__readNotify(id, this)
+        });
+        setTimeout(function(){
+            dgNotify.reload();
+        }, 1000);
     }
     function change(t) {
         $(".notify-catagory a").attr("class", "");
         if (t == 1) {
-            ns.asyncRequest("$!basePath/system/notify/new", {}, ".main-content .wrapper");
+            dgNotify.reload({type: 1});
             $(".notify-catagory:first a").attr("class", "bg-primary notify-cur");
             $(".notify-catagory:first a").blur();
             $(".main-content .navbar-text").text("新通知");
         } else if (t == 2) {
-            ns.asyncRequest("$!basePath/system/notify/history", {}, ".main-content .wrapper");
+            dgNotify.reload({type: 2});
             $(".notify-catagory:last a").attr("class", "bg-primary notify-cur");
             $(".notify-catagory:last a").blur();
             $(".main-content .navbar-text").text("历史通知");

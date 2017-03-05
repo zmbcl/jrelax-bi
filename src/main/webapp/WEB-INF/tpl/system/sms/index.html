@@ -226,7 +226,7 @@
                         Toast.success("保存成功！");
                     }
                 } else {
-                    Toast.error(data.error);
+                    Toast.error(data.message);
                 }
                 $("#smsForm #isTest").val(false);
                 $form.find("#btnTest").button("reset");

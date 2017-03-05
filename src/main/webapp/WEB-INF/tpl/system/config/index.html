@@ -19,230 +19,219 @@
                 <div class="content-wrap">
                     <div class="wrapper">
                         <form id="configForm" class="parsley-form form-horizontal" data-parsley-validate role="form" method="post" action="$!basePath/system/config/save">
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12">
-                                    <div class="panel">
-                                        <div class="panel-heading no-b"><i class="fa fa-cog"></i> 系统设置</div>
-                                        <div class="panel-body">
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">登录界面标题</label>
-                                                <div class="col-sm-3">
-                                                    <input type="text" class="form-control" name="system.login.title" placeholder="登录界面标题" value="$!configMap.get('system.login.title')">
-                                                </div>
+                            <div class="nav-tabs-custom bg-white">
+                                <ul class="nav nav-tabs" role="tablist" id="propertyTab">
+                                    <li class="active"><a href="#pro_content1" data-toggle="tab"><i class="fa fa-cog"></i> 系统设置</a></li>
+                                    <li><a href="#pro_content2" data-toggle="tab"><i class="fa fa-send"></i> 发信邮箱配置</a></li>
+                                    <li><a href="#pro_content3" data-toggle="tab"><i class="fa fa-cloud-upload"></i> 上传设置</a></li>
+                                    <li><a href="#pro_content4" data-toggle="tab"><i class="fa fa-hdd-o"></i> 缓存设置</a></li>
+                                </ul>
+                                <div class="tab-content no-p">
+                                    <div class="tab-pane fade active in p15" id="pro_content1">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">登录界面标题</label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control" name="system.login.title" placeholder="登录界面标题" value="$!configMap.get('system.login.title')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">管理内页标题</label>
-                                                <div class="col-sm-3">
-                                                    <input type="text" class="form-control" name="system.admin.title" placeholder="管理内页标题" value="$!configMap.get('system.admin.title')">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">管理内页标题</label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control" name="system.admin.title" placeholder="管理内页标题" value="$!configMap.get('system.admin.title')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">内部名称</label>
-                                                <div class="col-sm-3">
-                                                    <input type="text" class="form-control" name="system.app" placeholder="用于开发人员，请勿擅自修改" value="$!configMap.get('system.app')">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">内部名称</label>
+                                            <div class="col-sm-3">
+                                                <input type="text" class="form-control" name="system.app" placeholder="用于开发人员，请勿擅自修改" value="$!configMap.get('system.app')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">首页展现方式</label>
-                                                <div class="col-sm-3">
-                                                    <select name="system.index.page" id="" class="chosen">
-                                                        <option value="index" #ifSelected($!configMap.get(
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">首页展现方式</label>
+                                            <div class="col-sm-3">
+                                                <select name="system.index.page" id="" class="chosen">
+                                                    <option value="index" #ifSelected($!configMap.get(
                                                         'system.index.page'), 'index')>常规模式</option>
-                                                        <option value="index-tabs" #ifSelected($!configMap.get(
+                                                    <option value="index-tabs" #ifSelected($!configMap.get(
                                                         'system.index.page'), 'index-tabs')>选项卡模式</option>
-                                                    </select>
-                                                </div>
+                                                </select>
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">分页条数</label>
-                                                <div class="col-sm-3">
-                                                    <input type="number" class="form-control" data-mask-alias="integer" name="system.page.rows" placeholder="用于开发人员，请勿擅自修改"
-                                                           value="$!configMap.get('system.page.rows')">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">分页条数</label>
+                                            <div class="col-sm-3">
+                                                <input type="number" class="form-control" data-mask-alias="integer" name="system.page.rows" placeholder="用于开发人员，请勿擅自修改"
+                                                       value="$!configMap.get('system.page.rows')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">系统文件根路径</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="system.file.folder.root" placeholder="用于开发人员，请勿擅自修改"
-                                                           value="$!configMap.get('system.file.folder.root')">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">系统文件根路径</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="system.file.folder.root" placeholder="用于开发人员，请勿擅自修改"
+                                                       value="$!configMap.get('system.file.folder.root')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">静态资源前缀地址</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="system.respath" placeholder="用于静态资源分开部署" value="$!configMap.get('system.respath')">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">静态资源前缀地址</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="system.respath" placeholder="用于静态资源分开部署" value="$!configMap.get('system.respath')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">调试模式</label>
-                                                <div class="col-sm-2">
-                                                    <input type="checkbox" name="system.debug" class="js-switch-blue" #ifChecked($!configMap.get('system.debug'))>
-                                                </div>
-                                                <label class="col-sm-1 control-label">唯一登录</label>
-                                                <div class="col-sm-3">
-                                                    <input type="checkbox" name="system.login.unique" class="js-switch-blue" #ifChecked($!configMap.get('system.login.unique'))>
-                                                    <div class="alert alert-warning mt5">同一个账号只能登录一次，重复登录会被替换下线</div>
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">调试模式</label>
+                                            <div class="col-sm-2">
+                                                <input type="checkbox" name="system.debug" class="js-switch-blue" #ifChecked($!configMap.get('system.debug'))>
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label"></label>
-                                                <div class="col-sm-9">
-                                                    <button type="submit" class="btn btn-primary" data-loading-text="正在保存...">保存配置</button>
-                                                </div>
+                                            <label class="col-sm-1 control-label">唯一登录</label>
+                                            <div class="col-sm-3">
+                                                <input type="checkbox" name="system.login.unique" class="js-switch-blue" #ifChecked($!configMap.get('system.login.unique'))>
+                                                <div class="alert alert-warning mt5">同一个账号只能登录一次，重复登录会被替换下线</div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label"></label>
+                                            <div class="col-sm-9">
+                                                <button type="submit" class="btn btn-primary" data-loading-text="正在保存...">保存配置</button>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-12 col-md-12">
-                                    <div class="panel">
-                                        <div class="panel-heading no-b"><i class="fa fa-send"></i> 发信邮箱配置</div>
-                                        <div class="panel-body">
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">SMTP服务器</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="mail.smtp.host" placeholder="邮件SMTP服务器地址" value="$!configMap.get('mail.smtp.host')">
-                                                </div>
+                                    <div class="tab-pane fade p15" id="pro_content2">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">SMTP服务器</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="mail.smtp.host" placeholder="邮件SMTP服务器地址" value="$!configMap.get('mail.smtp.host')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">端口</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="mail.smtp.port" data-mask-alias="integer" placeholder="邮件SMTP服务器端口号" value="$!configMap.get('mail.smtp.port')">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">端口</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="mail.smtp.port" data-mask-alias="integer" placeholder="邮件SMTP服务器端口号" value="$!configMap.get('mail.smtp.port')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">SSL认证</label>
-                                                <div class="col-sm-9">
-                                                    <input type="checkbox" name="mail.smtp.auth" class="js-switch-blue" #ifChecked($!configMap.get('mail.smtp.auth'))>
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">SSL认证</label>
+                                            <div class="col-sm-9">
+                                                <input type="checkbox" name="mail.smtp.auth" class="js-switch-blue" #ifChecked($!configMap.get('mail.smtp.auth'))>
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">SSL端口</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="mail.smtp.socketFactory.port" data-mask-alias="integer" placeholder="SSL端口号" value="$!configMap.get('mail.smtp.socketFactory.port')">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">SSL端口</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="mail.smtp.socketFactory.port" data-mask-alias="integer" placeholder="SSL端口号" value="$!configMap.get('mail.smtp.socketFactory.port')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">用户名</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="mail.smtp.username" placeholder="用户名" value="$!configMap.get('mail.smtp.username')">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">用户名</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="mail.smtp.username" placeholder="用户名" value="$!configMap.get('mail.smtp.username')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">密码</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="mail.smtp.password" placeholder="密码" value="$!configMap.get('mail.smtp.password')">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">密码</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="mail.smtp.password" placeholder="密码" value="$!configMap.get('mail.smtp.password')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">邮件发送周期(ms)</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="mail.period" placeholder="毫秒" value="$!configMap.get('mail.period')">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">邮件发送周期(ms)</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="mail.period" placeholder="毫秒" value="$!configMap.get('mail.period')">
                                             </div>
-                                            <div class="form-group" style="margin-top: 64px;">
-                                                <label class="col-sm-3 control-label"></label>
-                                                <div class="col-sm-9">
-                                                    <button type="submit" class="btn btn-primary" data-loading-text="正在保存...">保存配置</button>
-                                                </div>
+                                        </div>
+                                        <div class="form-group" style="margin-top: 64px;">
+                                            <label class="col-sm-2 control-label"></label>
+                                            <div class="col-sm-9">
+                                                <button type="submit" class="btn btn-primary" data-loading-text="正在保存...">保存配置</button>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-12 col-md-12">
-                                    <div class="panel">
-                                        <div class="panel-heading no-b"><i class="fa fa-cloud-upload"></i> 上传设置</div>
-                                        <div class="panel-body">
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">远程上传</label>
-                                                <div class="col-sm-9">
-                                                    <input type="checkbox" name="upload.remote.enabled" class="js-switch-blue" #ifChecked($!configMap.get('upload.remote.enabled'))>
-                                                </div>
+                                    <div class="tab-pane fade p15" id="pro_content3">
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">远程上传</label>
+                                            <div class="col-sm-9">
+                                                <input type="checkbox" name="upload.remote.enabled" class="js-switch-blue" #ifChecked($!configMap.get('upload.remote.enabled'))>
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">远程上传地址</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="upload.remote.rmi" placeholder="RMI协议 rmi://" value="$!configMap.get('upload.remote.rmi')">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">远程上传地址</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="upload.remote.rmi" placeholder="RMI协议 rmi://" value="$!configMap.get('upload.remote.rmi')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">远程访问地址</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="upload.remote.view" placeholder="远程文件访问前缀地址" value="$!configMap.get('upload.remote.view')">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">远程访问地址</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="upload.remote.view" placeholder="远程文件访问前缀地址" value="$!configMap.get('upload.remote.view')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">上传保存目录</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="upload.folder.root" placeholder="相对路径" value="$!configMap.get('upload.folder.root')">
-                                                    <div class="alert alert-warning mt5">只在本地模式下有效</div>
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">上传保存目录</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="upload.folder.root" placeholder="相对路径" value="$!configMap.get('upload.folder.root')">
+                                                <div class="alert alert-warning mt5">只在本地模式下有效</div>
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label"></label>
-                                                <div class="col-sm-9">
-                                                    <button type="submit" class="btn btn-primary" data-loading-text="正在保存...">保存配置</button>
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label"></label>
+                                            <div class="col-sm-9">
+                                                <button type="submit" class="btn btn-primary" data-loading-text="正在保存...">保存配置</button>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-lg-12 col-md-12">
-                                    <div class="panel">
-                                        <div class="panel-heading no-b"><i class="fa fa-hdd-o"></i> 缓存设置（Memcached）</div>
-                                        <div class="panel-body">
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">服务器地址</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="cache.memcached.url" placeholder="服务器地址" value="$!configMap.get('cache.memcached.url')">
-                                                </div>
+                                    <div class="tab-pane fade p15" id="pro_content4">
+                                        <h3>Memcached</h3>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">服务器地址</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="cache.memcached.url" placeholder="服务器地址" value="$!configMap.get('cache.memcached.url')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">端口</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="cache.memcached.port" placeholder="端口" value="$!configMap.get('cache.memcached.port')" data-mask-alias="integer">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">端口</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="cache.memcached.port" placeholder="端口" value="$!configMap.get('cache.memcached.port')" data-mask-alias="integer">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">权重</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="cache.memcached.weight" placeholder="权重" value="$!configMap.get('cache.memcached.weight')">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">权重</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="cache.memcached.weight" placeholder="权重" value="$!configMap.get('cache.memcached.weight')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">初始连接数</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="cache.memcached.initConn" placeholder="初始连接数" value="$!configMap.get('cache.memcached.initConn')">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">初始连接数</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="cache.memcached.initConn" placeholder="初始连接数" value="$!configMap.get('cache.memcached.initConn')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">最大连接数</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="cache.memcached.maxConn" placeholder="最大连接数" value="$!configMap.get('cache.memcached.maxConn')">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">最大连接数</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="cache.memcached.maxConn" placeholder="最大连接数" value="$!configMap.get('cache.memcached.maxConn')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">最小连接数</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="cache.memcached.minConn" placeholder="最小连接数" value="$!configMap.get('cache.memcached.minConn')">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">最小连接数</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="cache.memcached.minConn" placeholder="最小连接数" value="$!configMap.get('cache.memcached.minConn')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">最大空闲时间(ms)</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="cache.memcached.maxIdle" placeholder="最大空闲时间 毫秒" value="$!configMap.get('cache.memcached.maxIdle')">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">最大空闲时间(ms)</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="cache.memcached.maxIdle" placeholder="最大空闲时间 毫秒" value="$!configMap.get('cache.memcached.maxIdle')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label">平衡线程休眠时间(ms)</label>
-                                                <div class="col-sm-9">
-                                                    <input type="text" class="form-control" name="cache.memcached.maintSleep" placeholder="平衡线程休眠时间 毫秒" value="$!configMap.get('cache.memcached.maintSleep')">
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label">平衡线程休眠时间(ms)</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" name="cache.memcached.maintSleep" placeholder="平衡线程休眠时间 毫秒" value="$!configMap.get('cache.memcached.maintSleep')">
                                             </div>
-                                            <div class="form-group">
-                                                <label class="col-sm-3 control-label"></label>
-                                                <div class="col-sm-9">
-                                                    <button type="submit" class="btn btn-primary" data-loading-text="正在保存...">保存配置</button>
-                                                </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="col-sm-2 control-label"></label>
+                                            <div class="col-sm-9">
+                                                <button type="submit" class="btn btn-primary" data-loading-text="正在保存...">保存配置</button>
                                             </div>
                                         </div>
                                     </div>
@@ -270,7 +259,7 @@
             if (data.success == true) {
                 ns.tip.toast.success("配置已保存！");
             } else {
-                ns.tip.toast.error(data.error);
+                ns.tip.toast.error(data.message);
             }
             $form.find("button:submit").button("reset");
         }

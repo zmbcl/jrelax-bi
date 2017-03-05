@@ -11,8 +11,10 @@
 <body>
 <div class="app $!layout">
     <!-- 头部菜单 -->
+    #header
     <section class="layout">
         <!-- 菜单 -->
+        #sidebar
         <section class="container">
             <!-- 机构  -->
             <aside class="sidebar-250 canvas-right bg-default ">
@@ -31,8 +33,8 @@
                 <header class="header navbar">
                     <!-- 左按钮区 -->
                     <div class="btn-group tool-button">
-                        <a class="btn btn-primary navbar-btn" href="$!basePath/system/user/add" data-pjax ns-prem="btnAdd"><i
-                                class="fa fa-user-plus"></i> 新增用户</a>
+                        <button class="btn btn-primary navbar-btn" onclick="doAddUser()" ns-prem="btnAdd"><i
+                                class="fa fa-user-plus"></i> 新增用户</button>
                         <button class="btn btn-danger navbar-btn" onclick="delCheck()" ns-prem="btnRemove"><i class="fa fa-user-times"></i>
                             删除选中
                         </button>
@@ -45,96 +47,78 @@
                 </header>
                 <div class="content-wrap">
                     <div class="wrapper">
-                        <form action="$!basePath/system/user" method="post">
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12 table-responsive">
-                                    <table id="userTable" class="table table-hover no-m">
-                                        <thead>
-                                        <tr>
-                                            <th>
-                                                <input type="checkbox" class="icheck" data-check-all="data-check-item">
-                                            </th>
-                                            <th class="col-md-2 pd-l-lg">
-                                                <span class="pd-l-sm"></span>用户名
-                                            </th>
-                                            <th class="col-md-2">姓名</th>
-                                            <th class="col-md-2">联系方式</th>
-                                            <th class="col-md-2">邮箱</th>
-                                            <th class="col-md-1">#springMessage('system.common.status')</th>
-                                            <th class="col-md-1">是否在线</th>
-                                            <th class="col-md-2">#springMessage('system.common.op')</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody></tbody>
-                                    </table>
-                                </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <table id="dgUser"></table>
+                                <div id="dgUserPager"></div>
                             </div>
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12">
-                                    #pager_ajax
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                 </div>
                 <a class="exit-offscreen"></a>
             </section>
-            <div class="sidebar-panel from-right">
-                <div class="sidebar-panel-container shadow">
-                    <header class="sidebar-panel-header">
-                        <h4>筛选</h4>
-                        <a href="javascript:$('.sidebar-panel').click();" class="sidebar-panel-close text-center"><i
-                                class="ti-close"></i> </a>
-                    </header>
-                    <div class="sidebar-panel-content">
-                        <form role="form" onsubmit="return doSearch(this);">
-                            <div class="form-group">
-                                <label for="userName">用户名</label>
-                                <input name="userName" type="text" class="form-control" placeholder="用户名/登录名" autofocus>
-                            </div>
-                            <div class="form-group">
-                                <label for="realName">姓名</label>
-                                <input name="realName" type="text" class="form-control" placeholder="姓名">
-                            </div>
-                            <button type="submit" class="btn btn-default">查询</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            <!-- 删除选中用户 -->
-            <div id="dialogDeleteCheck" class="modal fade bs-modal-lg" tabindex="-2" role="dialog" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 class="modal-title">删除用户</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-xs-12 mb10">
-                                    确定删除以下用户吗？
-                                </div>
-                                <div class="col-xs-12">
-                                    <ul id="checkedUser" class="list-group"></ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button id="ok" type="button" class="btn btn-primary" data-loading-text="正在删除...">确 定
-                            </button>
-                            <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </section>
     </section>
+</div>
+<div class="sidebar-panel from-right">
+    <div class="sidebar-panel-container shadow">
+        <header class="sidebar-panel-header">
+            <h4>筛选</h4>
+            <a class="sidebar-panel-close text-center"><i class="ti-close"></i> </a>
+        </header>
+        <div class="sidebar-panel-content">
+            <form id="searchForm" role="form">
+                <div class="form-group">
+                    <label for="userName">用户名</label>
+                    <input name="userName" type="text" class="form-control" placeholder="用户名/登录名" autofocus>
+                </div>
+                <div class="form-group">
+                    <label for="realName">姓名</label>
+                    <input name="realName" type="text" class="form-control" placeholder="姓名">
+                </div>
+                <button type="submit" class="btn btn-default">查询</button>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- 删除选中用户 -->
+<div id="dialogDeleteCheck" class="modal fade bs-modal-lg" tabindex="-2" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title">删除用户</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-12 mb10">
+                        确定删除以下用户吗？
+                    </div>
+                    <div class="col-xs-12">
+                        <ul id="checkedUser" class="list-group"></ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="ok" type="button" class="btn btn-primary" data-loading-text="正在删除...">确 定
+                </button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+            </div>
+        </div>
+    </div>
 </div>
 #required_js
 <script type="text/javascript">
     //导入js
-    ns.requireJS(["/framework/js/form/checkbox.js", "/framework/js/view/toast.js", "/framework/js/view/tree.js", "/framework/js/view/treetable.js", "/framework/js/form/editable.js"]);
-    var cid;
+    ns.requireJS([
+        "/framework/js/form/checkbox.js",
+        "/framework/js/view/toast.js",
+        "/framework/js/view/tree.js",
+        "/framework/js/view/treetable.js",
+        "/framework/js/form/editable.js",
+        "/framework/js/view/datagrid.js",
+        "/framework/js/form/search.form.js"]);
+    var dgUser, currentUnitId = "-1";
     function initTreeView() {
         $("#jsTreeUnit").jstree({
             plugins: ["wholerow"],
@@ -147,8 +131,7 @@
                 multiple: false
             }
         }).on("select_node.jstree", function (node, selected) {
-            cid = selected.selected;
-            loadUser();
+            loadUser(selected.selected[0]);
         }).on("loaded.jstree", function (node, jstree) {
             var id = ns.data.sessionStorage.get("sys_user_tree_id");
             if (!id)
@@ -157,45 +140,111 @@
                 jstree.instance.select_node(id);
         });
     }
-    function loadUser() {
-        ns.asyncRequest("$!basePath/system/user/unituser/" + cid, {}, "#userTable tbody", function () {
-            ns.data.sessionStorage.set("sys_user_tree_id", cid);
-            initXeditable();
-            ns.form.initCheckbox();
+    function initDataGrid(){
+        dgUser = $("#dgUser").jqGrid({
+            url: '$!basePath/system/user/unituser/data',
+            datatype : "local",
+            colModel: [
+                { label: 'ID', name: 'id', key: true, hidden:true, align:"left" },
+                { label: '用户名', name: 'userName', width:100},
+                { label: '姓名', name: 'realName', width:100, formatter: function(val,options,row){
+                    return ns.view.datagrid.renderEditable("输入新姓名", "xeditable-realname", val, row.id, "right");
+                }},
+                { label: '联系方式', name: 'mobile', width:100, formatter: function(val,options,row){
+                    return ns.view.datagrid.renderEditable("输入新号码", "xeditable-mobile", val, row.id, "right");
+                }},
+                { label: '邮箱', name: 'email', width:100, formatter: function(val,options,row){
+                    return ns.view.datagrid.renderEditable("输入新邮箱", "xeditable-email", val, row.id, "right");
+                }},
+                { label: '状态', name: 'enabled', width:100, formatter:function(val){
+                    return ns.view.datagrid.renderEnabled(val);
+                }},
+                { label: '是否在线', name: 'online', width:100, formatter:function(val){
+                    return ns.view.datagrid.renderEnabled(val);
+                }},
+                { label:'操作',width: 50,formatter:function(val,node,data){
+                    return ns.view.datagrid.renderOp([
+                        {title:"查看基本信息", onclick:function(){
+                            ns.view.showModal("$!basePath/system/user/detail/info/"+data.id,{border:false});
+                        }},
+                        {title:"查看资源权限", onclick:function(){
+                            ns.view.showModal("$!basePath/system/user/detail/right/"+data.id,{border:false,size:"modal-lg"});
+                        }},
+                        {divider:true},
+                        {title: "修改", onclick:function(){
+                            ns.view.showModal("$!basePath/system/user/edit/"+data.id, {
+                                size:"modal-lg",
+                                onClose : function(dialog, obj){
+                                    if(dialog.isEdited){
+                                        dgUser.reload();
+                                    }
+                                }
+                            });
+                        }},
+                        {title:"删除", onclick:function(){
+                            doDelete(data.id);
+                        }},
+                        {title:"密码重置", onclick:function(){
+                            resetPwd(data.id);
+                        }},
+                        {divider:true},
+                        {title:"启用", onclick:function(){
+                            enableUser(data.id);
+                        }},
+                        {title:"禁用", onclick:function(){
+                            disableUser(data.id);
+                        }},
+                        {divider:true},
+                        {title:"管理所属用户组", onclick:function(){
+                            ns.view.showModal("$!basePath/system/user/group/"+data.id,{border:false,size:"modal-lg"});
+                        }}
+                    ]);
+                } }
+            ],
+            height: $(".main-content .wrapper").height() - ns.view.datagrid.offsetHeight,
+            pager: "#dgUserPager",
+            searchForm : "#searchForm",
+            multiselect : true,
+            multiboxonly : true,
+            icheckbox : true,
+            xeditable : initXeditable
         });
     }
-    function doSearch(form) {
-        var attrs = ns.formAttrs($(form));
-        ns.asyncRequest("$!basePath/system/user/unituser/" + cid, attrs, "#userTable tbody");
-        return false;
+    function loadUser(id) {
+        dgUser.setGridParam({
+            datatype : "json",
+            postData : {unitId : id}
+        }).trigger("reloadGrid");
+        currentUnitId = id;
     }
-    function del(id) {
+
+    function doDelete(id) {
         ns.confirm("用户删除后无法恢复，确定删除吗？", function () {
             $.post("$!basePath/system/user/delete/" + id, {}, function (data) {
                 if (data.success == true) {
-                    $("#" + id).remove();
+                    dgUser.reload();
                 } else {
-                    Toast.error(data.error);
+                    Toast.error(data.message);
                 }
             });
         });
     }
     function delCheck() {
-        var ids = ns.form.check("#userTable").getChecks();
+        var ids = dgUser.getSelectRows();
         if (ids.length > 0) {
             var content = "<div class=\"col-xs-12 mb10\">确定删除以下用户吗？</div><div class=\"col-xs-12\"><ul class='no-m'>";
             $.each(ids, function (i, id) {
-                var tr = $("#" + id);
-                content += "<li>" + tr.attr("name") + "</li>";
+                var data = dgUser.getRowData(id);
+                content += "<li>" + data.realName + "</li>";
             });
             content += "</ul></div>";
 
             ns.tip.confirm(content, function () {
                 $.post("$!basePath/system/user/delete", {ids: ids.toString()}, function (data) {
                     if (data.success == true) {
-                        loadUser();
+                        dgUser.reload();
                     } else {
-                        ns.tip.toast.error(data.error);
+                        ns.tip.toast.error(data.message);
                     }
                 });
             });
@@ -206,18 +255,18 @@
     function enableUser(id) {
         $.post("$!basePath/system/user/enable/" + id, {}, function (data) {
             if (data.success == true) {
-                $("#td_status_" + id).find("i").attr("class", "fa fa-circle text-success ml5");
+                dgUser.reload();
             } else {
-                Toast.error(data.error);
+                Toast.error(data.message);
             }
         });
     }
     function disableUser(id) {
         $.post("$!basePath/system/user/disable/" + id, {}, function (data) {
             if (data.success == true) {
-                $("#td_status_" + id).find("i").attr("class", "fa fa-circle text-danger ml5");
+                dgUser.reload();
             } else {
-                Toast.error(data.error);
+                Toast.error(data.message);
             }
         });
     }
@@ -228,18 +277,19 @@
                 if (data.success == true) {
                     Toast.success("密码重置成功!");
                 } else {
-                    Toast.error(data.error);
+                    Toast.error(data.message);
                 }
             });
         });
     }
     function initCheckBox() {
-        var chkAll = $("#userTable th input[type='checkbox']");
+        ns.form.initCheckbox("#gbox_dgUser input[type='checkbox']");
+        var chkAll = $("#gbox_dgUser th input[type='checkbox']");
         chkAll.on("ifChecked", function (event) {
-            $("#userTable td input[type='checkbox']").iCheck("check");
+            $("#gbox_dgUser td input[type='checkbox']").iCheck("check");
         });
         chkAll.on("ifUnchecked", function (event) {
-            $("#userTable td input[type='checkbox']").iCheck("uncheck");
+            $("#gbox_dgUser td input[type='checkbox']").iCheck("uncheck");
         });
     }
     function initXeditable() {
@@ -259,16 +309,19 @@
             url: "$!basePath/system/user/edit/email"
         });
     }
+    function doAddUser(){
+        ns.view.showModal("$!basePath/system/user/add?uid="+currentUnitId, {
+            size:"modal-lg",
+            onClose : function(dialog, obj){
+                if(dialog.isSaved){
+                    dgUser.reload();
+                }
+            }
+        });
+    }
     ns.ready(function () {
         initTreeView();
-        initCheckBox();
-        //删除页面缓存
-        $("#dialogUserDetail").on("hidden.bs.modal", function () {
-            $(this).removeData("bs.modal");
-        });
-        $("#dialogUserRightDetail").on("hidden.bs.modal", function () {
-            $(this).removeData("bs.modal");
-        });
+        initDataGrid();
     });
 
 </script>

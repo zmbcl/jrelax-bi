@@ -42,8 +42,9 @@
                                     <span class="label label-warning">本机</span>
                                     #end
                                 </td>
-                                <td>$!obj.key</td>
-                                <td>$!session.getAttribute($!key).realName</td>
+                                #set($user = $!session.getAttribute($!key))
+                                <td>$!user.userName</td>
+                                <td>$!user.realName</td>
                                 <td>$!session.getAttribute("ip-addr")</td>
                                 <td>$!session.getAttribute("login-time")</td>
                                 <td>$!session.getAttribute("user-agent")</td>

@@ -1088,7 +1088,7 @@ $.extend($.jgrid,{
 			},
 			celledit : {
 				inputClass : 'form-control'
-			}, 
+			},
 			inlinedit : {
 				inputClass : 'form-control',
 				icon_edit_nav : "glyphicon-edit",
@@ -2495,6 +2495,7 @@ $.fn.jqGrid = function( pin ) {
 			if(dnd && ts.p.jqgdnd) { $(ts).jqGrid('gridDnD','updateDnD');}
 			$(ts).triggerHandler("jqGridGridComplete");
 			if($.isFunction(ts.p.gridComplete)) {ts.p.gridComplete.call(ts);}
+			if($.isFunction(ts.p._gridComplete)) {ts.p._gridComplete.call(ts);}
 			$(ts).triggerHandler("jqGridAfterGridComplete");
 		},
 		beginReq = function() {

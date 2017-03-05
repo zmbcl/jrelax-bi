@@ -27,7 +27,7 @@
                         <button class="btn btn-primary toolbar-item disabled" onclick="doUploadPlugin()"><i class="fa fa-cloud-upload"></i> 上传新插件</button>
                     </div>
                     <div class="pull-right toolbar">
-                        <a class="btn btn-primary toolbar-item" href="$!basePath/system/plugin" data-pjax><i class="ti-reload"></i> 刷新</a>
+                        <a class="btn btn-primary toolbar-item" href="$!basePath/system/plugin"><i class="ti-reload"></i> 刷新</a>
                     </div>
                 </header>
                 <div class="content-wrap">
@@ -109,7 +109,7 @@
             if (data.success == true) {
                 window.location.href = "$!basePath/system/plugin";
             } else {
-                Toast.error(data.error);
+                Toast.error(data.message);
                 $(btn).button("reset");
             }
         });
@@ -120,7 +120,7 @@
             if (data.success == true) {
                 window.location.href = "$!basePath/system/plugin";
             } else {
-                Toast.error(data.error);
+                Toast.error(data.message);
                 $(btn).button("reset");
             }
         });

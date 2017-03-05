@@ -36,7 +36,7 @@
 					$.jstree.reference("#jsTreeDataDict").refresh();//刷新树
 					loadCategory();//刷新分类
 				} else {
-					Toast.error(data.error);
+					Toast.error(data.message);
 				}
 				$form.find("#ok").button("reset");
 			}

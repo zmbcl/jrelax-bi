@@ -13,7 +13,7 @@ a:active, a:focus, a:hover { color: #181c20 }
 .sidebar { background-color: #f8f8f8; color: black; }
 .sidebar a, .sidebar .nav-title { color: #807f83; }
 .compact-menu .main-navigation>ul>li { border-bottom: 1px solid #303840; border-top: 1px solid rgba(255, 255, 255, 0.05) }
-.app:not(.small-menu) .main-navigation>ul>li>ul>li.active a, .app:not(.small-menu) .main-navigation>ul>li>ul>li a:hover { color: #2dbe60 }
+.app:not(.small-menu) .main-navigation>ul li.active a, .app:not(.small-menu) .main-navigation>ul li a:hover { color: #2dbe60 }
 .main-navigation>ul>li.active>a { color: #2dbe60 }
 .main-navigation>ul>li:hover>a { color: #2dbe60 }
 .main-navigation>ul>li.open .sub-menu { background-color: white; }

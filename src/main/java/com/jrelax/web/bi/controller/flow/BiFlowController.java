@@ -5,18 +5,34 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.jrelax.core.web.transform.DataGridTransforms;
 import com.jrelax.kit.ObjectKit;
+import com.jrelax.kit.StringKit;
+import com.jrelax.web.bi.entity.BiCharts;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.activiti.bpmn.converter.BpmnXMLConverter;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.editor.constants.ModelDataJsonConstants;
+import org.activiti.editor.language.json.converter.BpmnJsonConverter;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentBuilder;
+import org.activiti.engine.repository.ModelQuery;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.apache.commons.io.FileUtils;
 import org.hibernate.criterion.Order;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,10 +54,13 @@ import com.jrelax.web.system.service.UnitService;
 @Controller
 @RequestMapping("/bi/flow")
 public class BiFlowController extends BaseController<BIFlow>{
-	private final String TPL = "bi/flow/flow/";
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final String TPL = "bi/flow/";
 	
 	@Autowired
 	private ProcessEngine processEngine;
+	@Autowired
+	private RepositoryService repositoryService;
 	@Autowired
 	private BIFlowService wflowService;
 	@Autowired
@@ -53,32 +72,79 @@ public class BiFlowController extends BaseController<BIFlow>{
 	 * @return
 	 */
 	@RequestMapping(method={RequestMethod.GET, RequestMethod.POST})
-	public String index(Model model, PageBean pageBean){
-		pageBean.addOrder(Order.desc("createTime"));
-		List<BIFlow> list = wflowService.list(pageBean);
-		model.addAttribute("list", list);
+	public String index(Model model){
 		return TPL + "index";
 	}
-	
+
+	@RequestMapping("/data")
+	@ResponseBody
+	public Map<String, Object> data(PageBean pageBean){
+		ModelQuery query = repositoryService.createModelQuery();
+		List<org.activiti.engine.repository.Model> modelList = query.listPage((pageBean.getPage() - 1) * pageBean.getRows(), pageBean.getRows());
+		pageBean.setTotalCount((int) query.count());
+		return DataGridTransforms.JQGRID.transform(modelList, pageBean);
+	}
+	@RequestMapping(value="/add", method={RequestMethod.GET, RequestMethod.POST})
+	public String add(Model model){
+		return TPL + "add";
+	}
+
+	@RequestMapping(value="/add/do")
+	@ResponseBody
+	public JSONObject doAdd(String name, String key, String descript){
+		try {
+			ObjectMapper objectMapper = new ObjectMapper();
+			ObjectNode editorNode = objectMapper.createObjectNode();
+			editorNode.put("id", "canvas");
+			editorNode.put("resourceId", "canvas");
+			ObjectNode stencilSetNode = objectMapper.createObjectNode();
+			stencilSetNode.put("namespace", "http://www.activiti.org/processdef");
+			editorNode.set("stencilset", stencilSetNode);
+			org.activiti.engine.repository.Model modelData = repositoryService.newModel();
+
+			ObjectNode modelObjectNode = objectMapper.createObjectNode();
+			modelObjectNode.put(ModelDataJsonConstants.MODEL_NAME, name);
+			modelObjectNode.put(ModelDataJsonConstants.MODEL_REVISION, 1);
+			modelObjectNode.put(ModelDataJsonConstants.MODEL_DESCRIPTION, StringKit.null2String(descript));
+			modelData.setMetaInfo(modelObjectNode.toString());
+			modelData.setName(name);
+			modelData.setKey(StringKit.null2String(key));
+
+			repositoryService.saveModel(modelData);
+			repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
+
+			return WebResult.success().element("id", modelData.getId());
+		} catch (Exception e) {
+			logger.error("创建模型失败：", e);
+			return WebResult.error(e);
+		}
+	}
 	/**
 	 * 设计新流程
 	 * @param model
 	 * @return
 	 */
 	@RequestMapping(value="/design", method={RequestMethod.GET, RequestMethod.POST})
+	@Deprecated
 	public String design(Model model){
-		//用户列表
-		List<User> userList = unitService.listUser();
-		//用户组列表
-		List<Role> roleList = unitService.listRole();
-		//表单列表
-		List<BIForm> formList = wformService.listToEntity("select id,name from BIForm order by createTime desc");
-		
-		model.addAttribute("userList", userList);
-		model.addAttribute("roleList", roleList);
-		model.addAttribute("formList", formList);
+//		//用户列表
+//		List<User> userList = unitService.listUser();
+//		//用户组列表
+//		List<Role> roleList = unitService.listRole();
+//		//表单列表
+//		List<BIForm> formList = wformService.listToEntity("select id,name from BIForm order by createTime desc");
+//
+//		model.addAttribute("userList", userList);
+//		model.addAttribute("roleList", roleList);
+//		model.addAttribute("formList", formList);
 		
 		return TPL + "design";
+	}
+
+	@RequestMapping(value="/modeler", method={RequestMethod.GET, RequestMethod.POST})
+	@Deprecated
+	public String modeler(Model model, String modelId){
+		return TPL + "modeler";
 	}
 	
 	/**
@@ -89,26 +155,21 @@ public class BiFlowController extends BaseController<BIFlow>{
 	@ResponseBody
 	public JSONObject deploy(HttpServletRequest request, String id){
 		try {
-			BIFlow flow = wflowService.get("select id,content,name from BIForm where id='"+id+"'");
-			if(ObjectKit.isNull(flow))
-				return WebResult.error("流程不存在！");
-			//创建临时文件
-			String tempDir = request.getServletContext().getRealPath("/");
-			File file = new File(tempDir+"/resources/temp");
-			if(!file.exists())
-				file.mkdirs();
-			file = new File(file.getPath()+"/"+flow.getName()+".bpmn");
-			FileUtils.writeStringToFile(file, flow.getContent(), "UTF-8");
-			InputStream is = FileUtils.openInputStream(file);
-			RepositoryService rs = processEngine.getRepositoryService();
-			//String deployId = rs.createDeployment().addClasspathResource("请假流程.bpmn").deploy().getId();
-			//部署流程
-			String deployId = rs.createDeployment().addInputStream(file.getName(), is).deploy().getId();
-			is.close();
-			file.delete();//删除文件
-			//更新流程为已部署
-			wflowService.executeSqlBatch("update WFlow set deployId='"+deployId+"' where id='"+id+"'");//更新流程状态为未部署
-			//System.out.println("当前流程定义数量："+rs.createProcessDefinitionQuery().count());
+			org.activiti.engine.repository.Model model = repositoryService.getModel(id);
+			ObjectNode modelNode = (ObjectNode) new ObjectMapper().readTree(repositoryService.getModelEditorSource(id));
+			BpmnModel bpmnModel = new BpmnJsonConverter().convertToBpmnModel(modelNode);
+			String processName = model.getName() + ".bpmn20.xml";
+
+			DeploymentBuilder builder = repositoryService.createDeployment();
+			builder.name(model.getName());
+			builder.addBpmnModel(processName, bpmnModel);
+			builder.category(model.getCategory());
+			Deployment deployment = builder.deploy();
+
+			model.setDeploymentId(deployment.getId());
+			repositoryService.saveModel(model);
+
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			return WebResult.error(e);
@@ -124,12 +185,24 @@ public class BiFlowController extends BaseController<BIFlow>{
 	@ResponseBody
 	public JSONObject unDeploy(String id){
 		try {
-			BIFlow flow = wflowService.get("select id,deployId from BIForm where id='"+id+"'");
-			if(ObjectKit.isNull(flow))
-				return WebResult.error("流程不存在！");
-			RepositoryService rs = processEngine.getRepositoryService();
-			rs.deleteDeployment(flow.getDeployId(), true);//级联删除，删除所有信息，包括历史
-			wflowService.executeSqlBatch("update BIForm set deployId=null where id='"+id+"'");//更新流程状态为未部署
+			repositoryService.deleteDeployment(id, true);//级联删除，删除所有信息，包括历史
+		} catch (Exception e) {
+			e.printStackTrace();
+			return WebResult.error(e);
+		}
+		return WebResult.success();
+	}
+
+	/**
+	 * 删除流程定义
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value="/delete")
+	@ResponseBody
+	public JSONObject delete(String id){
+		try {
+			repositoryService.deleteModel(id);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return WebResult.error(e);

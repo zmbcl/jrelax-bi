@@ -1,5 +1,6 @@
 <script src="$!basePath/framework/js/form/checkbox.js"></script>
 <script src="$!basePath/framework/js/view/tree.js"></script>
+<script src="$!basePath/framework/js/view/datagrid.js"></script>
 <div class="modal-header no-b">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
     <h4 class="modal-title"><i class="fa fa-user"></i> 选择用户(机构+角色)</h4>
@@ -7,15 +8,14 @@
 <div class="modal-body">
     <div class="row">
         <div class="col-lg-3 col-md-3">
-            <div id="jsTreeUnit"></div>
+            <div id="jsTreeUserUnit"></div>
         </div>
         <div class="col-lg-3 col-md-3">
-            <div id="jsTreeRole"></div>
+            <div id="jsTreeUserUnitRole"></div>
         </div>
         <div class="col-lg-6 col-md-6">
-            <form id="userSelectByUnitAndRoleForm" action="$!basePath/common/user/select-unit-role" method="post">
-
-            </form>
+            <table id="dgUserUnitRoleSelect"></table>
+            <div id="dgUserUnitRolePager"></div>
         </div>
     </div>
 </div>
@@ -23,45 +23,3 @@
     <button id="ok" type="submit" class="btn btn-primary">确认选择</button>
     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 </div>
-<script>
-    function _initCommonUserTreeView2() {
-        $("#jsTreeUnit").jstree({
-            plugins: ["wholerow"],
-            core: {
-                data: {
-                    url: function (node) {
-                        return node.id === "#" ? "$!basePath/common/user/select-unit/unit/tree" : "$!basePath/common/user/select-unit/unit/tree" + node.id
-                    }
-                },
-                multiple: false
-            }
-        }).on("select_node.jstree", function (node, selected) {
-            var cid = selected.selected;
-            _initCommonUserTreeView2_1(cid);
-        })
-    }
-
-    function _initCommonUserTreeView2_1(uid) {
-        if($.jstree.reference("#jsTreeRole")){
-            $.jstree.reference("#jsTreeRole").destroy();
-        }
-        $("#jsTreeRole").jstree({
-            plugins: ["wholerow"],
-            core: {
-                data: {
-                    url: function (node) {
-                        return "$!basePath/common/user/select-unit-role/role/tree/"+uid;
-                    }
-                },
-                multiple: false
-            }
-        }).on("select_node.jstree", function (node, selected) {
-            var rid = selected.selected;
-            ns.asyncRequest("$!basePath/common/user/select-unit-role/user/" + rid+"?multi=$!multi", {}, "#userSelectByUnitAndRoleForm");
-        })
-    }
-
-    ns.ready(function () {
-        _initCommonUserTreeView2();
-    });
-</script>

@@ -117,7 +117,7 @@
                     ns.tip.toast.success("数据已删除");
                     dgRoute.reload();
                 } else {
-                    ns.tip.toast.error(data.error);
+                    ns.tip.toast.error(data.message);
                 }
             });
         });
@@ -128,7 +128,7 @@
                 ns.tip.toast.success("已启用，生效请同步缓存");
                 dgRoute.reload();
             }else{
-                ns.tip.toast.error(data.error);
+                ns.tip.toast.error(data.message);
             }
         });
     }
@@ -138,7 +138,7 @@
                 ns.tip.toast.success("已禁用，生效请同步缓存");
                 dgRoute.reload();
             }else{
-                ns.tip.toast.error(data.error);
+                ns.tip.toast.error(data.message);
             }
         });
     }
@@ -147,7 +147,7 @@
             if(success){
                 ns.tip.toast.success("缓存已同步");
             }else{
-                ns.tip.toast.error(data.error);
+                ns.tip.toast.error(data.message);
             }
         });
     }

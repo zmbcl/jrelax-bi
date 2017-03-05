@@ -1,47 +1,26 @@
 <ul class="list-group">
     <li class="list-group-item">
-        <a href="javascript:;">
-            <span>数字框</span>
-            <i class="form-element ti-move pull-right"></i>
-        </a>
+        <a href="javascript:;"> <span>宏控件</span> <i class="fd-view-drag ti-move pull-right"></i></a>
         <div class="view hide">
-            <input type="number" class="form-control" t="input" data-element>
+            <span fd-view="macros">{宏控件}</span>
         </div>
     </li>
     <li class="list-group-item">
-        <a href="javascript:;">
-            <span>Email</span>
-            <i class="form-element ti-move pull-right"></i>
-        </a>
+        <a href="javascript:;"> <span>流程变量</span> <i class="fd-view-drag ti-move pull-right"></i></a>
         <div class="view hide">
-            <input type="email" class="form-control" t="input" data-element>
+            <span class="disabled" fd-view="variable">{流程变量}</span>
         </div>
     </li>
     <li class="list-group-item">
-        <a href="javascript:;">
-            <span>宏控件</span>
-            <i class="form-element ti-move pull-right"></i>
-        </a>
+        <a href="javascript:;"> <span>列表控件</span> <i class="fd-view-drag ti-move pull-right"></i></a>
         <div class="view hide">
-            <span class="disabled" t="macros" data-element>{宏控件}</span>
+            <span class="form-control" fd-view="list">{列表控件}</span>
         </div>
     </li>
     <li class="list-group-item">
-        <a href="javascript:;">
-            <span>流程变量</span>
-            <i class="form-element ti-move pull-right"></i>
-        </a>
+        <a href="javascript:;"> <span>提示控件</span> <i class="fd-view-drag ti-move pull-right"></i></a>
         <div class="view hide">
-            <span class="disabled" t="variable">{流程变量}</span>
-        </div>
-    </li>
-    <li class="list-group-item">
-        <a href="javascript:;">
-            <span>列表控件</span>
-            <i class="form-element ti-move pull-right"></i>
-        </a>
-        <div class="view hide">
-            <span class="form-control" t="list">{列表控件}</span>
+            <div class="alert alert-warning mt5" fd-view="alert">这是提示信息！！！</div>
         </div>
     </li>
 </ul>

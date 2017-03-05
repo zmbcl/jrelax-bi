@@ -107,6 +107,7 @@ TabPanel = function (config) {
      * {Number} Active tab index. Base on 0.
      */
     this.active = config.active || 0;
+    this.onActive = config.onActive || function(){}
     //this is tab array.
     this.tabs = [];
     this.scrolled = false;
@@ -115,6 +116,7 @@ TabPanel = function (config) {
     this.scrollFinish = true;
     this.maxLength = config.maxLength || -1;
     this.maxzindex = 0;
+
 
     this.init();
 };
@@ -444,19 +446,14 @@ TabPanel.prototype = {
             if (tabitem.icon) {
                 title.addClass('icon_title');
                 title.css('background-image', 'url("' + tabitem.icon + '")');
-                if (title.width() > (this.tabWidth - 35 - wFix)) {
-                    title.width((this.tabWidth - 50 - wFix));
-                    title.attr('title', tabitem.title);
-                    tab.append('<DIV>...</DIV>');
-                }
             } else {
                 title.addClass('title');
-                if (title.width() > (this.tabWidth - 19 - wFix)) {
-                    title.width((this.tabWidth - 30 - wFix));
-                    title.attr('title', tabitem.title);
-                    tab.append('<DIV>...</DIV>');
-                }
             }
+            // if (title.width() > (this.tabWidth - 35 - wFix)) {
+            //     title.width((this.tabWidth - 50 - wFix));
+            //     title.attr('title', tabitem.title);
+            //     tab.append('<DIV>...</DIV>');
+            // }
 
             var closer = $('<DIV></DIV>');
             closer.addClass('closer fa fa-times-circle');
@@ -617,6 +614,7 @@ TabPanel.prototype = {
                 }
             }
         }
+        this.onActive(position);
     },
     /**
      * @description {Method} kill To close tab.

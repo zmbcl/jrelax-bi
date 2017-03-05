@@ -22,37 +22,7 @@
 	            </header>
 	            <div class="cf nestable-lists">
 					<div class="dd" id="nestable_sort">
-						<ol class="dd-list">
-							#foreach($!first in $!firstRes)
-							<li class="dd-item" data-id="$!first.id">
-								<div class="dd-handle">
-									<i class="$!first.icon mr10"></i> $!first.name
-								</div>
-								#if($!first.hasChildren)
-								<ol class="dd-list">
-									#foreach($!second in $!secondRes.get($!first.id))
-									<li class="dd-item" data-id="$!second.id">
-										<div class="dd-handle">
-											<i class="$!second.icon mr10"></i> $!second.name
-										</div>
-										#if($!second.hasChildren)
-										<ol class="dd-list">
-											#foreach($!third in $!thirdRes.get($!second.id))
-											<li class="dd-item" data-id="$!third.id">
-												<div class="dd-handle">
-													<i class="$!third.icon mr10"></i> $!third.name
-												</div>
-											</li>
-											#end
-										</ol>
-										#end
-									</li>
-									#end
-								</ol>
-								#end
-							</li>
-							#end
-						</ol>
+						$!html
 					</div>
 				</div>
 	        </section>
@@ -76,7 +46,7 @@
 			if (data.success == true) {
 				Toast.success("菜单排序成功，请刷新页面！");
 			} else {
-				Toast.error(data.error);
+				Toast.error(data.message);
 			}
 			//重置按钮状态，关闭提示框
 			btn.button("reset");

@@ -12,24 +12,11 @@
     </div>
 </div>
 <div class="modal-footer">
+    <div id="topUnit" class="pull-left" style="display: none;">
+        <button type="button" class="btn btn-success">
+            设为顶级组织
+        </button>
+    </div>
     <button id="ok" type="submit" class="btn btn-primary">确认选择</button>
     <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
 </div>
-<script>
-    function __initCommonUnitTreeView() {
-        $("#__jsTreeUnit").jstree({
-            plugins: ["wholerow"],
-            core: {
-                data: {
-                    url: function (node) {
-                        return node.id === "#" ? "$!basePath/common/unit/select/tree" : "$!basePath/common/unit/select/tree" + node.id
-                    }
-                },
-                multiple: $!multi
-            }
-        });
-    }
-    ns.ready(function () {
-        __initCommonUnitTreeView();
-    });
-</script>

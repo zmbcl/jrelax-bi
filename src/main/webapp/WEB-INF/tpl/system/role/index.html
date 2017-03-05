@@ -29,6 +29,11 @@
                         <div id="jsTreeUnit"></div>
                     </div>
                 </div>
+                <footer>
+                    <div class="alert alert-info p10">
+                        <strong>提示：</strong>&nbsp;只可以看到当前用户所在机构下属的角色
+                    </div>
+                </footer>
             </aside>
             <!-- 内容主体 -->
             <section class="main-content">
@@ -36,47 +41,51 @@
                 <header class="header navbar">
                     <!-- 左按钮区 -->
                     <div class="btn-group tool-button">
-                        <a class="btn btn-primary navbar-btn" href="$!basePath/system/role/add" data-pjax><i
-                                class="fa fa-plus"></i> 新增角色</a>
+                        #ifAuthButton("btnAdd")
+                        <button class="btn btn-primary navbar-btn" onclick="doAddRole()"><i class="fa fa-plus"></i> 新增角色</button>
+                        #end
+                        #ifAuthButton("btnRemove")
                         <button class="btn btn-danger navbar-btn" onclick="delSel()"><i class="fa fa-close"></i> 删除选中
+                        </button>
+                        #end
+                    </div>
+                    <div class="pull-right offscreen-right">
+                        <button class="btn btn-primary navbar-btn"
+                                onclick="ns.view.showSidebarStatic('.sidebar-panel')"><i class="fa fa-sliders"></i> 筛选
                         </button>
                     </div>
                 </header>
                 <div class="content-wrap">
                     <div class="wrapper">
-                        <div class="row mb15">
+                        <div class="row">
                             <div class="col-lg-12 col-md-12">
-                                <table id="roleTable" class="table no-m">
-                                    <thead>
-                                    <tr>
-                                        <th>
-                                            <input type="checkbox" data-icheck data-check-all="data-check-item">
-                                        </th>
-                                        <th class="col-md-2 pd-l-lg">
-                                            <span class="pd-l-sm"></span>名称
-                                        </th>
-                                        <th class="col-md-6 offscreen-right">描述</th>
-                                        <th class="col-md-2">#springMessage('system.common.status')</th>
-                                        <th class="col-md-2">#springMessage('system.common.op')</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-
-                                    </tbody>
-                                </table>
+                                <table id="dgRole"></table>
+                                <div id="dgRolePager"></div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <footer>
-                    <div class="alert alert-info p10">
-                        <strong>提示：</strong>&nbsp;只可以看到当前用户所在机构下属的角色
-                    </div>
-                </footer>
                 <a class="exit-offscreen"></a>
             </section>
         </section>
     </section>
+</div>
+<div class="sidebar-panel from-right">
+    <div class="sidebar-panel-container shadow">
+        <header class="sidebar-panel-header">
+            <h4>筛选</h4>
+            <a class="sidebar-panel-close text-center"><i class="ti-close"></i> </a>
+        </header>
+        <div class="sidebar-panel-content">
+            <form id="searchForm" role="form">
+                <div class="form-group">
+                    <label for="name">角色名</label>
+                    <input name="name" type="text" class="form-control" placeholder="按角色名模糊查询" autofocus>
+                </div>
+                <button type="submit" class="btn btn-default">查询</button>
+            </form>
+        </div>
+    </div>
 </div>
 #required_js
 
@@ -85,8 +94,10 @@
     ns.requireJS(["/framework/js/form/checkbox.js",
         "/framework/js/view/toast.js",
         "/framework/js/view/tree.js",
-        "/framework/js/view/treetable.js"]);
-    var cid;
+        "/framework/js/view/treetable.js",
+        "/framework/js/view/datagrid.js",
+        "/framework/js/form/search.form.js"]);
+    var dgRole;
     function initTreeView() {
         $("#jsTreeUnit").jstree({
             plugins: ["wholerow"],
@@ -99,8 +110,7 @@
                 multiple: false
             }
         }).on("select_node.jstree", function (node, selected) {
-            cid = selected.selected;
-            loadRole();
+            loadRole(selected.selected[0]);
         }).on("loaded.jstree", function (node, jstree) {
             var id = ns.data.sessionStorage.get("sys_role_tree_id");
             if (!id)
@@ -109,32 +119,87 @@
                 jstree.instance.select_node(id);
         });
     }
-    function loadRole() {
-        ns.asyncRequest("$!basePath/system/role/unitrole/" + cid, {}, "#roleTable tbody", function () {
-            ns.data.sessionStorage.set("sys_role_tree_id", cid);
+    function initDataGrid() {
+        dgRole = $("#dgRole").jqGrid({
+            url: '$!basePath/system/role/unitrole/data',
+            datatype : "local",
+            colModel: [
+                { label: 'ID', name: 'id', key: true, hidden:true, align:"left" },
+                { label: '名称', name: 'name', width:100},
+                { label: '描述', name: 'descript', width:200},
+                { label: "#springMessage('system.common.status')", name: 'enabled', width:100, formatter:function(val){
+                    return ns.view.datagrid.renderEnabled(val);
+                }},
+                { label:"#springMessage('system.common.op')",formatter:function(val,node,data){
+                    return ns.view.datagrid.renderOp([
+                        {title:"查看权限", onclick:function(){
+                            ns.view.showModal("$!basePath/system/role/detail/right/"+data.id,{border:false});
+                        }},
+                        {title:"查看下属用户", onclick:function(){
+                            ns.view.showModal("$!basePath/system/role/detail/user/"+data.id,{border:false,size:"modal-lg"});
+                        }},
+                        {divider:true},
+                        {title: "修改", onclick:function(){
+                            ns.view.showModal("$!basePath/system/role/edit/"+data.id,{
+                                onHidden : function(dialog, obj){
+                                    if(dialog.isEdited){
+                                        dgRole.reload();
+                                    }
+                                }
+                            });
+                        }},
+                        {title:"删除", onclick:function(){
+                            doDelete(data.id);
+                        }},
+                        {title: "授权", onclick:function(){
+                            ns.view.showModal("$!basePath/system/role/edit/right/"+data.id,{size:"modal-lg"});
+                        }},
+                        {divider:true},
+                        {title:"启用", onclick:function(){
+                            enableRole(data.id);
+                        }},
+                        {title:"禁用", onclick:function(){
+                            disableRole(data.id);
+                        }}
+                    ]);
+                } }
+            ],
+            height: $(".main-content .wrapper").height() - ns.view.datagrid.offsetHeight,
+            pager: "#dgRolePager",
+            searchForm : "#searchForm",
+            multiselect : true,
+            icheckbox : true
         });
     }
-    function del(id) {
+    var currentUnitId = "";
+    function loadRole(id) {
+        currentUnitId = id;
+        dgRole.setGridParam({
+            datatype : "json",
+            postData : {unitId : id}
+        }).trigger("reloadGrid");
+    }
+    function doDelete(id) {
         ns.tip.confirm("角色删除后无法恢复，并且角色下属用户将失去该角色的所有菜单权限！确定删除吗？", function () {
             $.post("$!basePath/system/role/delete/" + id, {}, function (data) {
                 if (data.success == true) {
                     ns.tip.toast.success("删除成功!");
-                    $("#" + id).remove();
+                    dgRole.reload();
                 } else {
-                    ns.tip.toast.error(data.error);
+                    ns.tip.toast.error(data.message);
                 }
             });
         });
     }
     function delSel() {
-        var ids = ns.form.check("#roleTable").getChecks();
+        var ids = dgRole.getSelectRows();
         if (ids.length == 0) return ns.tip.toast.warning("请选择要删除的角色！");
         ns.tip.confirm("确定要删除选中的角色吗？", function () {
             ns.post("$!basePath/system/role/delete", {ids: ids.toString()}, function (success, data) {
                 if (success) {
-                    loadRole();
+                    dgRole.reload();
                 } else {
-                    return ns.tip.toast.error(data.error);
+                    return ns.tip.toast.error(data.message);
                 }
             })
         });
@@ -142,27 +207,37 @@
     function enableRole(id) {
         $.post("$!basePath/system/role/enable/" + id, {}, function (data) {
             if (data.success == true) {
-                $("#td_status_" + id).find("i").attr("class", "fa fa-circle text-success ml5");
+                dgRole.reload();
             } else {
-                Toast.error(data.error);
+                Toast.error(data.message);
             }
         });
     }
     function disableRole(id) {
         $.post("$!basePath/system/role/disable/" + id, {}, function (data) {
             if (data.success == true) {
-                $("#td_status_" + id).find("i").attr("class", "fa fa-circle text-danger ml5");
+                dgRole.reload();
             } else {
-                Toast.error(data.error);
+                Toast.error(data.message);
             }
         });
     }
+
+    function doAddRole(){
+        ns.view.showModal("$!basePath/system/role/add?uid="+currentUnitId,{
+            onHidden : function(dialog, obj){
+                if(dialog.isSaved){
+                    ns.confirm("角色添加成功，是否立即对此角色进行授权？", function(){
+                        ns.view.showModal("$!basePath/system/role/edit/right/"+dialog.id,{size:"modal-lg"});
+                    });
+                    dgRole.reload();
+                }
+            }
+        })
+    }
     $(function () {
         initTreeView();
-        //删除页面缓存
-        $("#dialogDetail").on("hidden.bs.modal", function () {
-            $(this).removeData("bs.modal");
-        });
+        initDataGrid();
     });
 </script>
 #loading_close

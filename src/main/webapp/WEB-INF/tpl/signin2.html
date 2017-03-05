@@ -150,13 +150,13 @@
 						window.location.href="$!basePath/index";
 						#end
 					};else{
-						if(data.error == "vc"){
+						if(data.message == "vc"){
 							$("#dialogVeryCode img").attr("src","$!basePath/open/vc");
 							$("#dialogVeryCode #verifycode").val("");
 							return $("#dialogVeryCode").modal("show");
 						}
 						$("#signInForm #verifycode").val("");
-						$("#tip").text(data.error);
+						$("#tip").text(data.message);
 						$("#tip").fadeIn();
 						$form.find("button:submit").text("立即登陆");
 						$form.find("button:submit").removeAttr("disabled")

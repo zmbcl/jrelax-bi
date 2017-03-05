@@ -30,55 +30,12 @@
                 </header>
                 <div class="content-wrap">
                     <div class="wrapper">
-                        <form id="flowFormForm" action="$!basePath/flow/form" method="post">
-                            <div class="row clearfix">
-                                <div class="col-md-12 column">
-                                    <table class="table">
-                                        <thead>
-                                        <tr>
-                                            <th class="col-lg-6">表单名称</th>
-                                            <th class="col-lg-2">创建者</th>
-                                            <th class="col-lg-2">最后修改时间</th>
-                                            <th>#springMessage('system.common.op')</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        #foreach($!obj in $!list)
-                                        <tr>
-                                            <td>$!obj.name</td>
-                                            <td>$!obj.createUser</td>
-                                            <td>$!obj.createTime</td>
-                                            <td>
-                                                <div class="btn-group">
-                                                    <button type="button" class="btn btn-default btn-xs dropdown-toggle"
-                                                            data-toggle="dropdown">
-                                                        <i class="ti-settings"></i>
-                                                        <span class="ti-angle-down"></span>
-                                                    </button>
-                                                    <ul class="dropdown-menu" role="menu">
-                                                        <li><a href="javascript:;" onclick="ns.data.copy('$!obj.id')">复制ID</a></li>
-                                                        <li><a href="javascript:;" onclick="del('$!obj.id')">#springMessage('system.common.delete')</a></li>
-                                                        <li><a href="$!basePath/bi/form/v2/design/edit/$!obj.id" target="_blank">设计表单</a></li>
-                                                        <li><a href="$!basePath/bi/form/v2/design/preview/$!obj.id" target="_blank">浏览表单</a></li>
-                                                        <li class="divider"></li>
-                                                        <li><a href="$!basePath/bi/form/v2/datalist/$!obj.id" target="_blank">查询表单数据</a></li>
-                                                        <li><a href="$!basePath/bi/form/v2/column/$!obj.id" target="_blank">管理数据字段</a></li>
-
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        #end
-                                        </tbody>
-                                    </table>
-                                </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 table-responsive">
+                                <table id="dgForm2"></table>
+                                <div id="dgForm2Pager"></div>
                             </div>
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    #pager_ajax
-                                </div>
-                            </div>
-                        </form>
+                        </div>
                     </div>
                     <a class="exit-offscreen"></a>
                 </div>
@@ -92,18 +49,61 @@
 <!-- 本页面脚本 -->
 <script type="text/javascript" src="$!basePath/framework/js/view/toast.js"></script>
 <script type="text/javascript">
-    function del(id) {
+    ns.requireJS([
+        "/framework/js/form/checkbox.js",
+        "/framework/js/view/datagrid.js",
+        "/framework/js/form/search.form.js"]);
+    function doDelete(id) {
         ns.confirm("已绑定流程的表单删除后会影响流程，确定删除吗？", function () {
             ns.post("$!basePath/bi/form/v2/delete/" + id, {}, function (success, data) {
                 if (success) {
                     ns.tip.toast.success("删除成功!");
                     ns.back("$!basePath/bi/form/v2", 1000);
                 } else {
-                    ns.tip.toast.error(data.error);
+                    ns.tip.toast.error(data.message);
                 }
             });
         });
     }
+    var dgForm2;
+    ns.ready(function () {
+        dgForm2 = $("#dgForm2").jqGrid({
+            url: '$!basePath/bi/form/v2/data',
+            colModel: [
+                {label: 'ID', name: 'id', key: true, hidden: true, align: "left"},
+                {label: '表单名称', name: 'name', width: 300},
+                {label: '创建人', name: 'createUser', width: 100},
+                {label: '创建时间', name: 'createTime', width: 100},
+                {
+                    label: '操作', width: 50, formatter: function (val, node, data) {
+                    return ns.view.datagrid.renderOp([
+                        {
+                            title: "复制ID", onclick: function () {
+                            ns.data.copy(data.id);
+                        }
+                        },
+                        {
+                            title: "删除", onclick: function () {
+                            doDelete(data.id);
+                        }
+                        },
+                        {title: "设计表单", url: "$!basePath/bi/form/v2/design/edit/" + data.id, target: "_blank"},
+                        {title: "预览表单", url: "$!basePath/bi/form/v2/design/preview/" + data.id, target: "_blank"},
+                        {divider: true},
+                        {title: "查询表单数据", url: "$!basePath/bi/form/v2/datalist/" + data.id, target: "_blank"},
+                        {title: "管理数据字段", url: "$!basePath/bi/form/v2/column/" + data.id, target: "_blank"}
+                    ]);
+                }
+                }
+            ],
+            height: $(".main-content .wrapper").height() - ns.view.datagrid.offsetHeight,
+            pager: "#dgForm2Pager",
+            rownumbers:true,
+            sortname : "createTime",
+            sortorder : "desc",
+//            searchForm : "#searchForm",
+        });
+    });
 </script>
 #loading_close
 </body>

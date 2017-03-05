@@ -7,7 +7,7 @@ ns.ready(function(){
 	ns.view.datagrid = {
 		opClickEvents : {},//操作栏事件
 		counter : 0,
-		offsetHeight : 55,
+		offsetHeight : 77,
 		init : function(){
 			//引入必要的样式+JS文件
 			ns.requireCSS("/framework/plugins/jqgrid/ui.jqgrid-bootstrap.css");
@@ -34,14 +34,16 @@ ns.ready(function(){
 						});
 					}
 					dg.trigger("reloadGrid");
+				},
+				getSelectRows : function(){
+					return $(this).getGridParam("selarrrow");
 				}
 			});
 			$.jgrid.styleUI.Bootstrap.base.headerTable = "table";
-			$.jgrid.styleUI.Bootstrap.base.rowTable = "table table-striped table-hover";
+			$.jgrid.styleUI.Bootstrap.base.rowTable = "table";
 			$.jgrid.styleUI.Bootstrap.base.footerTable = "table";
-			$.jgrid.styleUI.Bootstrap.base.pagerTable = "table table-condensed";
-			// $.jgrid.styleUI.Bootstrap.base.pgInput = "form-control bg-default";
-			// $.jgrid.styleUI.Bootstrap.base.pgSelectBox = "form-control bg-default";
+			$.jgrid.styleUI.Bootstrap.base.pagerTable = "table";
+			$.jgrid.styleUI.Bootstrap.base.rownumBox = "";
 			$.jgrid.defaults = $.extend($.jgrid.defaults, {
 				mtype : "POST",
 				datatype: "json",
@@ -55,13 +57,33 @@ ns.ready(function(){
 				rowNum: 20,
 				rowList:[10,20,50,100],
 				loadui:"disable",
-				beforeRequest : function(){
-					ns.showLoadingbar();
+				xeditable : undefined,//xeditable初始化函数
+				icheckbox : false,//chekcbox使用icheck
+				searchForm : undefined,//xeditable初始化函数
+                beforeRequest : function(){
+                    var grid = $(this).jqGrid();
+                    if(grid.getGridParam("datatype") != "local")// 本地数据不显示进度条
+						ns.showLoadingbar();
 				},
-				gridComplete : function(){
-					ns.closeLoadingbar();
+				_gridComplete : function(){
+                    ns.closeLoadingbar();
+                	var grid = $(this).jqGrid();
 					//下拉菜单位置
 					if (ns.view.initDropdownMenuDirection)ns.view.initDropdownMenuDirection();
+					if(grid.getGridParam("icheckbox")){
+						ns.view.datagrid.enableICheck(this);
+					}
+					if(grid.getGridParam("xeditable")){
+                        grid.getGridParam("xeditable")();
+					}
+                    if(grid.getGridParam("searchForm")){
+                        $(grid.getGridParam("searchForm")).searchForm({
+                            target : {
+                                type : "jqgrid",
+                                handler : grid
+                            }
+                        });
+                    }
 				}
 			});
 			//自适应宽度
@@ -74,18 +96,46 @@ ns.ready(function(){
 					if(target.getGridParam("autowidth")){//设置为自动计算宽度 才生效
 						//自适应宽度
 						target.setGridWidth(grid.parent().width());
-						target.width(target.width()-2);
+						target.width(target.width() - 3);
 						//自适应高度
-						target.setGridHeight(grid.height() + ns.resizeDiff.height - ns.view.datagrid.offsetHeight);
+						// target.setGridHeight
 					}
-				})
+				});
 			});
 
 			ns.view.datagrid.inited = true;
 		},
+		enableICheck : function(target){//启用iCheck
+            var grid = $(target).jqGrid();
+            var chkAll = $(target.grid.hDiv).find("th input[type='checkbox']");
+            chkAll.attr("data-icheck", true);
+            chkAll.attr("data-check-all", "data-check-item-"+grid.id);
+            var chk = $(target.grid.bDiv).find("td input[type='checkbox']");
+            chk.attr("data-check-item-"+grid.id, "");
+            ns.form.initCheckbox(chkAll);
+            ns.form.initCheckbox(chk);
+
+            chk.off("ifChanged");
+            chk.on("ifChanged", function(){
+                var isChecked = chkAll.is(":checked");
+                var id = $(this).parents("tr").attr("id");
+                if(id)
+                    grid.setSelection(id);
+                if(isChecked)
+                    chkAll.prop("checked", true);
+            });
+            var onSelectRow = grid.getGridParam("onSelectRow");
+            grid.setGridParam({
+                onSelectRow : function(rowid, status, event){
+                    chkAll.iCheck("update");
+                    chk.iCheck("update");
+                    if(onSelectRow) onSelectRow(rowid, status, event);
+                }
+            });
+		},
 		renderEditable : function(title, classname, val, pk, placement){// 标题 样式名 显示值 主键值 显示方向
 			placement = placement || "right";
-			return "<a data-type=\"text\" data-title=\""+title+"\" data-pk=\""+pk+"\" data-placement=\""+placement+"\" class=\""+classname+"\">"+val+"</a>"
+			return "<a data-type=\"text\" data-title=\""+title+"\" data-pk=\""+pk+"\" data-placement=\""+placement+"\" class=\"jgrid-xeditable "+classname+"\">"+val+"</a>"
 		},
 		renderEnabled : function(val){//启用，禁用
 			if(val)

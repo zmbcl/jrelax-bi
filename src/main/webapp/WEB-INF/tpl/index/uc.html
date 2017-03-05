@@ -81,7 +81,7 @@
 								if(data.success == true){
 									Toast.success("密码修改成功！");
 								}else{
-									Toast.error(data.error);
+									Toast.error(data.message);
 								}
 							});
 						}
@@ -101,23 +101,29 @@
 								#end
 							</div>
 						</div>
-						<!--<div class="form-group hide">-->
-							<!--<label class="col-sm-2 control-label">面部识别</label>-->
-							<!--<div class="col-sm-10">-->
-								<!--#if($!user.headImage)-->
-								<!--<img src="$!basePath/face/$!user.headImage?$!range" width="60"/>-->
-								<!--<a class="btn btn-default" href="javascript:;" onclick="ns.view.showModal('$!basePath/uc/himage')">更改图片</a>-->
-								<!--#else-->
-								<!--<a class="btn btn-default" href="javascript:;" onclick="ns.view.showModal('$!basePath/uc/himage')">上传图片</a>-->
-								<!--#end-->
-							<!--</div>-->
-						<!--</div>-->
+##						<!--<div class="form-group hide">-->
+##							<!--<label class="col-sm-2 control-label">面部识别</label>-->
+##							<!--<div class="col-sm-10">-->
+##								<!--#if($!user.headImage)-->
+##								<!--<img src="$!basePath/face/$!user.headImage?$!range" width="60"/>-->
+##								<!--<a class="btn btn-default" href="javascript:;" onclick="ns.view.showModal('$!basePath/uc/himage')">更改图片</a>-->
+##								<!--#else-->
+##								<!--<a class="btn btn-default" href="javascript:;" onclick="ns.view.showModal('$!basePath/uc/himage')">上传图片</a>-->
+##								<!--#end-->
+##							<!--</div>-->
+##						<!--</div>-->
 						<div class="form-group">
 							<label class="col-sm-2 control-label">关联邮箱</label>
 							<div class="col-sm-10">
 								<a class="btn btn-default" href="javascript:;" onclick="ns.view.showModal('$!basePath/uc/email')">#if($!mailUser)$!mailUser#else配置#end</a>
 							</div>
 						</div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">快捷菜单</label>
+                            <div class="col-sm-10">
+                                <a class="btn btn-default" href="javascript:;" onclick="ns.view.showModal('$!basePath/uc/quickmenu')">管理快捷菜单</a>
+                            </div>
+                        </div>
 					</form>
 				</div>
 				<div class="pl10 pr10 tab-pane fade" id="signin">
@@ -133,8 +139,8 @@
 							#foreach($!log in $!logs)
 							<tr>
 								<td><span class="pd-l-sm"></span>$!log.time</td>
-								<td>$!log.manipulateName</td>
-								<td>$!log.iP</td>
+								<td>$!log.module</td>
+								<td>$!log.ip</td>
 							</tr>
 							#end
 						</tbody>
@@ -147,7 +153,7 @@
 								<div class="timeline-date">$!log.time</div>
 								<div class="panel-body">
 									<b>$!log.content</b>
-									<p>IP：$!log.iP</p>
+									<p>IP：$!log.ip</p>
 								</div>
 							</section>
 						</div>

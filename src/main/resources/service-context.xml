@@ -22,7 +22,7 @@
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
     <!-- 数据源配置 -->
-    <bean id="preferences" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <bean id="preferences" class="com.jrelax.config.JRelaxPropertyPlaceholderConfigurer">
         <!-- 指定数据库配置文件路径 -->
         <property name="locations">
             <list>
@@ -32,28 +32,28 @@
     </bean>
     <!-- 定义数据源Bean,使用C3P0数据源实现 -->
     <bean id="parentDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
-        <!-- 最大连接数 -->
-        <property name="maxPoolSize" value="${jdbc.maxPoolSize}"/>
-        <!-- 最小连接数 -->
-        <property name="minPoolSize" value="${jdbc.minPoolSize}"/>
-        <!-- 初始化连接数量 -->
-        <property name="initialPoolSize" value="${jdbc.initialPoolSize}"/>
-        <!-- 最大空闲时间,60秒内未使用则连接被丢弃。若为0则永不丢弃 -->
-        <property name="maxIdleTime" value="${jdbc.maxIdleTime}"/>
-        <!-- 当连接池中的连接耗尽的时候c3p0一次同时获取的连接数 -->
         <property name="acquireIncrement" value="${jdbc.acquireIncrement}"/>
-        <!-- JDBC的标准,用以控制数据源内加载的PreparedStatements数量。但由于预缓存的statements属于单个connection而不是整个连接池所以设置这个参数需要考虑到多方面的因数.如果maxStatements与maxStatementsPerConnection均为0,则缓存被关闭 -->
-        <property name="maxStatements" value="${jdbc.maxStatements}"/>
-        <!-- 检查所有连接池中的空闲连接的时间间隔 -->
+        <property name="maxPoolSize" value="${jdbc.maxPoolSize}"/>
+        <property name="minPoolSize" value="${jdbc.minPoolSize}"/>
+        <property name="initialPoolSize" value="${jdbc.initialPoolSize}"/>
+        <property name="maxIdleTime" value="${jdbc.maxIdleTime}"/>
+        <property name="maxConnectionAge" value="${jdbc.maxConnectionAge}"/>
+        <property name="maxIdleTimeExcessConnections" value="${jdbc.maxIdleTimeExcessConnections}"/>
+        <property name="automaticTestTable" value="${jdbc.automaticTestTable}"/>
+        <property name="preferredTestQuery"><null>${jdbc.preferredTestQuery}</null></property>
+        <property name="connectionTesterClassName"><null>${jdbc.connectionTesterClassName}</null></property>
         <property name="idleConnectionTestPeriod" value="${jdbc.idleConnectionTestPeriod}"/>
-        <!-- 定义在从数据库获取新连接失败后重复尝试的次数 -->
-        <property name="acquireRetryAttempts" value="${jdbc.acquireRetryAttempts}"/>
-        <!-- 获取连接失败将会引起所有等待连接池来获取连接的线程抛出异常。但是数据源仍有效保留,并在下次调用getConnection()的时候继续尝试获取连接。如果设为true,那么在尝试获取连接失败后该数据源将申明已断开并永久关闭 -->
-        <property name="breakAfterAcquireFailure" value="${jdbc.breakAfterAcquireFailure}"/>
-        <!-- 性能消耗大请只在需要的时候使用它。如果设为true,那么在每个connection提交的时候都将校验其有效性。建议使用idleConnectionTestPeriod或automaticTestTable等提升连接测试的性能 -->
+        <property name="testConnectionOnCheckin" value="${jdbc.testConnectionOnCheckin}"/>
         <property name="testConnectionOnCheckout" value="${jdbc.testConnectionOnCheckout}"/>
-        <!--c3p0将建一张名为Test的空表，并使用其自带的查询语句进行测试。如果定义了这个参数那么属性preferredTestQuery将被忽略。你不能在这张Test表上进行任何操作，它将只供c3p0测试使用。默认值: null -->
-        <property name="automaticTestTable" value="${jdbc.automaticTestTable}"></property>
+        <property name="maxStatements" value="${jdbc.maxStatements}"/>
+        <property name="maxStatementsPerConnection" value="${jdbc.maxStatementsPerConnection}"/>
+        <property name="acquireRetryAttempts" value="${jdbc.acquireRetryAttempts}"/>
+        <property name="acquireRetryDelay" value="${jdbc.acquireRetryDelay}"/>
+        <property name="breakAfterAcquireFailure" value="${jdbc.breakAfterAcquireFailure}"/>
+        <property name="autoCommitOnClose" value="${jdbc.autoCommitOnClose}"/>
+        <property name="forceIgnoreUnresolvedTransactions" value="${jdbc.forceIgnoreUnresolvedTransactions}"/>
+        <property name="debugUnreturnedConnectionStackTraces" value="${jdbc.debugUnreturnedConnectionStackTraces}"/>
+        <property name="unreturnedConnectionTimeout" value="${jdbc.unreturnedConnectionTimeout}"/>
     </bean>
     <!-- 主数据源 -->
     <bean id="masterDataSource" parent="parentDataSource">
@@ -88,7 +88,7 @@
     <!-- 数据源自动切换 -->
     <aop:config>
         <aop:pointcut id="dataSourceAdvicePointcut" expression="execution(* com.jrelax.web..*Service.*(..))"/>
-        <aop:advisor pointcut-ref="dataSourceAdvicePointcut" advice-ref="multiDataSourceAdvice"></aop:advisor>
+        <aop:advisor pointcut-ref="dataSourceAdvicePointcut" advice-ref="multiDataSourceAdvice"/>
     </aop:config>
     <!-- 集成Hibernate -->
     <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
@@ -108,6 +108,7 @@
                 <prop key="hibernate.default_batch_fetch_size">${hibernate.default_batch_fetch_size}</prop>
                 <prop key="hibernate.max_fetch_depth">${hibernate.max_fetch_depth}</prop>
                 <prop key="hibernate.generate_statistics">${hibernate.generate_statistics}</prop>
+                <prop key="hibernate.bytecode.use_reflection_optimizer">${hibernate.bytecode.use_reflection_optimizer}</prop>
                 <prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
                 <prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
                 <prop key="hibernate.cache.region.factory_class">${hibernate.cache.region.factory_class}</prop>
@@ -117,7 +118,7 @@
         </property>
     </bean>
     <!-- 开启AOP监听 只对当前配置文件有效 -->
-    <aop:aspectj-autoproxy expose-proxy="true"/>
+    <aop:aspectj-autoproxy expose-proxy="true" proxy-target-class="true"/>
     <!-- 开启注解事务 只对当前配置文件有效 -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
     <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
@@ -156,16 +157,17 @@
     <!-- 配置ApplicationContextHelper -->
     <bean class="com.jrelax.core.support.ApplicationContextHelper"/>
     <!-- 注入DaseDao -->
-    <bean id="baseHibernateDaoImpl" class="com.jrelax.orm.dao.impl.BaseHibernateDaoImpl"/>
+    <bean id="baseHibernateDao" class="com.jrelax.orm.dao.impl.BaseHibernateDaoImpl"/>
     <!-- 插件注册器 -->
-    <bean id="pluginRegister" class="com.jrelax.core.plugin.PluginRegister" init-method="init"
-          destroy-method="destory"/>
+    <bean id="pluginRegister" class="com.jrelax.core.plugin.PluginRegister" init-method="init" destroy-method="destory"/>
     <!-- 插件拦截器 -->
     <bean id="pluginAdvice" class="com.jrelax.core.plugin.PluginAdvice"/>
     <aop:config>
         <aop:pointcut id="pluginAdvicePointcut" expression="execution(* com.jrelax.web..*(..))"/>
-        <aop:advisor pointcut-ref="pluginAdvicePointcut" advice-ref="pluginAdvice"></aop:advisor>
+        <aop:advisor pointcut-ref="pluginAdvicePointcut" advice-ref="pluginAdvice"/>
     </aop:config>
+    <!-- 注解日志切面 -->
+    <bean id="logAspectj" class="com.jrelax.aop.LogAspectj"/>
     <!-- SQL日志记录 -->
     <bean id="log4jdbcInterceptor" class="com.jrelax.orm.log.DataSourceSpyInterceptor" />
     <bean id="dataSourceLog4jdbcAutoProxyCreator" class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
@@ -181,5 +183,18 @@
             </list>
         </property>
     </bean>
-
+    <!--异步执行器配置-->
+    <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <!-- 最小连接数-->
+        <property name="corePoolSize" value="5"/>
+        <!-- 最大连接数-->
+        <property name="maxPoolSize" value="500"/>
+        <!--最大空闲时间-->
+        <property name="keepAliveSeconds" value="3000"/>
+        <!--队列缓存-->
+        <property name="queueCapacity" value="200"/>
+        <!-- 等待线程结束后关闭-->
+        <property name="waitForTasksToCompleteOnShutdown" value="true"/>
+        <property name="threadNamePrefix" value="AsyncTaskExecutor"/>
+    </bean>
 </beans>

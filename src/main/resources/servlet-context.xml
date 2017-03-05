@@ -25,7 +25,7 @@
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Service"/>
     </context:component-scan>
     <!-- 启动Spring MVC的注解功能 完成请求和注解POJO的映射 -->
-    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+    <bean class="com.jrelax.core.web.annotation.RequestMappingHandlerAdapter">
         <property name="messageConverters">
             <list>
                 <!-- 输出纯文本 -->
@@ -33,7 +33,7 @@
                     <property name="supportedMediaTypes">
                         <list>
                             <value>text/html;charset=UTF-8</value>
-                            <value>text/xml;charset=UTF-8</value>
+                            <value>text/plain;charset=UTF-8</value>
                         </list>
                     </property>
                 </bean>
@@ -42,6 +42,7 @@
                     <property name="objectMapper">
                         <bean class="com.jrelax.core.web.converter.JSONObjectMapper"/>
                     </property>
+                    <!-- 定义支持的RequestHeader中Accept类型 -->
                     <property name="supportedMediaTypes">
                         <list>
                             <value>application/json;charset=UTF-8</value>
@@ -49,10 +50,24 @@
                         </list>
                     </property>
                 </bean>
+                <!-- 输出XML -->
+                <bean class="org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter">
+                    <!-- 定义支持的RequestHeader中Accept类型 -->
+                    <property name="supportedMediaTypes">
+                        <list>
+                            <value>text/xml;charset=UTF-8</value>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
         <property name="customArgumentResolvers">
-            <bean class="com.jrelax.core.web.resolver.BeanArgumentResolver"/>
+            <list>
+                <bean class="com.jrelax.core.web.resolver.BeanArgumentResolver"/>
+                <bean class="com.jrelax.core.web.resolver.ListArgumentResolver"/>
+                <bean class="com.jrelax.core.web.resolver.ListMapArgumentResolver"/>
+                <bean class="com.jrelax.core.web.resolver.JsonArgumentResolver"/>
+            </list>
         </property>
         <!-- 定义全局属性编辑器 -->
         <property name="webBindingInitializer">
@@ -62,6 +77,11 @@
                 <!-- 定义Bean验证 -->
                 <property name="validator" ref="validator"/>
             </bean>
+        </property>
+        <property name="prefixReturnValueHandlers">
+            <list>
+                <bean class="com.jrelax.core.web.handler.JSONMethodReturnValueHandler"/>
+            </list>
         </property>
     </bean>
     <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
@@ -78,7 +98,7 @@
     <!-- ConversionService -->
     <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
         <property name="converters">
-            <bean class="com.jrelax.core.web.converter.StringToBigDecimalConverter"></bean>
+            <bean class="com.jrelax.core.web.converter.StringToBigDecimalConverter"/>
         </property>
     </bean>
     <!-- 启用表单验证 -->
@@ -91,6 +111,7 @@
     <mvc:resources location="/resources/faces/" mapping="/face/**"/>
 
     <context:annotation-config/>
+
     <!-- 集成Velocity -->
     <bean id="velocityEngine" class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
         <property name="resourceLoaderPath">
@@ -104,7 +125,7 @@
                 <prop key="directive.foreach.counter.initial.value">
                     ${velocity.directive.foreach.counter.initial.value}
                 </prop>
-                <prop key="velocimacro.library">${velocity.velocimacro.library}</prop>
+                <prop key="velocimacro.library">${velocity.macro.library}</prop>
                 <prop key="file.resource.loader.cache">${velocity.file.resource.loader.cache}</prop>
                 <prop key="file.resource.loader.modificationCheckInterval">
                     ${velocity.file.resource.loader.modificationCheckInterval}
@@ -113,7 +134,8 @@
                     com.jrelax.core.web.velocity.IFAuthButtonDirective,
                     com.jrelax.core.web.velocity.IFAuthColumnDirective,
                     com.jrelax.core.web.velocity.IFCheckedDirective,
-                    com.jrelax.core.web.velocity.IFSelectedDirective
+                    com.jrelax.core.web.velocity.IFSelectedDirective,
+                    com.jrelax.core.web.velocity.IFDisabledDirective
                 </prop>
             </props>
         </property>
@@ -121,12 +143,21 @@
     <bean id="velocityConfigurer" class="org.springframework.web.servlet.view.velocity.VelocityConfigurer">
         <property name="velocityEngine" ref="velocityEngine"/>
     </bean>
-    <bean id="viewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
+    <bean id="viewResolver" class="com.jrelax.core.web.resolver.MultiViewResolver">
+        <property name="defaultViewResolver" ref="velocityViewResolver"/>
+        <property name="viewResolverMap">
+            <map>
+                <entry key=".html" value-ref="velocityViewResolver"/>
+            </map>
+        </property>
+    </bean>
+    <!-- Velocity -->
+    <bean id="velocityViewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
         <property name="cache" value="${velocity.cache}"/>
         <property name="suffix" value="${velocity.suffix}"/>
         <property name="contentType" value="${velocity.contentType}"/>
         <!--Velocity绑定表单 -->
-        <property name="exposeSpringMacroHelpers" value="true" />
+        <property name="exposeSpringMacroHelpers" value="true"/>
         <property name="exposeRequestAttributes" value="true"/>
         <property name="exposeSessionAttributes" value="true"/>
         <property name="dateToolAttribute" value="dateTool"/>
@@ -143,20 +174,20 @@
         <property name="defaultEncoding" value="UTF-8"/>
     </bean>
     <mvc:interceptors>
-        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"></bean>
+        <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"/>
     </mvc:interceptors>
     <bean id="localeResolver" class="com.jrelax.core.web.resolver.LocaleResolver"/>
     <!-- 处理异常 -->
-    <bean class="com.jrelax.core.web.resolver.ExceptionResolver"></bean>
+    <bean class="com.jrelax.core.web.resolver.ExceptionResolver"/>
     <!-- 支持上传文件 50M -->
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver"
           p:defaultEncoding="UTF-8" p:maxUploadSize="52428800" p:uploadTempDir="resources/upload/temp"/>
     <!-- WebSocket -->
-    <bean id="systemWebSocketHandler" class="com.jrelax.web.websocket.SystemWebSocketHandler"></bean>
+    <bean id="systemWebSocketHandler" class="com.jrelax.web.websocket.SystemWebSocketHandler"/>
     <websocket:handlers>
         <websocket:mapping path="/ws" handler="systemWebSocketHandler"/>
         <websocket:handshake-interceptors>
-            <bean class="com.jrelax.web.websocket.WebSocketHandshakeInterceptor"></bean>
+            <bean class="com.jrelax.web.websocket.WebSocketHandshakeInterceptor"/>
         </websocket:handshake-interceptors>
     </websocket:handlers>
 </beans>

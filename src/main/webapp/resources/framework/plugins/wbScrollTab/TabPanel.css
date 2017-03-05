@@ -179,3 +179,7 @@
   top: 0;
   background: #f5f7fa;
 }
+
+.tabpanel_content .html_content iframe{
+  position: absolute;
+}

@@ -6,7 +6,9 @@ ns.ready(function(){
 				ns.requireJS("/framework/plugins/icheck/icheck.js");
 				ns.form.initCheckbox = function(obj){
 					if ($.isFunction($.fn.iCheck)) {
-		                $(".icheck,[data-icheck],[data-checkbox]").each(function(){
+						var chkList = $(".icheck,[data-icheck],[data-checkbox]");
+						if(obj) chkList = $(obj);
+		                chkList.each(function(){
 		                	//配置skin属性设置按钮皮肤
 		                	var skin = $(this).attr("skin");
 		                	if(!skin || skin.length == 0){
@@ -20,15 +22,21 @@ ns.ready(function(){
 							});
 		                });
 						//绑定全选事件，全选按钮上配置icheck-all属性，属性值为特定的属性名，所有拥有此属性名的icheck将与此icheck同步状态
-						$(".icheck[data-check-all],[data-icheck][data-check-all]").on('ifChanged', function(event){
+						var chkAllList = $(".icheck[data-check-all],[data-icheck][data-check-all]");
+                        chkAllList.off('ifChecked');
+                        chkAllList.off('ifUnchecked');
+                        chkAllList.on('ifChecked', function(event){
 							var item = $(this).attr("data-check-all");
 							if(item){
-								if($(this).is(":checked"))
-									$("input["+item+"]").iCheck("check");
-								else
-									$("input["+item+"]").iCheck("uncheck");
+                                $("input["+item+"]").iCheck("check");
 							}
 						});
+                        chkAllList.on('ifUnchecked', function(event){
+                            var item = $(this).attr("data-check-all");
+                            if(item){
+                                $("input["+item+"]").iCheck("uncheck");
+                            }
+                        });
 		            }
 				};
 				ns.form.initCheckbox();

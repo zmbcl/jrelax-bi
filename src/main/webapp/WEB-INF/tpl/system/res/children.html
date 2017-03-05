@@ -1,26 +1,29 @@
 #foreach($!obj in $list)
- <tr data-tt-id="$!obj.id" #if($!obj.parentId!='-1')data-tt-parent-id="$!obj.parentId"#end data-tt-branch="$!obj.hasChildren">
-     <td><span class="pd-l-sm"></span><i class="$!obj.icon mr5"></i> <a href="javascript:;" data-type="text" data-title="输入新名称" data-pk="$!obj.id" data-placement="right" class="xeditable-name">$!obj.name</a> #if($!obj.beta)<div class="badge badge-top bg-warning"><span>未完成</span></div>#end #if($!obj.newWindow)<span class="badge bg-info">新窗口</span>#end</td>
-     <td class="offscreen-right"><a href="javascript:;" data-type="text" data-title="输入新URL" data-pk="$!obj.id" data-emptytext="未设置" data-placement="right" class="xeditable-url">$!obj.url</a></td>
-     <td id="td_status_$!obj.id">#if($!obj.enabled)<i class="fa fa-circle text-success ml5">#else <i class="fa fa-circle text-danger ml5">#end</i></td>
-     <td>
-         <div class="btn-group">
-      <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-		<i class="ti-settings"></i>
-          <span class="ti-angle-down"></span>
-      </button>
-      <ul class="dropdown-menu" role="menu">
-        <li><a href="$!basePath/system/res/detail/$!obj.id" data-toggle="modal" data-target="#dialogMenuDetail">#springMessage('system.common.view')</a></li>
-        <li><a href="$!basePath/system/res/edit/$!obj.id" data-pjax>#springMessage('system.common.edit')</a></li>
-        <li><a href="javascript:;" onclick="del('$!obj.id')">#springMessage('system.common.delete')</a></li>
-        <li class="divider"></li>
-        <li><a href="javascript:;" onclick="enableRes('$!obj.id')">#springMessage('system.common.enable')</a></li>
-        <li><a href="javascript:;" onclick="disableRes('$!obj.id')">#springMessage('system.common.disable')</a></li>
-        <li class="divider"></li>
-        <li><a href="$!basePath/system/res/add?pid=$!obj.id" data-pjax>添加子菜单</a></li>
-        <li><a href="javascript:;" onclick="ns.view.showModal('$!basePath/system/res/columns?id=$!obj.id')">管理字段</a></li>
-      </ul>
- 	</div>
-     </td>
- </tr>
+<tr data-tt-id="$!obj.id" #if($!obj.parentId!='-1')data-tt-parent-id="$!obj.parentId"#end data-tt-branch="$!obj.hasChildren">
+    <td><span class="pd-l-sm"></span><i class="$!obj.icon mr5"></i> <a href="javascript:;" data-type="text" data-title="输入新名称" data-pk="$!obj.id" data-placement="right"
+                                                                       class="xeditable-name">$!obj.name</a> #if($!obj.beta)
+        <div class="badge badge-top bg-danger"><span>新功能</span></div>#end #if($!obj.newWindow)<span class="badge bg-info">新窗口</span>#end</td>
+    <td class="offscreen-right"><a href="javascript:;" data-type="text" data-title="输入新URL" data-pk="$!obj.id" data-emptytext="未设置" data-placement="right" class="xeditable-url">$!obj.url</a></td>
+    <td id="td_status_$!obj.id">#if($!obj.enabled)<i class="fa fa-circle text-success ml5">#else <i class="fa fa-circle text-danger ml5">#end</i></td>
+    <td>
+        <div class="btn-group">
+            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                <i class="ti-settings"></i>
+                <span class="ti-angle-down"></span>
+            </button>
+            <ul class="dropdown-menu" role="menu">
+                <li><a href="$!basePath/system/res/detail/$!obj.id" data-toggle="modal" data-target="#dialogMenuDetail">#springMessage('system.common.view')</a></li>
+                <li><a href="$!basePath/system/res/edit/$!obj.id">#springMessage('system.common.edit')</a></li>
+                <li><a href="javascript:;" onclick="del('$!obj.id')">#springMessage('system.common.delete')</a></li>
+                <li class="divider"></li>
+                <li><a href="javascript:;" onclick="enableRes('$!obj.id')">#springMessage('system.common.enable')</a></li>
+                <li><a href="javascript:;" onclick="disableRes('$!obj.id')">#springMessage('system.common.disable')</a></li>
+                <li class="divider"></li>
+                <li><a href="$!basePath/system/res/add?pid=$!obj.id">添加子菜单</a></li>
+                <li><a href="javascript:;" onclick="ns.view.showModal('$!basePath/system/res/columns?id=$!obj.id')">管理字段</a></li>
+                <li><a href="javascript:;" onclick="ns.view.showModal('$!basePath/system/res/buttons?id=$!obj.id')">管理按钮</a></li>
+            </ul>
+        </div>
+    </td>
+</tr>
 #end

@@ -127,6 +127,7 @@
 <script src="$!basePath/framework/js/form/select.js"></script>
 <script src="$!basePath/app/datasource/datasource.js"></script>
 <script src="$!basePath/app/charts/utils.js"></script>
+<script src="$!basePath/app/charts/adapter.js"></script>
 <script src="$!basePath/app/charts/adapter/line.js"></script>
 <script type="text/javascript">
     var adapter;
@@ -140,7 +141,7 @@
         $("#tip").remove();
     }
     function doApply() {
-        var attrs = ns.formAttrs($("#configMap"));
+        var attrs = ns.form.serialize($("#configMap"));
 
         adapter.update(attrs);
     }

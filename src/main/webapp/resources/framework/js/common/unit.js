@@ -11,18 +11,31 @@ ns.common.unit = {
     select: function (options) {
         var _def = {
             multi: false,
+            showTopUnit : false,
             callback: function (data) {
-                alert(JSON.stringify(data));
+                // alert(JSON.stringify(data));
             }
         };
-        options = $.extend(options, _def);
+        options = $.extend(_def, options);
 
         var modal = ns.view.showModal(ns.getBasePath() + "/common/unit/select?multi=" + options.multi, {
             onShown: function () {
+                //初始化机构树
+                modal.find("#__jsTreeUnit").jstree({
+                    plugins: ["wholerow"],
+                    core: {
+                        data: {
+                            url: function (node) {
+                                return node.id === "#" ? ns.getBasePath() + "/common/unit/select/tree" : ns.getBasePath() + "/common/unit/select/tree" + node.id
+                            }
+                        },
+                        multiple: options.multi
+                    }
+                });
                 //ok按钮
                 var btnOk = modal.find("#ok");
                 btnOk.bind("click", function () {
-                    var jstree = $.jstree.reference(modal.find("#__jsTreeUnit"));
+                    var jstree = modal.find("#__jsTreeUnit").jstree(true);
                     var nodes = jstree.get_selected();
 
                     var data = [];
@@ -37,6 +50,19 @@ ns.common.unit = {
                     options.callback(data);
                     modal.close();
                 });
+
+                if(options.showTopUnit){
+                    var topUnit = modal.find("#topUnit");
+                    topUnit.show();
+                    var btnTop = topUnit.find("button");
+                    btnTop.on("click", function(){
+                        options.callback([{
+                            id : -1,
+                            name : "顶级组织"
+                        }]);
+                        modal.close();
+                    });
+                }
             }
         });
     }

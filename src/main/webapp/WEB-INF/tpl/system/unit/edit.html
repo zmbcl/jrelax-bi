@@ -32,8 +32,7 @@
                 <div class="content-wrap">
                     <div class="wrapper">
                         <section class="panel pt20 pl20 pr20">
-                            <form id="unitEditForm" role="form" class="form-horizontal parsley-form"
-                                  data-parsley-validate action="$!basePath/system/unit/edit/do" method="post">
+                            <form id="unitEditForm" role="form" class="form-horizontal parsley-form" data-parsley-validate action="$!basePath/system/unit/edit/do" method="post">
                                 <input type="hidden" name="id" value="$!unit.id"/>
                                 <div class="row mb10">
                                     <div class="col-lg-12 col-md-12">
@@ -41,34 +40,26 @@
                                             <label for="parentId" class="col-sm-1 control-label">上级组织</label>
                                             <div class="col-sm-10">
                                                 <div class="input-group">
-                                                    <input id="parentId" type="text" class="form-control"
-                                                           placeholder="上级组织，不选择默认为顶级组织" disabled value="$!parentUnit"/>
-			                             		<span class="input-group-btn">
-			                             			<button type="button" class="btn btn-primary" data-toggle="modal"
-                                                            data-target="#dialogSelectParentUnit" #if($!noUnit)
-                                                            disabled="disabled" #end><i class="ti-plus"></i> 选择</button>
-			                             		</span>
+                                                    <input id="parentId" type="text" class="form-control" placeholder="上级组织，不选择默认为顶级组织" disabled value="$!parentUnit"/>
+                                                    <span class="input-group-btn">
+                                                        <button type="button" class="btn btn-primary" onclick="doSelectParentUnit()" #ifDisabled($!noUnit)><i class="ti-plus"></i> 选择</button>
+                                                    </span>
                                                 </div>
                                                 <input type="hidden" name="parentId" value="$!unit.parentId">
                                             </div>
                                         </div>
                                         <div class="hr-line-dashed"></div>
                                         <div class="form-group">
-                                            <label for="name" class="col-sm-1 control-label">名称<span
-                                                    class="text-danger">*</span></label>
+                                            <label for="name" class="col-sm-1 control-label">名称<span class="text-danger">*</span></label>
                                             <div class="col-sm-10">
-                                                <input type="text" class="form-control" name="name"
-                                                       data-parsley-required="true"
-                                                       placeholder="#springMessage('system.sys.unit.name')"
-                                                       value="$!unit.name">
+                                                <input type="text" class="form-control" name="name" data-parsley-required="true" placeholder="#springMessage('system.sys.unit.name')" value="$!unit.name">
                                             </div>
                                         </div>
                                         <div class="hr-line-dashed"></div>
                                         <div class="form-group">
                                             <label for="address" class="col-sm-1 control-label">#springMessage('system.sys.unit.addr')</label>
                                             <div class="col-sm-10">
-                                                <input type="text" name="address" class="form-control"
-                                                       placeholder="组织所在地址" value="$!unit.address">
+                                                <input type="text" name="address" class="form-control" placeholder="组织所在地址" value="$!unit.address">
                                                 <p class="help-block no-m">例如：安徽省合肥市高新区长江西路001号</p>
                                             </div>
                                         </div>
@@ -76,27 +67,22 @@
                                         <div class="form-group">
                                             <label for="contact" class="col-sm-1 control-label">#springMessage('system.sys.unit.contact')</label>
                                             <div class="col-sm-4">
-                                                <input type="text" name="contact" class="form-control"
-                                                       placeholder="联系人姓名" value="$!unit.contact">
+                                                <input type="text" name="contact" class="form-control" placeholder="联系人姓名" value="$!unit.contact">
                                             </div>
                                             <label for="mobile" class="col-sm-1 control-label">#springMessage('system.sys.unit.phone')</label>
                                             <div class="col-sm-5">
-                                                <input type="text" name="mobile" class="form-control"
-                                                       placeholder="固定电话、手机号码等" value="$!unit.mobile">
+                                                <input type="text" name="mobile" class="form-control" placeholder="固定电话、手机号码等" value="$!unit.mobile">
                                             </div>
                                         </div>
                                         <div class="hr-line-dashed"></div>
                                         <div class="form-group">
                                             <label for="email" class="col-sm-1 control-label">电子邮件</label>
                                             <div class="col-sm-4">
-                                                <input type="text" name="email" class="form-control"
-                                                       placeholder="格式：xxx@xxx.xx" data-parsley-type="email"
-                                                       data-parsley-trigger="change" value="$!unit.email">
+                                                <input type="text" name="email" class="form-control" placeholder="格式：xxx@xxx.xx" data-parsley-type="email" data-parsley-trigger="change" value="$!unit.email">
                                             </div>
                                             <label for="web" class="col-sm-1 control-label">网站地址</label>
                                             <div class="col-sm-5">
-                                                <input type="text" name="web" class="form-control" placeholder="http://"
-                                                       value="$!unit.web">
+                                                <input type="text" name="web" class="form-control" placeholder="http://" value="$!unit.web">
                                             </div>
                                         </div>
                                         <div class="hr-line-dashed"></div>
@@ -104,8 +90,7 @@
                                             <label for="enabled" class="col-sm-1 control-label">是否启用</label>
                                             <div class="col-sm-4 switcha">
                                                 <div class="mr15">
-                                                    <input type="checkbox" name="enabled" class="js-switch-blue"
-                                                           #if($!unit.enabled)checked="checked" #end>
+                                                    <input type="checkbox" name="enabled" class="js-switch-blue" #ifChecked($!unit.enabled)>
                                                 </div>
                                             </div>
                                             #if($!isSystemUnit == true)
@@ -137,35 +122,6 @@
                 </div>
                 <a class="exit-offscreen"></a>
             </section>
-            <!-- 选择上级组织 -->
-            <div id="dialogSelectParentUnit" class="modal fade bs-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                            <h4 class="modal-title">选择上级组织</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-xs-12">
-                                    <div id="jsTreeParentUnit" class="demo"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            #if($!isSystemUnit == true)
-                            <div class="pull-left">
-                                <button type="button" class="btn btn-success" data-dismiss="modal" onclick="selectFirstMenu()">
-                                    设为顶级组织
-                                </button>
-                            </div>
-                            #end
-                            <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
-                            <button type="button" class="btn btn-primary" onclick="selectParentMenu()">确认选择</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </section>
     </section>
 </div>
@@ -180,34 +136,17 @@
 <script src="$!basePath/framework/js/view/toast.js"></script>
 <script src="$!basePath/framework/js/view/tree.js"></script>
 <script src="$!basePath/framework/js/form/validator.js"></script>
+<script src="$!basePath/framework/js/common/unit.js"></script>
 <script type="text/javascript">
-    function initTreeView() {
-        $("#jsTreeParentUnit").jstree({
-            plugins: ["wholerow"],
-            core: {
-                data: {
-                    url: function (node) {
-                        return node.id === "#" ? "$!basePath/system/unit/tree" : "$!basePath/system/unit/tree/" + node.id
-                    }
-                },
-                multiple: false
+    function doSelectParentUnit(){
+        ns.common.unit.select({
+            showTopUnit : true,
+            callback : function(units){
+                var unit = units[0];
+                $("#unitEditForm #parentId").val(unit.name);
+                $("#unitEditForm input[name='parentId']").val(unit.id);
             }
-        }).on("dblclick.jstree", function (node) {
-            selectParentMenu();
-        });
-    }
-    //选择父菜单
-    function selectParentMenu() {
-        var tree = $.jstree.reference("#jsTreeParentUnit");
-        var node = tree.get_selected(true);
-        $("#unitEditForm #parentId").val(node[0].text);
-        $("#unitEditForm input[name='parentId']").val(node[0].id);
-        $("#dialogSelectParentUnit").modal("hide");
-    }
-    function selectFirstMenu() {
-        $("#unitEditForm #parentId").val("顶级组织");
-        $("#unitEditForm input[name='parentId']").val("-1");
-        $("#dialogSelectParentUnit").modal("hide");
+        })
     }
     $(function () {
         $('#unitEditForm').ajaxForm({
@@ -225,19 +164,13 @@
                         window.location.href = "$!basePath/system/unit";
                     }, 3000);
                 } else {
-                    Toast.error(data.error);
+                    Toast.error(data.message);
                     $form.find("button:submit").button("reset");
                 }
 
             }
         });
-		#if (!$!noUnit
-        )
-        //初始化组织树
-        initTreeView();
-		#end
     });
-    ;
 
 </script>
 #loading_close

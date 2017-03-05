@@ -22,8 +22,10 @@
                 <header class="header navbar">
                     <!-- 左按钮区 -->
                     <div class="btn-group tool-button">
-                        <a class="btn btn-primary navbar-btn" href="$!basePath/system/unit/add" data-pjax><i class="ti-plus"></i>
+                        #ifAuthButton("btnAdd")
+                        <a class="btn btn-primary navbar-btn" href="$!basePath/system/unit/add"><i class="ti-plus"></i>
                             #springMessage("system.sys.unit.add")</a>
+                        #end
                     </div>
                     <div class="pull-right offscreen-right">
                         <button class="btn btn-primary navbar-btn"
@@ -50,28 +52,26 @@
                                     </thead>
                                     <tbody>
                                     #foreach($!obj in $list)
-                                    <tr data-tt-id="$!obj.id" #if($!obj.parentId!='-1'
-                                        )data-tt-parent-id="$!obj.parentId" #end data-tt-branch="$!obj.hasChildren">
+                                    <tr data-tt-id="$!obj.id" #if($!obj.parentId!='-1')data-tt-parent-id="$!obj.parentId" #end data-tt-branch="$!obj.hasChildren">
                                         <td>
-                                            <span class="pd-l-sm"></span><a href="javascript:;" data-type="text"
-                                                                            data-title="输入新名称" data-pk="$!obj.id"
-                                                                            data-placement="right"
-                                                                            class="xeditable-name">$!obj.name</a>
+                                            <span class="pd-l-sm"></span>
+                                            <a href="javascript:;" data-type="text" data-title="输入新名称" data-pk="$!obj.id" data-placement="right" class="xeditable-name">$!obj.name</a>
                                             #if($!obj.system)(系统)#end
                                         </td>
-                                        <td class="offscreen-right"><a href="javascript:;" data-type="text"
-                                                                       data-title="输入新地址" data-pk="$!obj.id"
-                                                                       data-placement="right" class="xeditable-address">$!obj.address</a>
+                                        <td class="offscreen-right">
+                                            <a href="javascript:;" data-type="text" data-title="输入新地址" data-pk="$!obj.id" data-placement="right" class="xeditable-address">$!obj.address</a>
                                         </td>
                                         <td>$!obj.contact</td>
                                         <td>$!obj.mobile</td>
-                                        <td id="td_status_$!obj.id">#if($!obj.enabled)<i
-                                                class="fa fa-circle text-success ml5">#else <i
-                                                class="fa fa-circle text-danger ml5">#end</i></td>
+                                        <td id="td_status_$!obj.id">
+                                            #if($!obj.enabled)
+                                            <i class="fa fa-circle text-success ml5">
+                                            #else <i class="fa fa-circle text-danger ml5">
+                                            #end</i>
+                                        </td>
                                         <td>
                                             <div class="btn-group">
-                                                <button type="button" class="btn btn-default btn-xs dropdown-toggle"
-                                                        data-toggle="dropdown">
+                                                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
                                                     <i class="ti-settings"></i>
                                                     <span class="ti-angle-down"></span>
                                                 </button>
@@ -79,21 +79,30 @@
                                                     <li><a href="javascript:;"
                                                            onclick="ns.view.showModal('$!basePath/system/unit/detail/$!obj.id',{border:false})">#springMessage('system.common.view')</a>
                                                     </li>
+                                                    #ifAuthButton("btnEdit")
                                                     <li><a href="$!basePath/system/unit/edit/$!obj.id">#springMessage('system.common.edit')</a>
                                                     </li>
+                                                    #end
+                                                    #ifAuthButton("btnRemove")
                                                     <li><a href="javascript:;" onclick="del('$!obj.id')">#springMessage('system.common.delete')</a>
                                                     </li>
+                                                    #end
+                                                    #ifAuthButton("btnAdd")
                                                     <li><a href="$!basePath/system/unit/add?pid=$!obj.id">添加子组织</a></li>
+                                                    #end
                                                     <li class="divider"></li>
+                                                    #ifAuthButton("btnEnable")
                                                     <li><a href="javascript:;" onclick="enableUnit('$!obj.id')">#springMessage('system.common.enable')</a>
                                                     </li>
+                                                    #end
+                                                    #ifAuthButton("btnDisable")
                                                     <li><a href="javascript:;" onclick="disableUnit('$!obj.id')">#springMessage('system.common.disable')</a>
                                                     </li>
+                                                    #end
                                                     #if(!$!obj.system)
                                                     <li class="divider"></li>
                                                     <li><a href="$!basePath/system/unit/res/$!obj.id">管理菜单</a></li>
-                                                    <li><a href="javascript:;"
-                                                           onclick="ns.view.showModal('$!basePath/system/unit/detail/res/$!obj.id',{border:false})">查看菜单</a>
+                                                    <li><a href="javascript:;" onclick="ns.view.showModal('$!basePath/system/unit/detail/res/$!obj.id')">查看菜单</a>
                                                     </li>
                                                     <li><a href="javascript:;" onclick="copyResToChildren('$!obj.id')">复制菜单到下级（一级）</a>
                                                     </li>
@@ -131,7 +140,7 @@
                     //从表格中移除此行
                     unitTreeTable.treetable("removeNode", id);
                 } else {
-                    ns.tip.toast.error(data.error);
+                    ns.tip.toast.error(data.message);
                 }
             });
         });
@@ -141,7 +150,7 @@
             if (data.success == true) {
                 $("#td_status_" + id).find("i").attr("class", "fa fa-circle text-success ml5");
             } else {
-                Toast.error(data.error);
+                Toast.error(data.message);
             }
         });
     }
@@ -150,7 +159,7 @@
             if (data.success == true) {
                 $("#td_status_" + id).find("i").attr("class", "fa fa-circle text-danger ml5");
             } else {
-                Toast.error(data.error);
+                Toast.error(data.message);
             }
         });
     }
@@ -174,7 +183,7 @@
             if (success) {
                 ns.tip.toast.success("成功从上级复制" + data.count + "个菜单！");
             } else {
-                ns.tip.toast.error(data.error);
+                ns.tip.toast.error(data.message);
             }
         });
     }
@@ -184,7 +193,7 @@
             if (success) {
                 ns.tip.toast.success("成功将" + data.count + "个菜单复制到" + data.count2 + "个子机构！");
             } else {
-                ns.tip.toast.error(data.error);
+                ns.tip.toast.error(data.message);
             }
         });
     }

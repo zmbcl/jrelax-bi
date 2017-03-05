@@ -36,76 +36,23 @@
                             </div>
                         </div>
                         <button class="btn btn-primary search-item" onclick="showAll()"><i class="ti-menu-alt"></i>
-                            显示全部</button>
+                            显示全部
+                        </button>
                     </div>
                     <!-- 右按钮区 -->
                     <div class="pull-right offscreen-right">
-                        <div class="btn-group" data-toggle="buttons">
-                            <label onclick="doSort(1)"
-                                   class="btn btn-primary navbar-btn level #if($!order=='asc')active#end">
-                                <input type="radio" name="options">
-                                <span>升序</span>
-                            </label>
-                            <label onclick="doSort(2)"
-                                   class="btn btn-primary navbar-btn level #if($!order=='desc')active#end">
-                                <input type="radio" name="options"/>
-                                <span>倒序</span>
-                            </label>
-                        </div>
+                        <button class="btn btn-primary navbar-btn"
+                                onclick="ns.view.showSidebarStatic('#searchPanel')"><i class="fa fa-sliders"></i> 筛选
+                        </button>
                     </div>
                 </header>
                 <div class="content-wrap">
                     <div class="wrapper">
                         <form id="logForm" action="$!basePath/system/log/" method="post">
-                            <input type="hidden" name="time" value="$!time"/>
-                            <input type="hidden" name="order" value="$!order"/>
                             <div class="row">
                                 <div class="col-lg-12 col-md-12 table-responsive">
-                                    <table id="userTable" class="table table-striped no-m">
-                                        <thead>
-                                        <tr>
-                                            <th class="col-md-2">功能模块</th>
-                                            <th class="col-md-3">事项</th>
-                                            <th class="col-md-1">日志等级</th>
-                                            <th class="col-md-2 pd-l-lg">
-                                                <span class="pd-l-sm"></span>时间
-                                            </th>
-                                            <th class="col-md-1">操作人</th>
-                                            <th class="col-md-1">IP</th>
-                                            <th class="col-md-1">Logger</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        #foreach($!obj in $!list)
-                                        <tr>
-                                            <td>$!obj.manipulateName</td>
-                                            <td onclick="showInfo(this)" desc="$!obj.content">#substring($!obj.content
-                                                30)
-                                            </td>
-                                            <td>
-                                                #if($!obj.type == "1")
-                                                <span class="label label-info">Info</span>
-                                                #elseif($!obj.type == "2")
-                                                <span class="label label-default">Debug</span>
-                                                #elseif($!obj.type == "3")
-                                                <span class="label label-danger">Error</span>
-                                                #end
-                                            </td>
-                                            <td>$!obj.time</td>
-                                            <td>$!obj.userName</td>
-                                            <td><a class="text-primary text-underline" href="http://ip.cn/index.php?ip=$!obj.iP"
-                                                   target="_blank">$!obj.iP</a>
-                                            </td>
-                                            <td>$!obj.className</td>
-                                        </tr>
-                                        #end
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12">
-                                    #pager_ajax("#logForm")
+                                    <table id="dgLog"></table>
+                                    <div id="dgLogPager"></div>
                                 </div>
                             </div>
                         </form>
@@ -113,36 +60,68 @@
                 </div>
                 <a class="exit-offscreen"></a>
             </section>
-            <div id="sb-info" class="sidebar-panel from-right">
-                <div class="sidebar-panel-container shadow">
-                    <header class="sidebar-panel-header">
-                        <h4>日志详情</h4>
-                        <a href="javascript:$('.sidebar-panel').click();" class="sidebar-panel-close text-center"><i
-                                class="ti-close"></i> </a>
-                    </header>
-                    <div class="sidebar-panel-content">
-                        <form role="form">
-                            <div class="form-group">
-                                <p style="word-break: break-all;"></p>
-                            </div>
-                            <div class="form-group">
-                                <label for="time">时间</label>
-                                <p></p>
-                            </div>
-                            <div class="form-group">
-                                <label for="createUser">操作人</label>
-                                <p></p>
-                            </div>
-                            <div class="form-group">
-                                <label for="ip">IP地址</label>
-                                <p></p>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
         </section>
     </section>
+</div>
+<div id="searchPanel" class="sidebar-panel from-right">
+    <div class="sidebar-panel-container shadow">
+        <header class="sidebar-panel-header">
+            <h4>筛选</h4>
+            <a href="javascript:$('#searchPanel').click();" class="sidebar-panel-close text-center"><i
+                    class="ti-close"></i> </a>
+        </header>
+        <div class="sidebar-panel-content">
+            <form id="searchForm" role="form">
+                <div class="form-group">
+                    <label for="level">日志等级</label>
+                    <select name="level" class="form-control">
+                        <option value="">全部</option>
+                        <option value="1">Info</option>
+                        <option value="2">Debug</option>
+                        <option value="3">Error</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="module">功能模块</label>
+                    <input name="module" type="text" class="form-control" placeholder="按功能模块模糊查询">
+                </div>
+                <div class="form-group">
+                    <label for="content">日志内容</label>
+                    <input name="content" type="text" class="form-control" placeholder="按日志内容模糊查询">
+                </div>
+                <button type="submit" class="btn btn-default">查询</button>
+            </form>
+        </div>
+    </div>
+</div>
+<div id="sb-info" class="sidebar-panel from-right">
+    <div class="sidebar-panel-container shadow">
+        <header class="sidebar-panel-header">
+            <h4>日志详情</h4>
+            <a href="javascript:$('#sb-info').click();" class="sidebar-panel-close text-center"><i
+                    class="ti-close"></i> </a>
+        </header>
+        <div class="sidebar-panel-content">
+            <form role="form">
+                <div class="form-group">
+                    <label for="content">事项</label>
+                    <p style="word-break: break-all;"></p>
+                </div>
+                <div class="form-group">
+                    <label for="time">时间</label>
+                    <p></p>
+                </div>
+                <div class="form-group">
+                    <label for="createUser">操作人</label>
+                    <p></p>
+                </div>
+                <div class="form-group">
+                    <label for="ip">IP地址</label>
+                    <p></p>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 #required_js
 
@@ -155,34 +134,71 @@
 
 <!-- 本页面脚本 -->
 <script type="text/javascript">
-    ns.requireJS("/framework/js/form/checkbox.js")
-    $("#reservationtime").daterangepicker({
-        timePicker: true,
-        timePickerIncrement: 1,
-        timePicker12Hour: false,
-        format: "YYYY-MM-DD HH:mm:ss"
-    });
+    ns.requireJS([
+        "/framework/js/form/checkbox.js",
+        "/framework/js/view/datagrid.js",
+        "/framework/js/form/search.form.js"]);
+    var dgLog;
+    function initDataGrid() {
+        dgLog = $("#dgLog").jqGrid({
+            url: '$!basePath/system/log/data',
+            colModel: [
+                { label: 'ID', name: 'id', key: true, hidden:true, align:"left" },
+                { label: '功能模块', name: 'module', width:100},
+                { label: '事项', name: 'content', width:280},
+                { label: '日志等级', name: 'level', width:50, formatter:function(val){
+                    if(val == 1)
+                        return "<span class='label label-info'>Info</span>";
+                    else if(val == 2)
+                        return "<span class='label label-default'>Debug</span>";
+                    else if(val == 3)
+                        return "<span class='label label-danger'>Error</span>";
+                    else return "未知";
+                }},
+                { label: '时间', name: 'time', width:100},
+                { label: '操作人', name: 'user', width:50},
+                { label: 'IP', name: 'ip', width:50, formatter: function(val){
+                    return "<a class='text-primary text-underline' href=\"http://ip.cn/index.php?ip="+val+"\" target=\"_blank\">"+val+"</a>";
+                }},
+                { label: '来源', name: 'source', width:50}
+            ],
+            height: $(".main-content .wrapper").height() - ns.view.datagrid.offsetHeight,
+            pager: "#dgLogPager",
+            searchForm : "#searchForm",
+            sortname : "time",
+            sortorder : "desc",
+            onSelectRow : function(id){
+                var data = dgLog.getRowData(id);
+                if(data.content.length > 100)//超过长度显示明细
+                    showInfo(data);
+            }
+        });
+    }
     function doSearch() {
-        var time = $("#reservationtime").val();
-        ns.asyncRequest("$!basePath/system/log/", {time: time}, "#logForm");
+        var timeRange = $("#reservationtime").val();
+        dgLog.reload({timeRange:timeRange});
     }
     function showAll() {
-        ns.asyncRequest("$!basePath/system/log/", {}, "#logForm");
-    }
-    function doSort(t) {
-        var attrs = ns.formAttrs("#logForm");
-        attrs.order = t == 1 ? "asc" : "desc";
-        ns.asyncRequest("$!basePath/system/log/", attrs, "#logForm");
+        dgLog.reload({timeRange:""});
     }
 
-    function showInfo(obj) {
-        var tr = $(obj).parent();
-        $("#sb-info p:eq(0)").text(tr.find("td:eq(1)").attr("desc"));
-        $("#sb-info p:eq(1)").text(tr.find("td:eq(3)").text());
-        $("#sb-info p:eq(2)").text(tr.find("td:eq(4)").text());
-        $("#sb-info p:eq(3)").text(tr.find("td:eq(5)").text());
+    function showInfo(data) {
+        $("#sb-info p:eq(0)").text(data.content);
+        $("#sb-info p:eq(1)").text(data.time);
+        $("#sb-info p:eq(2)").text(data.userName);
+        $("#sb-info p:eq(3)").text(ns.String.html_decode(data.ip));
         ns.view.showSidebarStatic("#sb-info");
     }
+
+    ns.ready(function () {
+        initDataGrid();
+        $("#reservationtime").daterangepicker({
+            timePicker: true,
+            timePickerIncrement: 1,
+            timePicker12Hour: false,
+            format: "YYYY-MM-DD HH:mm:ss"
+        });
+    });
 </script>
 
 #loading_close

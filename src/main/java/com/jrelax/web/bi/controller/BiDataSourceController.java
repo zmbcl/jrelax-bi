@@ -3,6 +3,7 @@ package com.jrelax.web.bi.controller;
 import com.jrelax.bi.DBKit;
 import com.jrelax.bi.DBPool;
 import com.jrelax.core.web.support.http.ContentType;
+import com.jrelax.core.web.transform.DataGridTransforms;
 import com.jrelax.kit.ObjectKit;
 import com.jrelax.core.web.support.ControllerCommon;
 import com.jrelax.core.web.support.WebResult;
@@ -47,10 +48,15 @@ public class BiDataSourceController extends BaseController<Object> {
 
     @RequestMapping(method = {RequestMethod.GET})
     public String index(Model model, PageBean pageBean) {
-        pageBean.addOrder(Order.desc("createTime"));
-        List<BiDatasource> list = biDatasourceService.list(pageBean);
-        model.addAttribute("list", list);
         return TPL + "index";
+    }
+
+    @RequestMapping("/data")
+    @ResponseBody
+    public Map<String, Object> data(PageBean pageBean){
+        List<BiDatasource> list = biDatasourceService.list(pageBean);
+
+        return DataGridTransforms.JQGRID.transform(list, pageBean);
     }
 
     /**

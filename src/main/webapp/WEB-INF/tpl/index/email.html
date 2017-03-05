@@ -67,7 +67,7 @@
 				if(data.success == true){
 					Toast.success("邮箱配置保存成功！");
 				}else{
-					Toast.error(data.error);
+					Toast.error(data.message);
 				}
 				$(btn).button("reset");
 			}
@@ -81,7 +81,7 @@
 				if(data.success == true){
 					Toast.success("配置可用！");
 				}else{
-					Toast.error(data.error);
+					Toast.error(data.message);
 				}
 				$(btn).button("reset");
 			}
