@@ -22,7 +22,7 @@
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
     <!-- 数据源配置 -->
-    <bean id="preferences" class="com.jrelax.config.JRelaxPropertyPlaceholderConfigurer">
+    <bean id="preferences" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <!-- 指定数据库配置文件路径 -->
         <property name="locations">
             <list>

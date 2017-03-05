@@ -27,6 +27,9 @@
         <listener-class>com.jrelax.core.factory.LicenseContextLoaderListener</listener-class>
     </listener>
     <listener>
+        <listener-class>com.jrelax.core.factory.SpringContextLoaderListener</listener-class>
+    </listener>
+    <listener>
         <listener-class>com.jrelax.core.web.session.SessionAttributeListener</listener-class>
     </listener>
     <listener>
@@ -53,7 +56,7 @@
     </servlet-mapping>
     <servlet>
         <servlet-name>frameworkActiviti</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <servlet-class>com.jrelax.core.factory.SpringDispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>classpath:servlet-context-activiti.xml</param-value>
