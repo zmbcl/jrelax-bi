@@ -1997,7 +1997,7 @@ INSERT INTO `sys_version` (`id`, `version`, `build`, `updateTime`, `updateServer
 VALUES
 	('1','1.0','49','2016-05-25 22:10',''),
 	('2','1.1','151','2017-01-09 14:18',''),
-	('2','1.3','223','2017-03-05 14:18','');
+	('3','1.3','223','2017-03-05 14:18','');
 
 /*!40000 ALTER TABLE `sys_version` ENABLE KEYS */;
 UNLOCK TABLES;
