@@ -228,6 +228,7 @@ function BiReport(opt) {
 
     //加载数据
     this.loadData = function () {
+        var params = getUrlParams();
         var tds = opt.target.find("td[" + opt.dsTag + "]");
         var dsList = [];
         $.each(tds, function (i, n) {
@@ -235,7 +236,7 @@ function BiReport(opt) {
             var dsId = td.attr(opt.dsTag);
             if (!dsList.contains(dsId)) {
                 var ds = new DataSource(dsId);
-                ds.getData();
+                ds.getData(params);
                 _data[dsId] = ds;
                 dsList.push(dsId);
             }
@@ -243,8 +244,8 @@ function BiReport(opt) {
     }
 
     //数据过滤
-    this.filter = function(params){
-        $.each(_data, function(i, ds){
+    this.filter = function (params) {
+        $.each(_data, function (i, ds) {
             ds.getData(params);
         });
         this.render();
@@ -253,5 +254,20 @@ function BiReport(opt) {
     //判断是否是数字（包含整数和浮点数）
     function isNumber(str) {
         return /^(-?\d+)(\.\d+)?$/.test(str);
+    }
+
+    function getUrlParams() {
+        var url = window.location.href;
+        url = decodeURI(url);
+        var param = url.substring(url.indexOf("?") + 1);
+        var paramArray = param.split("&");
+
+        var params = {};
+        for (var i = 0; i < paramArray.length; i++) {
+            var p = paramArray[i];
+            var p1 = p.split("=");
+            params[p1[0]] = p1[1] ? p1[1] : "";
+        }
+        return params;
     }
 }
