@@ -1,7 +1,7 @@
 package com.jrelax.third.form;
 
 import com.jrelax.core.support.ApplicationCommon;
-import com.jrelax.core.web.support.WebContextHelper;
+import com.jrelax.core.web.support.WebApplicationCommon;
 import com.jrelax.kit.DateKit;
 import com.jrelax.kit.StringKit;
 import com.jrelax.web.system.entity.User;
@@ -26,7 +26,7 @@ public class FormRuntime {
 
     public FormRuntime(String content) {
         this.content = content;
-        user = WebContextHelper.getSession() == null ? null : (User) WebContextHelper.getSession().getAttribute(ApplicationCommon.SESSION_ADMIN);
+        user = WebApplicationCommon.getSession() == null ? null : (User) WebApplicationCommon.getSession().getAttribute(ApplicationCommon.SESSION_ADMIN);
     }
 
     /**

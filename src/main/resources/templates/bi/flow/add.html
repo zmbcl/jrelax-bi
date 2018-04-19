@@ -1,0 +1,59 @@
+<form id="flowAddForm" class="parsley-form" data-parsley-validate role="form" method="post" action="$!basePath/bi/flow/add/do">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h4 class="modal-title">添加新流程模型</h4>
+</div>
+<div class="modal-body">
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="form-group">
+				<label>名称</label>
+				<input type="text" name="name" class="form-control" data-parsley-required="true"/>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="form-group">
+				<label>Key</label>
+				<input type="text" name="key" class="form-control" data-parsley-required="true"/>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="form-group">
+				<label>描述</label>
+				<textarea name="descript" class="form-control"></textarea>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="modal-footer">
+    <button id="ok" type="submit" class="btn btn-primary" data-loading-text="正在保存...">确  定</button>
+    <button type="button" class="btn btn-default" data-dismiss="modal">取  消</button>
+</div>
+</form>
+<script type="text/javascript">
+	ns.ready(function(){
+		ns.requireJS("/framework/js/form/form.js");
+		ns.requireJS("/framework/js/form/validator.js");
+		var dialog = ns.view.Dialog.getCur("#flowAddForm");
+
+		$("#flowAddForm").ajaxForm({
+			beforeSubmit:function(arr, $form, options){
+				$form.find("#ok").button("loading");
+			},
+			success : function(data, statusText, xhr, $form) {
+				if(data.success == true){
+					ns.tip.toast.success("流程模型增加成功，正在打开设计界面...");
+                    ns.view.Dialog.close($form, {isSaved: true});
+					window.open("$!basePath/bi/flow/modeler?modelId="+data.id);
+				}else{
+					ns.tip.toast.error(data.message);
+				}
+				$form.find("#ok").button("reset");
+			}
+		});
+	});
+</script>

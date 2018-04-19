@@ -1,29 +1,20 @@
 package com.jrelax.web.bi.controller;
 
-import com.jrelax.core.web.support.ControllerCommon;
+import com.jrelax.core.web.support.WebApplicationCommon;
 import com.jrelax.core.web.support.WebResult;
 import com.jrelax.core.web.transform.DataGridTransforms;
-
 import com.jrelax.kit.ObjectKit;
-
 import com.jrelax.orm.query.PageBean;
-
-import com.jrelax.web.bi.service.BiDatasourceService;
-import com.jrelax.web.support.BaseController;
 import com.jrelax.web.bi.entity.BiReport;
+import com.jrelax.web.bi.service.BiDatasourceService;
 import com.jrelax.web.bi.service.BiReportService;
-
+import com.jrelax.web.support.BaseController;
 import net.sf.json.JSONObject;
-
 import org.slf4j.Logger;
-
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Controller;
-
 import org.springframework.ui.Model;
-
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -118,7 +109,7 @@ public class BiReportController extends BaseController<BiReport> {
         BiReport biReport = biReportService.getById(id);
 
         if (!ObjectKit.isNotNull(biReport)) {
-            return ControllerCommon.UNAUTHORIZED_ACCESS;
+            return WebApplicationCommon.ERROR.UNAUTHORIZED_ACCESS;
         }
 
         model.addAttribute("biReport", biReport);
@@ -189,7 +180,7 @@ public class BiReportController extends BaseController<BiReport> {
         BiReport biReport = biReportService.getById(id);
 
         if (!ObjectKit.isNotNull(biReport)) {
-            return ControllerCommon.UNAUTHORIZED_ACCESS;
+            return WebApplicationCommon.ERROR.UNAUTHORIZED_ACCESS;
         }
 
         model.addAttribute("biReport", biReport);

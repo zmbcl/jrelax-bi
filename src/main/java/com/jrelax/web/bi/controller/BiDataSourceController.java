@@ -2,24 +2,23 @@ package com.jrelax.web.bi.controller;
 
 import com.jrelax.bi.DBKit;
 import com.jrelax.bi.DBPool;
+import com.jrelax.core.web.support.WebApplicationCommon;
+import com.jrelax.core.web.support.WebResult;
 import com.jrelax.core.web.support.http.ContentType;
 import com.jrelax.core.web.transform.DataGridTransforms;
 import com.jrelax.kit.ObjectKit;
-import com.jrelax.core.web.support.ControllerCommon;
-import com.jrelax.core.web.support.WebResult;
 import com.jrelax.kit.StringKit;
 import com.jrelax.orm.query.Condition;
 import com.jrelax.orm.query.PageBean;
-import com.jrelax.web.bi.service.BiDatabaseService;
-import com.jrelax.web.support.BaseController;
 import com.jrelax.web.bi.entity.BiDatasource;
 import com.jrelax.web.bi.entity.BiDatasourceParams;
+import com.jrelax.web.bi.service.BiDatabaseService;
 import com.jrelax.web.bi.service.BiDatasourceParamsService;
 import com.jrelax.web.bi.service.BiDatasourceService;
+import com.jrelax.web.support.BaseController;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
-import org.hibernate.criterion.Order;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -257,7 +256,7 @@ public class BiDataSourceController extends BaseController<Object> {
         BiDatasource biDatasource = biDatasourceService.getById(id);
 
         if (!ObjectKit.isNotNull(biDatasource)) {
-            return ControllerCommon.UNAUTHORIZED_ACCESS;
+            return WebApplicationCommon.ERROR.UNAUTHORIZED_ACCESS;
         }
         List<BiDatasourceParams> params = biDatasourceParamsService.list(Condition.NEW().eq("datasource", biDatasource));
 

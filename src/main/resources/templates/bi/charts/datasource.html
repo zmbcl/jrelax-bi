@@ -1,0 +1,52 @@
+#foreach($map in $!list)
+#set($ds = $!map.get("datasource"))
+<div class="col-lg-4">
+    <div class="panel panel-default">
+        <div class="panel-heading">$!ds.name</div>
+        <div class="panel-body">
+            <input class="form-control" name="$!{ds.id}_name" type="text" placeholder="输入图例标签，默认为数据源名称">
+            #if($!type == "bubble")
+            <table class='table'>
+                <thead>
+                <tr>
+                    <th class='col-lg-6'>数据项</th>
+                    <th>X轴</th>
+                    <th>Y轴</th>
+                    <th>R</th>
+                </tr>
+                </thead>
+                <tbody>
+                #foreach($!obj in $!map.get("meta"))
+                <tr>
+                    <td>$!obj</td>
+                    <td><label><input class="icheck" type="radio" name="$!{ds.id}_x" value="$!obj" #ifChecked($!velocityCount, 1)></label></td>
+                    <td><label><input class="icheck" type="radio" name="$!{ds.id}_y" value="$!obj" #ifChecked($!velocityCount, 2)></label></td>
+                    <td><label><input class="icheck" type="radio" name="$!{ds.id}_r" value="$!obj"></label></td>
+                </tr>
+                #end
+                </tbody>
+            </table>
+            #else
+            <table class='table'>
+                <thead>
+                <tr>
+                    <th class='col-lg-8'>数据项</th>
+                    <th>X轴</th>
+                    <th>Y轴</th>
+                </tr>
+                </thead>
+                <tbody>
+                #foreach($!obj in $!map.get("meta"))
+                <tr>
+                    <td>$!obj</td>
+                    <td><label><input class="icheck" type="radio" name="$!{ds.id}_x" value="$!obj" #ifChecked($!velocityCount, 1)></label></td>
+                    <td><label><input class="icheck" type="radio" name="$!{ds.id}_y" value="$!obj" #ifChecked($!velocityCount, 2)></label></td>
+                </tr>
+                #end
+                </tbody>
+            </table>
+            #end
+        </div>
+    </div>
+</div>
+#end

@@ -12,7 +12,7 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            classpath:service-context*.xml
+            classpath*:service-context*.xml
         </param-value>
     </context-param>
     <context-param>
@@ -33,7 +33,7 @@
         <listener-class>com.jrelax.core.web.session.SessionAttributeListener</listener-class>
     </listener>
     <listener>
-        <listener-class>com.jrelax.core.web.session.SessionListener</listener-class>
+        <listener-class>com.jrelax.web.support.session.SessionListener</listener-class>
     </listener>
     <listener>
         <listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
@@ -46,7 +46,7 @@
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:servlet-context.xml</param-value>
+            <param-value>classpath*:servlet-context.xml</param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
     </servlet>

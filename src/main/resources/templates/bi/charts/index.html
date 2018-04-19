@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <title>${system_admin_title}</title>
+    #required_css
+</head>
+<body>#loading
+
+<div class="app $!layout">
+    <!-- 头部菜单 -->#header
+    <section class="layout">
+        <!-- 菜单 -->#sidebar
+        <!-- 内容主体 -->
+        <section class="container">
+            <section class="main-content">
+                <!-- 主体操作栏 -->
+                <header class="header navbar">
+                    <!-- 左按钮区 -->
+                    <div class="btn-group tool-button">
+                        <a href="$!basePath/bi/charts/add" class="btn btn-primary navbar-btn" data-tabs-link><i class="ti-plus"></i>
+                            #i18n('system.common.add')图表</a>
+                    </div>
+                    <div class="pull-right offscreen-right">
+                    </div>
+                </header>
+                <div class="content-wrap">
+                    <div class="wrapper">
+                        <div class="row">
+                            <div class="col-lg-12 col-md-12 table-responsive">
+                                <table id="dgCharts"></table>
+                                <div id="dgChartsPager"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a class="exit-offscreen"></a>
+            </section>
+        </section>
+    </section>
+</div>
+#required_js
+<script type="text/javascript">
+    ns.requireJS([
+        "/framework/js/form/checkbox.js",
+        "/framework/js/view/datagrid.js",
+        "/framework/js/form/search.form.js"]);
+    function doDelete(id) {
+        ns.tip.confirm("确定删除吗？", function () {
+            ns.post("$!basePath/bi/charts/delete/" + id, {}, function (success, data) {
+                if (success) {
+                    ns.back("$!basePath/bi/charts", 1000);
+                } else {
+                    ns.tip.toast.error(data.message);
+                }
+            });
+        });
+    }
+
+    var dgCharts;
+    ns.ready(function () {
+        var chartsType = jQuery.parseJSON('$!chartsType');
+        dgCharts = $("#dgCharts").jqGrid({
+            url: '$!basePath/bi/charts/data',
+            colModel: [
+                {label: 'ID', name: 'id', key: true, hidden: true, align: "left"},
+                {label: '图表名称', name: 'name', width: 300},
+                {
+                    label: '图表类型', name: 'type', width: 50, formatter: function (val) {
+                    if (chartsType[val])
+                        return chartsType[val];
+                    else return "未知";
+                }
+                },
+                {label: '创建人', name: 'createUser', width: 100},
+                {label: '创建时间', name: 'createTime', width: 100},
+                {
+                    label: '操作', width: 50, formatter: function (val, node, data) {
+                    return ns.view.datagrid.renderOp([
+                        {title: "预览", url: "$!basePath/bi/charts/preview?id=" + data.id, target: "_blank"},
+                        {
+                            title: "查看引用代码", onclick: function () {
+                            ns.view.showModal("$!basePath/bi/charts/code?id=" + data.id);
+                        }
+                        },
+                        {divider: true},
+                        {
+                            title: "删除", onclick: function () {
+                            doDelete(data.id);
+                        }
+                        }
+                    ]);
+                }
+                }
+            ],
+            height: $(".main-content .wrapper").height() - ns.view.datagrid.offsetHeight,
+            pager: "#dgChartsPager",
+            rownumbers:true,
+//            searchForm : "#searchForm",
+        });
+    });
+</script>
+#loading_close
+</body>
+
+</html>

@@ -26,7 +26,7 @@ public class DBPoolPlugin implements IPlugin{
     @Autowired
     private BiDatabaseService databaseService;
     @Override
-    public boolean init(String[] args) {
+    public boolean init() {
         //将当前系统的数据源放入池中
         DataSourceSwitcher sourceSwitcher = (DataSourceSwitcher) SessionFactoryUtils.getDataSource(databaseService.getBaseDao().getSessionFactory());
         DBPool.getInstance().create("local", sourceSwitcher.getDataSource());
@@ -50,7 +50,7 @@ public class DBPoolPlugin implements IPlugin{
     }
 
     @Override
-    public void destroy(String[] args) {
+    public void destroy() {
         DBPool.getInstance().destroyAll();
         logger.info("BI数据库已释放");
     }

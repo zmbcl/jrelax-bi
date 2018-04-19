@@ -1,0 +1,102 @@
+<div class="form-group" with="input,radio,checkbox,textarea,select,macros,variable">
+    <label>控件名称</label>
+    <input type="text" name="controlName" class="form-control" placeholder="控件名称"/>
+</div>
+<div class="form-group" with="input,radio,checkbox">
+    <label>控件值</label>
+    <input type="text" name="controlValue" class="form-control" placeholder="控件值"/>
+</div>
+<div class="form-group" with="input,textarea">
+    <label>必填项</label>
+    <select class="form-control" name="controlRequired">
+        <option value="false">否</option>
+        <option value="true">是</option>
+    </select>
+</div>
+<div class="form-group" with="textarea,label,radio,checkbox,button">
+    <label>显示文本</label>
+    <input type="text" name="controlText" class="form-control" placeholder="控件名称"/>
+</div>
+<div class="form-group" with="textarea,input">
+    <label>提示文本</label>
+    <input type="text" name="controlPlaceholder" class="form-control" placeholder="提示">
+</div>
+<div class="form-group" with="input,button">
+    <label>控件类型</label>
+    <select class="form-control" name="controlDataType">
+        <optgroup label="文本框类型">
+            <option value="text">text</option>
+            <option value="password">password</option>
+            <option value="number">number</option>
+            <option value="email">email</option>
+            <option value="hidden">hidden</option>
+        </optgroup>
+        <optgroup label="按钮类型">
+            <option value="button">button</option>
+            <option value="submit">submit</option>
+        </optgroup>
+    </select>
+</div>
+<div class="form-group" with="macros">
+    <label>宏类型</label>
+    <select class="form-control" name="controlMacros">
+        <optgroup label="日期宏控件">
+            <option value="dt_yyyy-MM-dd HH:mm">当前日期+时间[1992-12-01 12:00]</option>
+            <option value="dt_yyyy-MM-dd HH:mm:ss">当前日期+时间[1992-12-01 12:00:00]</option>
+            <option value="dt_yyyy-MM-dd">当前日期[1997-01-01]</option>
+            <option value="dt_yyyy年MM月dd日">当前日期[1997年01月01日]</option>
+            <option value="dt_yyyy年MM月">当前日期[1997年01月]</option>
+            <option value="dt_MM月dd日">当前日期[01月01日]</option>
+            <option value="dt_yyyy">当前年份[1992]</option>
+            <option value="dt_yyyy年">当前年份[1992年]</option>
+            <option value="dt_HH:mm">当前时间[12:00]</option>
+            <option value="dt_HH:mm:ss">当前时间[12:00:00]</option>
+            <option value="dt_week">当前星期[星期一]</option>
+        </optgroup>
+        <optgroup label="常用参数">
+            <option value="user_id">当前用户ID</option>
+            <option value="user_realname">当前用户姓名</option>
+            <option value="user_unitname">当前用户部门名称</option>
+        </optgroup>
+    </select>
+</div>
+<div class="form-group" with="textarea,input,radio">
+    <label>默认值</label>
+    <input type="text" name="controlDefaultValue" class="form-control" placeholder="默认值"/>
+</div>
+<div class="form-group" with="select">
+    <label>列表数据</label>
+    <button class="btn btn-info form-control" onclick="setListData()">数据设置</button>
+</div>
+<div class="form-group hide" with="table">
+    <label>行数</label>
+    <input type="number" name="controlTableRows" class="form-control" placeholder="数字"/>
+</div>
+<div class="form-group hide" with="table">
+    <label>列数</label>
+    <input type="number" name="controlTableCols" class="form-control" placeholder="数字"/>
+</div>
+<div class="form-group" with="*">
+    <label>对齐方式</label>
+    <select class="form-control" name="controlAlign">
+        <option value="left">左对齐</option>
+        <option value="center">居中对齐</option>
+        <option value="right">右对齐</option>
+    </select>
+</div>
+<div class="form-group" with="*">
+    <label>文字颜色</label>
+    <input type="text" name="controlFontColor" class="form-control" placeholder="#FFFFFF"/>
+</div>
+<div class="form-group" with="*">
+    <label>样式</label>
+    <input type="text" name="controlClass" class="form-control" placeholder="class='form-control'"/>
+</div>
+<div class="form-group" with="*">
+    <label>宽度</label>
+    <input type="text" name="controlWidth" class="form-control" placeholder="px"/>
+</div>
+<div class="form-group" with="*">
+    <label>高度</label>
+    <input type="text" name="controlHeight" class="form-control" placeholder="px"/>
+</div>

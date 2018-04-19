@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <title>${system_admin_title}</title>#required_css
+</head>
+
+<body>#loading
+
+<div class="app $!layout">
+    <!-- 头部菜单 -->#header
+    <section class="layout">
+        <!-- 菜单 -->
+        #sidebar
+        <!-- 内容主体 -->
+        <section class="container">
+            <section class="main-content">
+                <!-- 主体操作栏 -->
+                <header class="header navbar">
+                    <!-- 左按钮区 -->
+                    <div class="btn-group toolbar">
+                        <form id="searchForm" class="form-inline">
+                            当前用户：<input type="text" class="form-control toolbar-item" name="user">
+                            <button class="btn btn-primary">提交</button>
+                        </form>
+                    </div>
+                    <!-- 右按钮区 -->
+                    <div class="btn-group pull-right"></div>
+                </header>
+                <div class="content-wrap">
+                    <div class="wrapper">
+                        <div class="row clearfix">
+                            <div class="col-lg-12 col-md-12">
+                                <table id="dgFlowTask"></table>
+                                <div id="dgFlowTaskPager"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="exit-offscreen"></a>
+                </div>
+            </section>
+        </section>
+    </section>
+</div>
+#required_js
+<!-- 页面组件 -->
+<!-- 本页面脚本 -->
+<script type="text/javascript">
+    ns.requireJS([
+        "/framework/js/form/checkbox.js",
+        "/framework/js/view/datagrid.js",
+        "/framework/js/form/search.form.js"]);
+    var dgFlowTask;
+    ns.ready(function () {
+        dgFlowTask = $("#dgFlowTask").jqGrid({
+            url: '$!basePath/bi/flow/task/data',
+            colModel: [
+                {label: 'ID', name: 'id', key: true, hidden: true, align: "left"},
+                {label: '任务名称', name: 'name', width: 100},
+                {label: '创建时间', name: 'createTime', width: 300},
+                {
+                    label: '操作', width: 50, formatter: function (val, node, data) {
+                    return ns.view.datagrid.renderOp([{
+                        title: "处理任务", onclick: function () {
+                            doComplete(data.id);
+                        }
+                    }]);
+                }
+                }
+            ],
+            height: $(".main-content .wrapper").height() - ns.view.datagrid.offsetHeight,
+            pager: "#dgFlowTaskPager",
+            rownumbers:true,
+            searchForm : "#searchForm",
+        });
+
+        //处理任务
+        function doComplete(id){
+            jQuery.post("$!basePath/bi/flow/task/complete/" + id, {}, function (data) {
+                if (data.type == "form") {
+                    window.open("$!basePath/bi/form/design/preview/"+data.formKey+"?tid="+data.taskId);
+                } else {
+                    Toast.success(data.message);
+                    dgFlowTask.reload();
+                }
+            });
+        }
+    });
+</script>
+#loading_close
+</body>
+
+</html>

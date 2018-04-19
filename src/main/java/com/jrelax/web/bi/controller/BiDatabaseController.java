@@ -1,14 +1,18 @@
 package com.jrelax.web.bi.controller;
 
 import com.jrelax.bi.DBPool;
+import com.jrelax.core.web.support.WebApplicationCommon;
+import com.jrelax.core.web.support.WebResult;
+import com.jrelax.core.web.transform.DataGridTransforms;
+import com.jrelax.kit.ObjectKit;
 import com.jrelax.kit.StringKit;
+import com.jrelax.orm.query.PageBean;
+import com.jrelax.web.bi.entity.BiDatabase;
+import com.jrelax.web.bi.service.BiDatabaseService;
+import com.jrelax.web.support.BaseController;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,14 +20,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.jrelax.kit.ObjectKit;
-import com.jrelax.core.web.support.ControllerCommon;
-import com.jrelax.core.web.support.WebResult;
-import com.jrelax.orm.query.PageBean;
-import com.jrelax.web.support.BaseController;
-import com.jrelax.core.web.transform.DataGridTransforms;
-import com.jrelax.web.bi.service.BiDatabaseService;
-import com.jrelax.web.bi.entity.BiDatabase;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author zengchao
@@ -113,7 +112,7 @@ public class BiDatabaseController extends BaseController<BiDatabase> {
     public String edit(Model model, @PathVariable String id) {
         BiDatabase biDatabase = biDatabaseService.getById(id);
         if (!ObjectKit.isNotNull(biDatabase))
-            return ControllerCommon.UNAUTHORIZED_ACCESS;
+            return WebApplicationCommon.ERROR.UNAUTHORIZED_ACCESS;
         model.addAttribute("biDatabase", biDatabase);
         model.addAttribute("dbType", getDataDict().getMap("bi_db_type"));
         return TPL + "edit";
@@ -193,7 +192,7 @@ public class BiDatabaseController extends BaseController<BiDatabase> {
     public String detail(Model model, @PathVariable String id) {
         BiDatabase biDatabase = biDatabaseService.getById(id);
         if (!ObjectKit.isNotNull(biDatabase))
-            return ControllerCommon.UNAUTHORIZED_ACCESS;
+            return WebApplicationCommon.ERROR.UNAUTHORIZED_ACCESS;
         model.addAttribute("biDatabase", biDatabase);
         return TPL + "detail";
     }

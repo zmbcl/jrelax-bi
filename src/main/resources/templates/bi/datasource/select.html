@@ -1,0 +1,49 @@
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h4 class="modal-title">选择数据源</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <table id="biReportDatasource" class="table">
+                    <thead>
+                    <tr>
+                        <th></th>
+                        <th class="col-lg-8">名称</th>
+                        <th class="col-lg-4">ID</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    #foreach($!obj in $!dsList)
+                    <tr>
+                        <th>
+                            <input type="checkbox" name="id" id="id" value="$!obj.id" data-ds-name="$!obj.name">
+                        </th>
+                        <td>$!obj.name</td>
+                        <td>$!obj.id</td>
+                    </tr>
+                    #end
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button id="ok" type="submit" class="btn btn-primary btn-form-submit" onclick="doSubmit()">确认选择</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">取 消</button>
+    </div>
+<script type="text/javascript">
+    function doSubmit(){
+        var table = $("#biReportDatasource");
+        var inputs = table.find("input:checkbox:checked");
+        var ids = [];
+        $.each(inputs, function(i,n){
+            var input = $(n);
+            ids.push({
+                id:input.val(),
+                name : input.attr("data-ds-name")
+            });
+        });
+        ns.view.Dialog.close(table, {ids:ids});
+    }
+</script>

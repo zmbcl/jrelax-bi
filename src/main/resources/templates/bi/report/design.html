@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html class="no-js" lang="zh_CN">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1, maximum-scale=1">
+    <title>设计报表 - $!biReport.name</title>
+    #required_css
+    <link rel="stylesheet" href="$!resPath/app/report/css/bi-table.css">
+</head>
+<body>#loading
+
+<div class="app $!layout">
+    <!-- 头部菜单 -->#header
+    <section class="layout">
+        <!-- 菜单 -->#sidebar
+        <!-- 内容主体 -->
+        <section class="container">
+            <section class="main-content">
+                <!-- 主体操作栏 -->
+                <header class="header navbar shadow">
+                    <!-- 左按钮区 -->
+                    <div class="toolbar">
+                        <div class="btn-group">
+                            <button class="btn btn-default toolbar-item" onclick="document.execCommand('undo')" title="撤销"><i class="fa fa-mail-reply"></i></button>
+                            <button class="btn btn-default toolbar-item" onclick="document.execCommand('redo')" title="重做"><i class="fa fa-mail-forward"></i></button>
+                        </div>
+                        <div class="toolbar-divider"></div>
+                        <div class="btn-group">
+                            <button class="btn btn-default toolbar-item" onclick="table.removeRow();" title="删除整行"><i class="fa fa-times-circle"></i></button>
+                            <button class="btn btn-default toolbar-item" onclick="table.removeCol();" title="删除整列"><i class="fa fa-times-circle-o"></i></button>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-default toolbar-item" onclick="table.insertRow('top');" title="上方插入一行"><i class="fa fa-arrow-up"></i></button>
+                            <button class="btn btn-default toolbar-item" onclick="table.insertRow('bottom');" title="下方插入一行"><i class="fa fa-arrow-down"></i></button>
+                            <button class="btn btn-default toolbar-item" onclick="table.insertCol('left');" title="左方插入一列"><i class="fa fa-arrow-left"></i></button>
+                            <button class="btn btn-default toolbar-item" onclick="table.insertCol('right');" title="右方插入一列"><i class="fa fa-arrow-right"></i></button>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-default toolbar-item" onclick="table.merge('left');" title="向左跨列合并"><i class="fa fa-dedent"></i></button>
+                            <button class="btn btn-default toolbar-item" onclick="table.merge('right');" title="向右跨列合并"><i class="fa fa-indent"></i></button>
+                            <button class="btn btn-default toolbar-item" onclick="table.merge('top');" title="向上跨行合并"><i class="fa fa-dedent fa-rotate-90"></i></button>
+                            <button class="btn btn-default toolbar-item" onclick="table.merge('bottom');" title="向下跨行合并"><i class="fa fa-dedent fa-rotate-270"></i></button>
+                        </div>
+                        <div class="toolbar-divider"></div>
+                        <div class="btn-group">
+                            <button class="btn btn-default toolbar-item" id="btnStyleBold" type="button" onclick="table.bold()" title="加粗"><i class="fa fa-bold"></i></button>
+                            <button class="btn btn-default toolbar-item" id="btnStyleItalic" type="button" onclick="table.italic()" title="斜体"><i class="fa fa-italic"></i></button>
+                            <button class="btn btn-default toolbar-item" id="btnStyleUnderline" type="button" onclick="table.underline()" title="下划线"><i class="fa fa-underline"></i></button>
+                            <button class="btn btn-default toolbar-item" id="btnStyleLineThrough" type="button" onclick="table.lineThrough()" title="删除线"><i class="fa fa-strikethrough"></i></button>
+                            <button class="btn btn-default toolbar-item" id="btnStyleAlignLeft" type="button" onclick="table.alignLeft()" title="左对齐"><i class="fa fa-align-left"></i></button>
+                            <button class="btn btn-default toolbar-item" id="btnStyleAlignCenter" type="button" onclick="table.alignCenter()" title="居中对齐"><i class="fa fa-align-center"></i></button>
+                            <button class="btn btn-default toolbar-item" id="btnStyleAlignRight" type="button" onclick="table.alignRight()" title="右对齐"><i class="fa fa-align-right"></i></button>
+                        </div>
+                        <div class="toolbar-divider"></div>
+                        <div class="btn-group">
+                            <button class="btn btn-default toolbar-item" id="btnStyleFontSizeUp" type="button" onclick="table.fontSize('+')" title="字体增大"><i class="fa fa-font"></i>+</button>
+                            <button class="btn btn-default toolbar-item" id="btnStyleFontSizeDown" type="button" onclick="table.fontSize('-')" title="字体缩小"><i class="fa fa-font"></i>-</button>
+                            <div class="btn-group toolbar-item">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-life-bouy"></i>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <div id="divStyleFontColor"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="btn-group toolbar-item">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-magic"></i>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <div id="divStyleBackgroundColor"></div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="pull-right toolbar">
+                        <button class="btn btn-primary toolbar-item" type="button" onclick="doSave()"><i class="fa fa-save"></i> 保存</button>
+                        <button class="btn btn-default toolbar-item" type="button" onclick="doView()"><i class="fa fa-eye"></i> 浏览</button>
+                    </div>
+                </header>
+                <div class="content-wrap">
+                    <div class="wrapper bg-default">
+                        <div class="row">
+                            <div class="col-lg-10">
+                                <div class="panel" id="designPanel">
+                                    <div class="panel-heading">
+                                        <i class="fa fa-code"></i> 报表设计区
+                                    </div>
+                                    <div class="panel-body">
+                                        #if($!biReport.source)
+                                        $!biReport.source
+                                        #else
+                                        <table id="$!biReport.id" class="table table-bordered" contenteditable="true">
+                                            #foreach($row in [1..4])
+                                            <tr>
+                                                #foreach($i in [1..5])
+                                                <td><br></td>
+                                                #end
+                                            </tr>
+                                            #end
+                                        </table>
+                                        #end
+                                    </div>
+                                </div>
+                            </div>
+                            <aside class="col-lg-2">
+                                <div class="panel">
+                                    <div class="panel-heading">
+                                        <i class="fa fa-magic"></i> 属性面板
+                                    </div>
+                                    <div class="panel-body">
+                                        <button class="btn btn-default btn-block" type="button" onclick="managerSrc()">管理数据源</button>
+                                        <select id="selSrc" class="form-control mt5">
+                                            <option value="">未设置数据源</option>
+                                        </select>
+                                        <select id="selField" class="form-control mt5">
+                                            <option value="">未设置字段</option>
+                                        </select>
+                                        <select id="selArrow" class="form-control mt5">
+                                            <option value="">未设置数据展开方向</option>
+                                            <option value="right">自此向右展开</option>
+                                            <option value="down">自此向下展开</option>
+                                        </select>
+                                        <div class="hr-line-dashed"></div>
+                                        <div class="form-group mt5">
+                                            <div>
+                                                <label>公式：</label>
+                                                <div class="pull-right">
+                                                    <a href="javascript:;" onclick="ns.view.showModal('$!basePath/bi/report/help/formula')" class="text-primary text-underline"><i
+                                                            class="fa fa-question"></i> 帮助</a>
+                                                </div>
+                                            </div>
+                                            <textarea id="txtFormula" class="form-control"></textarea>
+                                        </div>
+                                        <div class="form-group mt5">
+                                            <div>
+                                                <label>浮点数精度(四舍五入)：</label>
+                                            </div>
+                                            <select id="selPrecision" class="form-control">
+                                                <option value="-1">保持原精度</option>
+                                                <option value="0">0</option>
+                                                <option value="1">0.0</option>
+                                                <option value="2">0.00</option>
+                                                <option value="3">0.000</option>
+                                                <option value="4">0.0000</option>
+                                                <option value="5">0.00000</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group mt5 form-inline">
+                                            <div>
+                                                <label>条件运算：</label>
+                                            </div>
+                                            <div>
+                                                当值
+                                                <select id="conditionSymbol" class="form-control" style="width: 100px">
+                                                    <option value=">">大于</option>
+                                                    <option value="<">小于</option>
+                                                    <option value="==">等于</option>
+                                                    <option value=">=">大于等于</option>
+                                                    <option value="<=">小于等于</option>
+                                                </select>
+                                                <input id="conditionValue" type="text" class="form-control" style="width: 100px">
+                                                时
+                                            </div>
+                                            <div class="mt5">
+                                                改变
+                                                <select id="conditionType" class="form-control" style="width: 100px">
+                                                    <option value="backgroundColor">背景色</option>
+                                                    <option value="color">字体颜色</option>
+                                                    <option value="borderColor">边框颜色</option>
+                                                </select>
+                                                <select id="conditionTarget" class="form-control" style="width: 100px">
+                                                    <option value="cell">单元格</option>
+                                                    <option value="row">整行</option>
+                                                </select>
+                                                为
+                                            </div>
+                                            <div class="mt5">
+                                                <div class="input-group">
+                                                    <input id="conditionColor" type="text" class="form-control" style="width: 100%">
+                                                    <div class=input-group-btn>
+                                                        <button type=button class="btn btn-default dropdown-toggle" data-toggle=dropdown><span class=caret></span></button>
+                                                        <ul class="dropdown-menu pull-right">
+                                                            <li>
+                                                                <div id="divConditionColor"></div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mt5">
+                                            <button class="btn btn-primary btn-block" type="button" onclick="controlToProperty(true)"><i class="fa fa-check"></i> 应用设置</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+                <a class="exit-offscreen"></a>
+            </section>
+        </section>
+    </section>
+</div>
+<div id="slider" class="">
+    <div class="sliders slider-primary" style="width: 250px;"><input data-slider-value=1 value=12></div>
+</div>
+#required_js
+<script src="$!basePath/app/datasource/datasource.js"></script>
+<script src="$!basePath/app/report/bi.table.js"></script>
+<script src="$!basePath/app/report/bi.report.js"></script>
+
+<script src="$!basePath/framework/plugins/bootstrap-colorpalette/bootstrap-colorpalette.js"></script>
+<link rel="stylesheet" href="$!basePath/framework/plugins/bootstrap-colorpalette/bootstrap-colorpalette.css">
+<script type="text/javascript">
+    var table, report, dsList = [], columnMapper = {};
+    function doSave(callback) {
+        table.unSelectAll();
+        var source = jQuery.trim($("#designPanel").find(".panel-body").html());
+        var content = parseToContent();
+        var id = "$!biReport.id";
+        ns.post("$!basePath/bi/report/save", {id: id, source: source, content: content}, function (success, data) {
+            if (success) {
+                ns.tip.toast.success("已保存");
+                if (callback) callback();
+            } else {
+                ns.tip.toast.error(data.message);
+            }
+        });
+    }
+    //删除与实际无关的内容
+    function parseToContent() {
+        var content = $("#designPanel").find(".panel-body").clone();
+        var table = content.find("table");
+        table.find("td[data-binder]").html("<br/>");
+        table.find("tr:eq(0)").remove();
+        table.find(".debug").remove();
+        table.find("td.rownum, td.colnum").remove();
+        table.find("td").removeAttr("class");
+        table.removeAttr("contenteditable");
+
+        return jQuery.trim(content.html());
+    }
+    //保存并预览
+    function doView() {
+        doSave(function () {
+            if (window.winView && !window.winView.closed) {
+                window.winView.location.reload();
+                window.winView.focus();
+            } else {
+                window.winView = window.open("$!basePath/bi/report/view/$!biReport.id");
+            }
+        });
+    }
+
+    function managerSrc() {
+        ns.view.showModal("$!basePath/bi/datasource/select", {
+            onShown: function (modal) {
+                var inputs = modal.find("table input:checkbox");
+                $.each(inputs, function (i, n) {
+                    var input = $(n);
+                    if (contains(input.val())) {
+                        input.prop("checked", true);
+                    }
+                });
+            },
+            onHidden: function (params) {
+                if (!params.ids) return;
+                var ids = params.ids;
+                selectedSrc(ids);
+            }
+        });
+    }
+
+    function selectedSrc(ids) {
+        dsList = [];
+        columnMapper = {};
+        for (var i = 0; i < ids.length; i++) {
+            var obj = ids[i];
+            var ds = new DataSource(obj.id);
+            var columns = ds.getColumns();
+            dsList.push({
+                id: obj.id,
+                name: ds.getName(),
+                obj: ds
+            });
+            columnMapper[obj.id] = columns;
+        }
+
+        refreshControl();
+    }
+
+    function contains(id) {
+        for (var i = 0; i < dsList.length; i++) {
+            var ds = dsList[i].obj;
+            if (ds.getId() == id)
+                return true;
+        }
+        return false;
+    }
+
+    //刷新控件
+    function refreshControl() {
+        var srcHtml = "<option value=\"\">未设置数据源</option>";
+        for (var i = 0; i < dsList.length; i++) {
+            srcHtml += ns.String.format("<option value='%s'>%s</option>", [dsList[i].id, dsList[i].name]);
+        }
+        $("#selSrc").html(srcHtml);
+    }
+    //属性->控件
+    function propertyToControl() {
+        var cell = table.getSelectedCell();
+        var opt = report.getOptions();
+        if (cell[0]) {
+            //数据源信息
+            var ds = cell.attr(opt.dsTag);
+            var code = cell.attr(opt.codeTag);
+            var arrow = cell.attr(opt.arrowTag);
+
+            $("#selSrc").val(ds);
+            loadFieldByDsId(ds);
+            $("#selField").val(code);
+            $("#selArrow").val(arrow);
+
+            var formula = cell.attr(opt.formulaTag);
+            $("#txtFormula").val(formula);
+
+            var precision = cell.attr(opt.precisionTag);
+            $("#selPrecision").val(precision);
+
+            //条件运算
+            var conditionSymbol = cell.attr(opt.conditionSymbolTag);
+            $("#conditionSymbol").val(conditionSymbol);
+            var conditionValue = cell.attr(opt.conditionValueTag);
+            $("#conditionValue").val(conditionValue);
+            var conditionTarget = cell.attr(opt.conditionTargetTag);
+            $("#conditionTarget").val(conditionTarget);
+            var conditionType = cell.attr(opt.conditionTypeTag);
+            $("#conditionType").val(conditionType);
+            var conditionColor = cell.attr(opt.conditionColorTag);
+            $("#conditionColor").val(conditionColor);
+        }
+    }
+    //控件->属性
+    function controlToProperty(tip) {
+        var cell = table.getSelectedCell();
+        var opt = report.getOptions();
+        if (cell[0]) {
+            //数据源
+            var ds = $("#selSrc").val();
+            var code = $("#selField").val();
+            var arrow = $("#selArrow").val();
+
+            if (ds.length > 0 && code.length > 0 && arrow.length > 0) {
+                cell.attr(opt.dsTag, ds);
+                cell.attr(opt.codeTag, code);
+                cell.attr(opt.arrowTag, arrow);
+
+                cell.html("<div class='debug'>#" + code + "->" + arrow + "#</div>");
+                cell.attr("data-binder", true);
+            } else {
+                cell.removeAttr(opt.dsTag);
+                cell.removeAttr(opt.codeTag);
+                cell.removeAttr(opt.arrowTag);
+                cell.removeAttr("data-binder");
+                cell.find(".debug").remove();
+            }
+
+            //公式
+            var formula = jQuery.trim($("#txtFormula").val());
+            if (formula.length > 0) {
+                cell.attr(opt.formulaTag, formula);
+                cell.addClass("formula");
+            } else {
+                cell.removeClass("formula");
+                cell.removeAttr(opt.formulaTag);
+            }
+
+            //精度
+            var precision = $("#selPrecision").val();
+            if (precision > -1) {
+                cell.attr(opt.precisionTag, precision);
+            } else {
+                cell.removeAttr(opt.precisionTag);
+            }
+
+            //条件运算
+            var conditionSymbol = $("#conditionSymbol").val();
+            var conditionValue = $("#conditionValue").val();
+            var conditionTarget = $("#conditionTarget").val();
+            var conditionType = $("#conditionType").val();
+            var conditionColor = $("#conditionColor").val();
+            if (conditionSymbol && conditionValue.length > 0 && conditionTarget && conditionType && conditionColor.length > 0) {
+                cell.attr(opt.conditionSymbolTag, conditionSymbol);
+                cell.attr(opt.conditionValueTag, conditionValue);
+                cell.attr(opt.conditionTargetTag, conditionTarget);
+                cell.attr(opt.conditionTypeTag, conditionType);
+                cell.attr(opt.conditionColorTag, conditionColor);
+            } else {
+                cell.removeAttr(opt.conditionSymbolTag);
+                cell.removeAttr(opt.conditionValueTag);
+                cell.removeAttr(opt.conditionTargetTag);
+                cell.removeAttr(opt.conditionTypeTag);
+                cell.removeAttr(opt.conditionColorTag);
+            }
+            if(tip)
+                ns.tip.toast.successCenter("已应用");
+      }
+    }
+
+    ns.ready(function () {
+        table = $("#designPanel").find("table").BiTable({
+            showHeader: true,
+            dragColumnSize: true,
+            onBeforeSelectCell : function(){
+                controlToProperty();
+            },
+            onSelectCell: function (cell, table) {
+                propertyToControl();
+            }
+        });
+        report = new BiReport({target: table});
+
+        $("#selSrc").on("change", function () {
+            loadFieldByDsId($(this).val());
+        });
+        doInit();
+    });
+
+    function loadFieldByDsId(id) {
+        //级联显示字段
+        var columns = columnMapper[id];
+        var fieldHtml = "<option value=\"\">未设置字段</option>";
+        if (columns) {
+            for (var i = 0; i < columns.length; i++) {
+                fieldHtml += ns.String.format("<option value='%s'>%s</option>", [columns[i], columns[i]])
+            }
+        }
+        $("#selField").html(fieldHtml);
+    }
+
+    function doInit() {
+        //获取数据源，并加载
+        var tag = report.getOptions().dsTag;
+        var tds = table.find("td[" + tag + "]");
+        var dsList = [], idList = [];
+        $.each(tds, function (i, n) {
+            var td = $(n);
+            var dsId = td.attr(tag);
+            if (!idList.contains(dsId)) {
+                dsList.push({id: dsId});
+                idList.push(dsId);
+            }
+        });
+        //刷新状态
+        selectedSrc(dsList);
+
+        //字体颜色选择
+        $('#divStyleFontColor').colorPalette().on('selectColor', function (e) {
+            table.fontColor(e.color);
+        });
+        //背景颜色选择
+        $('#divStyleBackgroundColor').colorPalette().on('selectColor', function (e) {
+            table.backgroundColor(e.color);
+        });
+        //背景颜色选择
+        $('#divConditionColor').colorPalette().on('selectColor', function (e) {
+            $("#conditionColor").val(e.color);
+        });
+
+
+    }
+</script>
+#loading_close
+</body>
+
+</html>

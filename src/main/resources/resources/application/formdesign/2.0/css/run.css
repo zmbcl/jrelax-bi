@@ -1,0 +1,18 @@
+.tooltip-inner {
+	background-color : #da3e16 !important;
+}
+.top .tooltip-arrow {
+	border-top-color: #da3e16 !important;
+}
+.left .tooltip-arrow {
+	border-left-color: #da3e16 !important;
+}
+.tooltip{
+	display: inline-table;
+}
+table .has-error .tooltip, table .has-success .tooltip {
+	display : block !important;;
+}
+[fd-view]{
+	margin-top:5px;
+}

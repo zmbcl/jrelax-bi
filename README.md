@@ -1,12 +1,18 @@
 #JRelax-BI
+运行步骤：
+- jrelax-bi.sql导入数据库中（Mysql数据库）
+- 修改src/resources/jdbc_mysql.properties 中的jdbc.master中的数据库连接
 
-dist目录中的zip包 解压后直接丢入tomcat
-db.sql导入数据库中（Mysql数据库）
-
+说明：
 * 技术支持：QQ群490249408
-* 当前版本号为：1.2
+* 当前版本号为：1.4
+* lib中的jar包已开源，开源地址：http://www.oschina.net/p/jrelax
 
 ##版本更新
+### V1.4 更新时间 2018-04-19
+* 基础框架升级到2.0版本
+* 系统管理功能同步更新
+
 ### V1.2 更新时间 2017-01-23
 * 增加外部数据库连接功能
 * 增加虚拟数据源功能（重要更新）
@@ -33,7 +39,7 @@ db.sql导入数据库中（Mysql数据库）
 
 ### 演示地址
 
-* 地址：<http://server2.nethsoft.com:8080/>
+* 地址：<http://server2.nethsoft.com:8080/>（已下线）
 * 用户名/密码： superadmin 1
 
 ### 系统截图
@@ -45,3 +51,4 @@ db.sql导入数据库中（Mysql数据库）
 ### 友情链接
 
 * [zframe](http://www.oschina.net/p/zframe)
+* [jrelax](http://www.oschina.net/p/jrelax)
