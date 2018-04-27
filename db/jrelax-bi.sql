@@ -526,6 +526,12 @@ CREATE TABLE `sys_datadict` (
 INSERT INTO `sys_datadict` VALUES ('4028812856a0dfaa0156a12c4ab80017', '系统', 'sys_themes', '系统主题包', 'superadmin', '2016-08-19 13:00:49');
 INSERT INTO `sys_datadict` VALUES ('402881ee52f2c20f0152f2fa36fb0008', '系统', 'sys_status', '状态', 'superadmin', '2016-02-18 14:03:50');
 INSERT INTO `sys_datadict` VALUES ('402887d9535f625501535f73ff2b0009', '系统', 'sys_exception', '异常', 'superadmin', '2016-03-10 15:35:50');
+INSERT INTO `sys_datadict` (`id`, `category`, `name`, `remarks`, `create_user`, `create_time`)
+VALUES
+	('4028b88158b3bc850158b411f07b0003','自定义图表','bi_charts_type','图表类型','superadmin','2016-11-30 15:10:24'),
+	('4028b88159b070d70159b0a2b34e0001','数据源','bi_db_type','外部数据库类型','superadmin','2017-01-18 16:12:49'),
+	('4028b88159b070d70159b0ab81e30004','数据源','bi_db_driver','外部数据库驱动','superadmin','2017-01-18 16:22:27'),
+	('4028b88159b070d70159b0abea6e0005','数据源','bi_db_jdbc_url','外部数据库JDBC连接','superadmin','2017-01-18 16:22:53');
 
 -- ----------------------------
 -- Table structure for sys_datadict_item
@@ -558,6 +564,21 @@ INSERT INTO `sys_datadict_item` VALUES ('4028812856a0dfaa0156a12e9436001f', '402
 INSERT INTO `sys_datadict_item` VALUES ('402887d9535f625501535f713d060001', '402881ee52f2c20f0152f2fa36fb0008', '0', '启用', '1', 'superadmin', '2016-03-10 15:32:50');
 INSERT INTO `sys_datadict_item` VALUES ('402887d9535f625501535f713d180002', '402881ee52f2c20f0152f2fa36fb0008', '1', '禁用', '2', 'superadmin', '2016-03-10 15:32:50');
 INSERT INTO `sys_datadict_item` VALUES ('402887d9535f625501535f7419c0000e', '402887d9535f625501535f73ff2b0009', 'org.hibernate.exception.ConstraintViolationException', '存在关联数据，无法执行此操作！', '1', 'superadmin', '2016-03-10 15:35:57');
+INSERT INTO `sys_datadict_item` (`id`, `did`, `k`, `v`, `location`, `create_user`, `create_time`)
+VALUES
+	('4028b88158c394ca0158c3ad98cf001b','4028b88158b3bc850158b411f07b0003','bar','柱状图',1,'superadmin','2016-12-03 15:54:43'),
+	('4028b88158c394ca0158c3ad98d0001c','4028b88158b3bc850158b411f07b0003','line','折线图',2,'superadmin','2016-12-03 15:54:43'),
+	('4028b88158c394ca0158c3ad98d0001d','4028b88158b3bc850158b411f07b0003','pie','饼状图',3,'superadmin','2016-12-03 15:54:43'),
+	('4028b88158c394ca0158c3ad98d0001e','4028b88158b3bc850158b411f07b0003','doughnut','环形图',4,'superadmin','2016-12-03 15:54:43'),
+	('4028b88158c394ca0158c3ad98d0001f','4028b88158b3bc850158b411f07b0003','polar-area','极坐标图',5,'superadmin','2016-12-03 15:54:43'),
+	('4028b88158c394ca0158c3ad98d00020','4028b88158b3bc850158b411f07b0003','radar','雷达图',6,'superadmin','2016-12-03 15:54:43'),
+	('4028b88158c394ca0158c3ad98d00021','4028b88158b3bc850158b411f07b0003','bubble','气泡图',7,'superadmin','2016-12-03 15:54:43'),
+	('4028b88159b070d70159b0a32f720002','4028b88159b070d70159b0a2b34e0001','mysql','MySQL数据库',1,'superadmin','2017-01-18 16:13:21'),
+	('4028b88159b070d70159b0a32f720003','4028b88159b070d70159b0a2b34e0001','oracle','Oracle数据库',2,'superadmin','2017-01-18 16:13:21'),
+	('4028b88159b070d70159b0ac98de0006','4028b88159b070d70159b0ab81e30004','mysql','com.mysql.jdbc.Driver',1,'superadmin','2017-01-18 16:23:38'),
+	('4028b88159b070d70159b0ac98de0007','4028b88159b070d70159b0ab81e30004','oracle','oracle.jdbc.driver.OracleDriver',2,'superadmin','2017-01-18 16:23:38'),
+	('4028b88159b070d70159b0adbad40008','4028b88159b070d70159b0abea6e0005','mysql','jdbc:mysql://${host}:${port}/${db}',1,'superadmin','2017-01-18 16:24:52'),
+	('4028b88159b070d70159b0adbad40009','4028b88159b070d70159b0abea6e0005','oracle','jdbc:oracle:thin:@localhost:1521:orcl',2,'superadmin','2017-01-18 16:24:52');
 
 -- ----------------------------
 -- Table structure for sys_email
