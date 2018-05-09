@@ -5,9 +5,9 @@
  */
 if (!window.chartsOnLoad) {
     window.chartsOnLoad = true;
-    var prefixUrl = "http://localhost:8080/jrelax-bi";
-    var prefixChart = "chart";
-    var prefixTip = "tip";
+    const prefixUrl = "http://localhost:8080/jrelax-bi";
+    const prefixChart = "chart";
+    const prefixTip = "tip";
     window.BasePath = prefixUrl;
     //加载必须JS
     if (!window.$)
@@ -33,7 +33,7 @@ if (!window.chartsOnLoad) {
                         display(data);
                     });
                 }
-            }
+            };
             function display(data) {
                 if (data.type) {
                     $("body").append("<script src='" + prefixUrl + "/app/charts/adapter/" + data.type + ".js'></script>");
@@ -51,6 +51,23 @@ if (!window.chartsOnLoad) {
         }
     }
     window.onload = function () {
+        var valid = true;
+        //验证前缀地址是否可以访问
+        $.ajax({
+            url : prefixUrl,
+            async : false,
+            cache : false,
+            error : function(){
+                valid = false;
+            }
+        });
+        if(!valid) {
+            console.log("===================看这里，看这里=======================");
+            console.log("1. prefixUrl地址应该设置为http://地址:端口/项目名（项目名可以为空），确保配置的prefix地址可以访问。");
+            console.log("2. 配置文件路径：src/main/resources/resources/application/charts/charts.js");
+            console.log("===================没有了，去改吧=======================");
+            alert("图表配置错误，错误信息请查看浏览器控制台。");
+        }
         $("script[data-bi-chart]").each(function (i, n) {
             var target = $(n);
             var id = target.attr("data-bi-chart");
