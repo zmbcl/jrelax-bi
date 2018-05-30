@@ -67,6 +67,8 @@ if (!window.chartsOnLoad) {
             console.log("2. 配置文件路径：src/main/resources/resources/application/charts/charts.js");
             console.log("===================没有了，去改吧=======================");
             alert("图表配置错误，错误信息请查看浏览器控制台。");
+            alert("不是IDE的控制台，是浏览器控制台哦！是浏览器控制台哦！");
+            alert("最后一句：通常是按F12打开，选中Console标签就能显示")
         }
         $("script[data-bi-chart]").each(function (i, n) {
             var target = $(n);

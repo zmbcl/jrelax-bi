@@ -1,4 +1,10 @@
 #JRelax-BI
+
+关于仪表板上不显示图表的问题：
+- prefixUrl地址应该设置为http://地址:端口/项目名（项目名可以为空），确保配置的prefix地址可以访问
+- 配置文件路径：src/main/resources/resources/application/charts/charts.js
+- 如此设置的原因是用于图表的外发，而不限于只能在被系统中显示
+
 运行步骤：
 - jrelax-bi.sql导入数据库中（Mysql数据库）
 - 修改src/resources/jdbc_mysql.properties 中的jdbc.master中的数据库连接
