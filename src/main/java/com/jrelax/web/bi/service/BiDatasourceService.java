@@ -190,9 +190,7 @@ public class BiDatasourceService extends BaseService<BiDatasource> {
         JSONArray data = new JSONArray();
         for (Map<String, Object> map : list) {
             JSONObject obj = new JSONObject();
-            Iterator<String> iter = map.keySet().iterator();
-            while (iter.hasNext()) {
-                String key = iter.next();
+            for (String key : map.keySet()) {
                 Object value = map.get(key);
                 if (value != null)
                     obj.element(key, value.toString());
@@ -207,19 +205,19 @@ public class BiDatasourceService extends BaseService<BiDatasource> {
 
     public String toXML(List<Map<String, Object>> data) {
         StringBuffer xml = new StringBuffer();
-        xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><list>");
+        xml.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<list>\n");
         for (Map<String, Object> map : data) {
-            xml.append("<data>");
+            xml.append("  <data>\n");
             Iterator<String> iter = map.keySet().iterator();
             while (iter.hasNext()) {
                 String key = iter.next();
                 Object val = map.get(key);
 
-                xml.append("<prop key=\"" + key + "\"><![CDATA[" + val + "]]></prop>");
+                xml.append("    <prop key=\"" + key + "\">\n      <![CDATA[" + val + "]]>\n    </prop>\n");
             }
-            xml.append("</data>");
+            xml.append("  </data>\n");
         }
-        xml.append("</list>");
+        xml.append("</list>\n");
         return xml.toString();
     }
 

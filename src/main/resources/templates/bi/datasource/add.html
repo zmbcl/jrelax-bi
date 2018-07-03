@@ -8,8 +8,13 @@
     <title>${system_admin_title}</title>
     #required_css
     <style>
-        #html table{
+        #html table {
             width: auto;
+        }
+
+        .data-viewer{
+            overflow: auto;
+            max-height: 400px;
         }
     </style>
 </head>
@@ -50,21 +55,17 @@
                                                        name="name">
                                             </div>
                                             <div class="form-group">
+                                                <div class="pull-right"><a class="text-link" href="javascript:;" id="addExcel" onclick="addExcel()">添加Excel</a><a class="ml10" href="javascript:;"
+                                                                                                                                                                  onclick="addExcelHelp()">?</a></div>
                                                 <label class="control-label">SQL：</label>
                                                 <textarea id="sql" name="sqlCmd" rows="5" class="form-control"
                                                           data-parsley-required="true"></textarea>
                                             </div>
-                                            <button class="btn btn-primary" onclick="doPreviewData()" type="button">
-                                                <i class="fa fa-eye"></i> 预览数据
-                                            </button>
-                                            <button id="ok" class="btn btn-primary btn-parsley" data-loading-text="正在保存...">
-                                                <i class="fa fa-save"></i> 保存数据源
-                                            </button>
                                         </div>
                                         <div class="col-lg-6">
                                             <div class="form-group">
-                                                <label class="control-label">参数列表：</label>
                                                 <div class="row p15">
+                                                    <label class="control-label">参数列表：</label>
                                                     <table id="resolveTable"
                                                            class="table table-condensed bg-white">
                                                         <thead>
@@ -101,6 +102,12 @@
                                             <div class="alert alert-warning">
                                                 SQL中添加参数的方式：格式：<strong>{#参数名#}</strong>，示例：select * from table where id = '{#ID#}'
                                             </div>
+                                            <button class="btn btn-primary" onclick="doPreviewData()" type="button">
+                                                <i class="fa fa-eye"></i> 预览数据
+                                            </button>
+                                            <button id="ok" class="btn btn-primary btn-parsley" data-loading-text="正在保存...">
+                                                <i class="fa fa-save"></i> 保存数据源
+                                            </button>
                                         </div>
                                     </div>
 
@@ -117,10 +124,12 @@
                                             <li><a href="#json" data-toggle="tab">JSON</a></li>
                                             <li><a href="#xml" data-toggle="tab">XML</a></li>
                                         </ul>
-                                        <div class="tab-content">
+                                        <div class="tab-content data-viewer">
                                             <div class="tab-pane fade active in" id="html"></div>
                                             <div class="tab-pane fade" id="json"></div>
-                                            <div class="tab-pane fade" id="xml"></div>
+                                            <div class="tab-pane fade" id="xml">
+                                                <xmp></xmp>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -134,12 +143,21 @@
     </section>
 </div>
 </body>
+<div id="excelHelp" class="hide">
+    <h3>实现方式：</h3>
+    <ul>
+        <li>根据Excel的列信息生成表（列最好不要是中文）</li>
+        <li>自动将Excel的数据导入表当中</li>
+        <li>生成查询SQL语句，默认查询所有字段。可以在SQL编辑框中修改</li>
+    </ul>
+</div>
 #required_js
-<script src="$!basePath/framework/js/form/form.js"></script>
-<script src="$!basePath/framework/js/view/toast.js"></script>
-<script src="$!basePath/framework/js/form/validator.js"></script>
-
 <script type="text/javascript">
+    ns.require([
+        "/framework/js/form/form.js",
+        "/framework/js/form/validator.js",
+        "/framework/js/form/uploader.js"
+    ]);
     var data = [], json, xml, html, keys = [];
     var params = [];
     ns.ready(function () {
@@ -157,6 +175,7 @@
             }
         });
     });
+
     //预览数据
     function doPreviewData() {
         var fields = [], defaultValues = [];
@@ -167,23 +186,24 @@
             fields.push(field);
             defaultValues.push(def);
         });
-        ns.view.showProgress();
+        ns.view.showLoading();
         ns.post("$!basePath/bi/datasource/exec", {
-            db : $("#db").val(),
+            db: $("#db").val(),
             sql: $("#sql").val(),
             field: fields.toString(),
-            defaultValue : defaultValues.toLocaleString()
+            defaultValue: defaultValues.toLocaleString()
         }, function (success, response) {
-            ns.view.closeProgress();
+            ns.view.closeLoading();
             if (success) {
                 $("#html").html(response.html);
-                $("#json").html(response.json);
-                $("#xml").html(response.xml);
+                $("#json").html(JSON.stringify(response.json));
+                $("#xml xmp").html(response.xml);
             } else {
                 ns.tip.error("SQL语句错误", response.error);
             }
         });
     }
+
     //增加行
     function addParamRow() {
         var tr = $("#resolveTable tbody>tr.hide").clone();
@@ -192,9 +212,32 @@
         tr.find("td:first").text($("#resolveTable tbody>tr:not(.hide)").length + 1);
         $("#resolveTable tbody").append(tr);
     }
+
     //删除行
     function removeParamRow(obj) {
         $(obj).parents("tr").remove();
+    }
+
+    function addExcel() {
+        ns.form.uploader.open({
+            title: "添加Excel",
+            filter: ".xls,.xlsx",
+            success: function (path, name, files) {
+                var bar = ns.view.showProgressbar("正在处理...");
+                ns.post("$!basePath/bi/datasource/add/excel", {path: path}, function (success, data) {
+                    bar.close();
+                    if (success) {
+                        $("#sql").val(data.sql);
+                    } else {
+                        ns.error(data.message);
+                    }
+                })
+            }
+        })
+    }
+
+    function addExcelHelp() {
+        ns.alert($("#excelHelp").html());
     }
 </script>
 #loading_close

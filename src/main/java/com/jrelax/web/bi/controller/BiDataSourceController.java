@@ -6,6 +6,7 @@ import com.jrelax.core.web.support.WebApplicationCommon;
 import com.jrelax.core.web.support.WebResult;
 import com.jrelax.core.web.support.http.ContentType;
 import com.jrelax.core.web.transform.DataGridTransforms;
+import com.jrelax.kit.ExcelKit;
 import com.jrelax.kit.ObjectKit;
 import com.jrelax.kit.StringKit;
 import com.jrelax.orm.query.Condition;
@@ -16,6 +17,7 @@ import com.jrelax.web.bi.service.BiDatabaseService;
 import com.jrelax.web.bi.service.BiDatasourceParamsService;
 import com.jrelax.web.bi.service.BiDatasourceService;
 import com.jrelax.web.support.BaseController;
+import com.jrelax.web.support.UploadKit;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
@@ -25,6 +27,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +56,7 @@ public class BiDataSourceController extends BaseController<Object> {
 
     @RequestMapping("/data")
     @ResponseBody
-    public Map<String, Object> data(PageBean pageBean){
+    public Map<String, Object> data(PageBean pageBean) {
         List<BiDatasource> list = biDatasourceService.list(pageBean);
 
         return DataGridTransforms.JQGRID.transform(list, pageBean);
@@ -134,6 +138,70 @@ public class BiDataSourceController extends BaseController<Object> {
     }
 
     /**
+     * 导入Excel
+     *
+     * @param path 文件路径
+     * @return
+     */
+    @RequestMapping(value = "/add/excel")
+    @ResponseBody
+    public JSONObject addExcel(String path) {
+        try {
+            File excel = new File(UploadKit.getAbsolutePath(path));
+            if (!excel.exists()) return WebResult.error("文件不存在");
+            List<List<String>> data = ExcelKit.getRows(excel, 0, 0);
+            if (data.size() == 0) return WebResult.error("Excel文件为空");
+            if (data.size() < 2) return WebResult.error("Excel文件数据为空");
+            List<String> title = data.get(0);
+            if (title.size() == 0) return WebResult.error("Excel标题数据为空");
+            String tableName = "ds_excel_" + System.currentTimeMillis();
+            StringBuilder createSql = new StringBuilder(String.format("CREATE TABLE `%s` (\n", tableName));
+            StringBuilder columnSql = new StringBuilder("");
+            List<String> values = new ArrayList<>();
+
+            for (String column : title) {
+                createSql.append(String.format("`%s` varchar(255) NULL,\n", column));
+                columnSql.append(",").append(column).append(" ");
+                values.add("?");
+            }
+
+            createSql = createSql.replace(createSql.length() - 2, createSql.length() - 1, "");
+            createSql.append(")");
+
+            String columns = columnSql.substring(1);
+
+            //创建表
+            try {
+                biDatabaseService.executeSqlBatch(createSql.toString());
+            } catch (Exception e) {
+                return WebResult.error("数据库表创建失败：" + e.getMessage());
+            }
+
+            //导入数据
+            String insertSql = String.format("insert into `%s`(%s) values(%s)", tableName, columns, StringKit.toString(values));
+            for (int i = 1; i < data.size(); i++) {
+                List<String> row = data.get(i);
+                if (row.size() < title.size()) {//补充空值
+                    for (int j = row.size(); j < title.size(); j++) {
+                        row.add("");
+                    }
+                }
+                try {
+                    biDatabaseService.executeSqlBatch(insertSql, row.toArray(new Object[]{}));
+                } catch (Exception e) {
+                    logger.error("数据源Excel数据导入错误：" + e.getMessage());
+                }
+            }
+
+
+            return WebResult.success().element("sql", String.format("select %s from %s", columns, tableName));
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            return WebResult.error(e);
+        }
+    }
+
+    /**
      * 转向新增页面
      */
     @RequestMapping(value = "/virtual/add", method = {RequestMethod.GET})
@@ -204,15 +272,13 @@ public class BiDataSourceController extends BaseController<Object> {
 
                 sql = sql.replace("{" + i + "}", tableName);
             }
-            System.out.println("H2：" + sql);
+//            System.out.println("H2：" + sql);
             List<Map<String, Object>> list = dbKit.listToMap(sql);
 
             //数据格式转换
-            JSONArray data = biDatasourceService.toJSON(list);
-
-            result.element("html", biDatasourceService.toHTML(data));
-            result.element("json", biDatasourceService.toJSON(data));
-            result.element("xml", biDatasourceService.toXML(data));
+            result.element("html", biDatasourceService.toHTML(list));
+            result.element("json", biDatasourceService.toJSON(list));
+            result.element("xml", biDatasourceService.toXML(list));
             return result;
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
