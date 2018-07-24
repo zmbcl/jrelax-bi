@@ -12,14 +12,13 @@ import org.springframework.stereotype.Service;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 数据源数据结构
  * Created by zengchao on 2016-12-15.
  */
 @Service
-public class BiDatasourceMetaService extends BaseService<BiDatasourceMeta>{
+public class BiDatasourceMetaService extends BaseService<BiDatasourceMeta> {
     @Autowired
     private BiDatasourceService biDatasourceService;
     @Autowired
@@ -27,16 +26,16 @@ public class BiDatasourceMetaService extends BaseService<BiDatasourceMeta>{
 
     /**
      * 获取数据源数据结构
+     *
      * @param id
      * @return
      */
-    public List<BiDatasourceMeta> getMetadataForEntity(String id){
+    public List<BiDatasourceMeta> getMetadataForEntity(String id) {
         final List<BiDatasourceMeta> list = new ArrayList<>();
         BiDatasource datasource = biDatasourceService.getById(id);
-        if(ObjectKit.isNotNull(datasource)){
+        if (ObjectKit.isNotNull(datasource)) {
             //否则根据sql重新计算
-            Map<String, String> paramsMap = biDatasourceParamsService.getParamsForMap(datasource.getId());
-            String sql = biDatasourceService.mergeSql(datasource.getSqlCmd(), paramsMap);
+            String sql = datasource.getSqlCmd();
 
             DBKit dbKit = new DBKit(DBPool.getInstance().getDataSource(datasource.getDb()));
             try {

@@ -4,15 +4,17 @@ import com.jrelax.core.web.support.WebApplicationCommon;
 import com.jrelax.core.web.support.WebResult;
 import com.jrelax.core.web.transform.DataGridTransforms;
 import com.jrelax.kit.ObjectKit;
+import com.jrelax.kit.StringKit;
+import com.jrelax.orm.query.Condition;
 import com.jrelax.orm.query.PageBean;
+import com.jrelax.web.bi.entity.BIForm;
 import com.jrelax.web.bi.entity.BiReport;
-import com.jrelax.web.bi.service.BiDatasourceService;
+import com.jrelax.web.bi.service.BIFormService;
 import com.jrelax.web.bi.service.BiReportService;
 import com.jrelax.web.support.BaseController;
 import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 
@@ -34,10 +37,10 @@ import java.util.Map;
 public class BiReportController extends BaseController<BiReport> {
     private Logger logger = LoggerFactory.getLogger(this.getClass());
     private final String TPL = "/bi/report/";
-    @Autowired
+    @Resource
     private BiReportService biReportService;
-    @Autowired
-    private BiDatasourceService biDatasourceService;
+    @Resource
+    private BIFormService biFormService;
 
     /**
      * 首页
@@ -113,6 +116,7 @@ public class BiReportController extends BaseController<BiReport> {
         }
 
         model.addAttribute("biReport", biReport);
+        model.addAttribute("formList", biFormService.list(Condition.NEW().eq("version", "1.0")));
 
         return TPL + "edit";
     }
@@ -136,6 +140,7 @@ public class BiReportController extends BaseController<BiReport> {
 
             eqBiReport.setName(biReport.getName());
             eqBiReport.setDescript(biReport.getDescript());
+            eqBiReport.setSearchFormId(biReport.getSearchFormId());
             biReportService.merge(eqBiReport);
 
             return WebResult.success();
@@ -185,6 +190,13 @@ public class BiReportController extends BaseController<BiReport> {
 
         model.addAttribute("biReport", biReport);
 
+        if (StringKit.isNotEmpty(biReport.getSearchFormId())) {
+            BIForm form = biFormService.getById(biReport.getSearchFormId());
+            if (form != null) {
+                model.addAttribute("searchForm", form);
+            }
+        }
+
         return TPL + "detail";
     }
 
@@ -229,6 +241,7 @@ public class BiReportController extends BaseController<BiReport> {
 
     /**
      * 帮助说明
+     *
      * @param model
      * @param module
      * @return

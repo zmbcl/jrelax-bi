@@ -71,8 +71,9 @@
                                                         <thead>
                                                         <tr>
                                                             <th>序号</th>
-                                                            <th class="col-lg-5">参数名</th>
-                                                            <th class="col-lg-6">默认值</th>
+                                                            <th class="col-lg-4">参数名</th>
+                                                            <th class="col-lg-2">方式</th>
+                                                            <th class="col-lg-4">默认值</th>
                                                             <th></th>
                                                         </tr>
                                                         </thead>
@@ -81,6 +82,20 @@
                                                             <td>1</td>
                                                             <td>
                                                                 <input type="text" name="field" class="form-control">
+                                                            </td>
+                                                            <td>
+                                                                <select name="method" class="form-control">
+                                                                    <option value="eq">等于</option>
+                                                                    <option value="not eq">不等于</option>
+                                                                    <option value="lt">小于</option>
+                                                                    <option value="le">小于或等于</option>
+                                                                    <option value="gt">大于</option>
+                                                                    <option value="ge">大于或等于</option>
+                                                                    <option value="like">包含</option>
+                                                                    <option value="not like">不包含</option>
+                                                                    <option value="startsWith">开始以</option>
+                                                                    <option value="endsWith">结束以</option>
+                                                                </select>
                                                             </td>
                                                             <td>
                                                                 <input type="text" name="defaultValue" class="form-control">
@@ -99,9 +114,9 @@
                                                     </button>
                                                 </div>
                                             </div>
-                                            <div class="alert alert-warning">
-                                                SQL中添加参数的方式：格式：<strong>{#参数名#}</strong>，示例：select * from table where id = '{#ID#}'
-                                            </div>
+                                            <!--<div class="alert alert-warning">-->
+                                                <!--SQL中添加参数的方式：格式：<strong>{#参数名#}</strong>，示例：select * from table where id = '{#ID#}'-->
+                                            <!--</div>-->
                                             <button class="btn btn-primary" onclick="doPreviewData()" type="button">
                                                 <i class="fa fa-eye"></i> 预览数据
                                             </button>
@@ -178,12 +193,14 @@
 
     //预览数据
     function doPreviewData() {
-        var fields = [], defaultValues = [];
+        var fields = [], methods=[], defaultValues = [];
         $("#resolveTable tbody>tr:not(.hide)").each(function (i, tr) {
             tr = $(tr);
             var field = tr.find("input[name='field']").val();
+            var method = tr.find("select[name='method']").val();
             var def = tr.find("input[name='defaultValue']").val();
             fields.push(field);
+            methods.push(method);
             defaultValues.push(def);
         });
         ns.view.showLoading();
@@ -191,6 +208,7 @@
             db: $("#db").val(),
             sql: $("#sql").val(),
             field: fields.toString(),
+            method: methods.toString(),
             defaultValue: defaultValues.toLocaleString()
         }, function (success, response) {
             ns.view.closeLoading();
@@ -208,7 +226,7 @@
     function addParamRow() {
         var tr = $("#resolveTable tbody>tr.hide").clone();
         tr.removeClass("hide");
-        tr.find("input").attr("data-parsley-required", true).attr("data-parsley-placement", "bottom");
+        tr.find("input[name='field']").attr("data-parsley-required", true).attr("data-parsley-placement", "bottom");
         tr.find("td:first").text($("#resolveTable tbody>tr:not(.hide)").length + 1);
         $("#resolveTable tbody").append(tr);
     }

@@ -21,6 +21,18 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="form-group">
+                    <label class="control-label">搜索表单</label>
+                    <select name="searchFormId" class="form-control">
+                        #foreach($!obj in $!formList)
+                        <option value="$!obj.id" #ifSelected($!obj.id, $!biReport.searchFormId)>$!obj.name</option>
+                        #end
+                    </select>
+                </div>
+            </div>
+        </div>
     </div>
     <div class="modal-footer">
         <button id="ok" type="submit" class="btn btn-primary" data-loading-text="正在保存...">提 交</button>

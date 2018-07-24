@@ -29,6 +29,8 @@ public class BiDatasourceParams implements Serializable {
     @NotNull
     private String field; //字段
     @Column
+    private String method;//计算方式
+    @Column
     private String defaultValue; //默认值
 
     /**
@@ -85,5 +87,13 @@ public class BiDatasourceParams implements Serializable {
      */
     public void setDefaultValue(String defaultValue) {
         this.defaultValue = defaultValue;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
     }
 }

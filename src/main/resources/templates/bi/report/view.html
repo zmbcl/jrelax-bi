@@ -18,14 +18,27 @@
             <section class="main-content">
                 <!-- 主体操作栏 -->
                 <!--<header class="header navbar shadow">-->
-                    <!--&lt;!&ndash; 左按钮区 &ndash;&gt;-->
-                    <!--<div class="toolbar">-->
-                        <!--<button class="btn btn-default toolbar-item" onclick="render()">重新渲染</button>-->
-                    <!--</div>-->
+                <!--&lt;!&ndash; 左按钮区 &ndash;&gt;-->
+                <!--<div class="toolbar">-->
+                <!--<button class="btn btn-default toolbar-item" onclick="render()">重新渲染</button>-->
+                <!--</div>-->
                 <!--</header>-->
                 <div class="content-wrap">
                     <div class="wrapper bg-default">
                         <div class="row">
+                            #if($!searchForm)
+                            <div class="col-lg-8 col-lg-offset-2">
+                                <div class="panel">
+                                    <div class="panel-body">
+                                        $!searchForm.content
+                                    </div>
+                                    <div class="panel-footer text-center">
+                                        <button class="btn btn-primary btn-form-submit" type="button">立即搜索</button>
+                                        <button class="btn btn-default btn-form-submit" type="reset">重置</button>
+                                    </div>
+                                </div>
+                            </div>
+                            #end
                             <div class="col-lg-8 col-lg-offset-2">
                                 <div class="panel">
                                     <div class="panel-body">
@@ -50,13 +63,13 @@
     function render() {
         var id = "$!biReport.id";
         var report = new BiReport({
-            target : $("#"+id)
+            target: $("#" + id)
         });
         report.render();
 //        report.renderFormual();
     }
 
-    ns.ready(function(){
+    ns.ready(function () {
         render();
     });
 </script>

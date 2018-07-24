@@ -5,6 +5,7 @@ import com.jrelax.bi.DBPool;
 import com.jrelax.kit.ObjectKit;
 import com.jrelax.kit.StringKit;
 import com.jrelax.orm.query.Condition;
+import com.jrelax.orm.query.SQLBuilder;
 import com.jrelax.web.bi.entity.BiDatasource;
 import com.jrelax.web.bi.entity.BiDatasourceMeta;
 import com.jrelax.web.bi.entity.BiDatasourceParams;
@@ -17,8 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @author zengchao
@@ -32,17 +31,20 @@ public class BiDatasourceService extends BaseService<BiDatasource> {
     @Autowired
     private BiDatasourceMetaService biDatasourceMetaService;
 
-    public void save(BiDatasource biDatasource, String[] field, String[] defaultValue) {
+    public void save(BiDatasource biDatasource, String[] field, String[] method, String[] defaultValue) {
         super.save(biDatasource);
         //保存查询参数
         if (ObjectKit.isNotNull(field)) {
             for (int i = 0; i < field.length; i++) {
                 String f = field[i];
-                if (StringKit.isEmpty(f)) continue;
+                String m = method[i];
                 String def = defaultValue[i];
+                if (StringKit.isEmpty(f)) continue;
+                if (StringKit.isEmpty(m)) continue;
                 BiDatasourceParams mp = new BiDatasourceParams();
                 mp.setDatasource(biDatasource);
                 mp.setField(f);
+                mp.setMethod(m);
                 mp.setDefaultValue(def);
 
                 biDatasourceParamsService.save(mp);
@@ -53,6 +55,7 @@ public class BiDatasourceService extends BaseService<BiDatasource> {
     @Override
     public void delete(Serializable id) {
         super.executeBatch("delete from BiDatasourceParams where datasource.id=?", id);
+        super.executeBatch("delete from BiDatasourceMeta where datasource.id=?", id);
         super.delete(id);
     }
 
@@ -114,24 +117,7 @@ public class BiDatasourceService extends BaseService<BiDatasource> {
             } else {
                 //获取参数列表
                 List<BiDatasourceParams> paramList = biDatasourceParamsService.list(Condition.NEW().eq("datasource", ds).asc("field"));
-                if (paramList.size() > 0) {
-                    Map<String, String> paramsMap = new HashMap<>();
-                    for (BiDatasourceParams param : paramList) {
-                        String value = "";
-                        if (params != null) {
-                            value = params.get(param.getField());
-                        }
-                        if (ObjectKit.isNull(value))
-                            value = param.getDefaultValue();
-                        if (ObjectKit.isNull(value))
-                            value = "";
-                        paramsMap.put(param.getField(), value);
-                    }
-
-                    ds.setSqlCmd(mergeSql(ds.getSqlCmd(), paramsMap));
-                }
-                DBKit dbKit = new DBKit(DBPool.getInstance().getDataSource(ds.getDb()));
-                data = dbKit.listToMap(ds.getSqlCmd());
+                data = getData(ds.getDb(), ds.getSqlCmd(), paramList, params);
             }
 
         }
@@ -139,28 +125,77 @@ public class BiDatasourceService extends BaseService<BiDatasource> {
         return data;
     }
 
-    public String mergeSql(String sql, String[] field, String[] value) {
-        //转换成MAP
-        Map<String, String> paramsMap = new HashMap<>();
-        if (ObjectKit.isNotNull(field)) {
-            for (int i = 0; i < field.length; i++) {
-                paramsMap.put(field[i], value[i]);
+    public List<Map<String, Object>> getData(String db, String sql, List<BiDatasourceParams> paramList, Map<String, String> params) {
+        SQLBuilder builder = new SQLBuilder(sql);
+        if (paramList.size() > 0) {
+            for (BiDatasourceParams param : paramList) {
+                String value = "";
+                if (params != null) {
+                    value = params.get(param.getField());
+                }
+                if (ObjectKit.isNull(value) && StringKit.isNotEmpty(param.getDefaultValue()))
+                    value = param.getDefaultValue();
+                if (StringKit.isNotEmpty(value)) {
+                    switch (param.getMethod()) {
+                        case "eq":
+                            builder.eq(param.getField(), value);
+                            break;
+                        case "not eq":
+                            builder.notEq(param.getField(), value);
+                            break;
+                        case "lt":
+                            builder.lt(param.getField(), value);
+                            break;
+                        case "le":
+                            builder.le(param.getField(), value);
+                            break;
+                        case "gt":
+                            builder.gt(param.getField(), value);
+                            break;
+                        case "ge":
+                            builder.ge(param.getField(), value);
+                            break;
+                        case "like":
+                            builder.like(param.getField(), "%" + value + "%");
+                            break;
+                        case "not like":
+                            builder.append(param.getField() + " not like '%" + value + "%'");
+                            break;
+                        case "startsWith":
+                            builder.append(param.getField() + " like '" + value + "%'");
+                            break;
+                        case "endsWith":
+                            builder.append(param.getField() + " like '%" + value + "'");
+                            break;
+                    }
+                }
             }
         }
-        return mergeSql(sql, paramsMap);
+        DBKit dbKit = new DBKit(DBPool.getInstance().getDataSource(db));
+        return dbKit.listToMap(builder.getSQL(), builder.getParams());
     }
 
-    public String mergeSql(String sql, Map<String, String> paramsMap) {
-        String regex = "\\{#(\\S+)#\\}";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(sql);
-        while (matcher.find()) {
-            String name = matcher.group(1);
-            String v = paramsMap.get(name);
-            if (ObjectKit.isNotNull(v))
-                sql = matcher.replaceAll(paramsMap.get(name));
+
+    public List<BiDatasourceParams> convertParam(String[] fields, String[] methods, String[] values) {
+        List<BiDatasourceParams> paramList = new ArrayList<>();
+        for (int i = 0; i < fields.length; i++) {
+            BiDatasourceParams params = new BiDatasourceParams();
+            params.setField(fields[i]);
+            params.setMethod(methods[i]);
+            params.setDefaultValue(null);
+
+            paramList.add(params);
         }
-        return sql;
+        return paramList;
+    }
+
+    public Map<String, String> convertParamValue(String[] fields, String[] values) {
+        Map<String, String> params = new HashMap<>();
+        for (int i = 0; i < fields.length; i++) {
+            if (values.length - 1 < i) break;
+            params.put(fields[i], values[i]);
+        }
+        return params;
     }
 
     /**

@@ -86,13 +86,12 @@ public class BiDataSourceController extends BaseController<Object> {
      */
     @RequestMapping(value = "/exec", method = {RequestMethod.POST})
     @ResponseBody
-    public JSONObject exec(String db, String sql, String[] field, String[] defaultValue) {
+    public JSONObject exec(String db, String sql, String[] field, String[] method, String[] defaultValue) {
         try {
             DBKit dbKit = new DBKit(DBPool.getInstance().getDataSource(db));
             if (sql.contains("delete") || sql.contains("update"))
                 return WebResult.error("只允许执行查询操作！");
-            sql = biDatasourceService.mergeSql(sql, field, defaultValue);
-            List<Map<String, Object>> list = dbKit.listToMap(sql);
+            List<Map<String, Object>> list = biDatasourceService.getData(db, sql, biDatasourceService.convertParam(field, method, defaultValue), biDatasourceService.convertParamValue(field, defaultValue));
             //数据格式转换
             JSONArray data = biDatasourceService.toJSON(list);
 
@@ -125,11 +124,11 @@ public class BiDataSourceController extends BaseController<Object> {
      */
     @RequestMapping(value = "/add/do", method = {RequestMethod.POST})
     @ResponseBody
-    public JSONObject doAdd(BiDatasource biDatasource, String[] field, String[] defaultValue) {
+    public JSONObject doAdd(BiDatasource biDatasource, String[] field, String[] method, String[] defaultValue) {
         try {
             biDatasource.setCreateTime(getCurrentTime());
             biDatasource.setCreateUser(getCurrentUser().getUserName());
-            biDatasourceService.save(biDatasource, field, defaultValue);
+            biDatasourceService.save(biDatasource, field, method, defaultValue);
             return WebResult.success();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);

@@ -36,3 +36,7 @@ td.formula:before{
     content: "\e149";
     color:#1e90ff;
 }
+
+#designPanel > .panel-body{
+    overflow: auto;
+}

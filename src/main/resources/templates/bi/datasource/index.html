@@ -65,7 +65,7 @@
         ns.tip.confirm("确定删除吗？", function () {
             ns.post("$!basePath/bi/datasource/delete/" + id, {}, function (success, data) {
                 if (success) {
-                    ns.back("$!basePath/bi/datasource", 1000);
+                    dgDataSource.reload();
                 } else {
                     ns.tip.toast.error(data.message);
                 }

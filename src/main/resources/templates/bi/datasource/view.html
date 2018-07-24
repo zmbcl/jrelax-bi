@@ -51,7 +51,7 @@
                                             #foreach($!obj in $!params)
                                             <div class="form-group">
                                                 <label class="control-label">$!obj.field</label>
-                                                <input type="text" class="form-control" data-parsley-required="true" name="$!obj.field" value="$!obj.defaultValue">
+                                                <input type="text" class="form-control" name="$!obj.field" value="$!obj.defaultValue">
                                             </div>
                                             #end
                                             <button id="ok" class="btn btn-primary btn-parsley" data-loading-text="正在执行...">

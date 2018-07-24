@@ -37,6 +37,8 @@ public class BiReport implements Serializable {
     private String source; //源码
     @Column
     private String content; //生成代码
+    @Column(name = "search_form_id")
+    private String searchFormId;//搜索表单ID
     @Column
     @NotNull
     private String createUser; //创建人
@@ -140,5 +142,13 @@ public class BiReport implements Serializable {
     */
     public void setCreateTime(String createTime) {
         this.createTime = createTime;
+    }
+
+    public String getSearchFormId() {
+        return searchFormId;
+    }
+
+    public void setSearchFormId(String searchFormId) {
+        this.searchFormId = searchFormId;
     }
 }
