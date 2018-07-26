@@ -29,11 +29,11 @@
                             #if($!searchForm)
                             <div class="col-lg-8 col-lg-offset-2">
                                 <div class="panel">
-                                    <div class="panel-body">
+                                    <div class="panel-body" id="searchForm">
                                         $!searchForm.content
                                     </div>
                                     <div class="panel-footer text-center">
-                                        <button class="btn btn-primary btn-form-submit" type="button">立即搜索</button>
+                                        <button class="btn btn-primary btn-form-submit" type="submit">立即搜索</button>
                                         <button class="btn btn-default btn-form-submit" type="reset">重置</button>
                                     </div>
                                 </div>
@@ -57,20 +57,29 @@
 #required_js
 <script src="$!basePath/app/datasource/datasource.js"></script>
 <script src="$!basePath/app/report/bi.table.js"></script>
-<script src="$!basePath/app/report/bi.report.js"></script>
+<script src="$!basePath/app/report/bi.report.js?v=1.1"></script>
 <script src="$!basePath/app/report/bi.report.formula.js"></script>
 <script type="text/javascript">
-    function render() {
+    function render(params) {
         var id = "$!biReport.id";
         var report = new BiReport({
             target: $("#" + id)
         });
-        report.render();
+        report.render(params);
 //        report.renderFormual();
     }
 
     ns.ready(function () {
         render();
+
+        var searchForm = $("#searchForm form");
+        searchForm.attr("onsubmit", null);
+        searchForm.find("input:hidden").remove();
+        searchForm.on("submit", function () {
+            console.log(ns.form.serialize(searchForm));
+            render(ns.form.serialize(searchForm));
+            return false;
+        });
     });
 </script>
 #loading_close

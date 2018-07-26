@@ -88,7 +88,7 @@ function DataSource(id, opt) {
 
     function loadRemoteData(url, params, callback) {
         jQuery.ajax({
-            type: "GET",
+            type: "POST",
             url: url,
             cache: false,
             async: opt.async,

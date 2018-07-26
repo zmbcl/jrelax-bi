@@ -53,12 +53,12 @@ function BiReport(opt) {
         return opt.target;
     }
 
-    this.render = function () {
+    this.render = function (params) {
         if (!opt.target) alert("target undefined");
         //重置
         this.reset();
         //加载数据
-        this.loadData();
+        this.loadData(params);
 
         //渲染
         this.renderGrid();
@@ -227,8 +227,8 @@ function BiReport(opt) {
     }
 
     //加载数据
-    this.loadData = function () {
-        var params = getUrlParams();
+    this.loadData = function (params) {
+        params = params || getUrlParams();
         var tds = opt.target.find("td[" + opt.dsTag + "]");
         var dsList = [];
         $.each(tds, function (i, n) {

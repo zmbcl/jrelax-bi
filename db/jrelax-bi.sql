@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50638
 File Encoding         : 65001
 
-Date: 2018-04-19 10:55:30
+Date: 2018-07-26 11:02:35
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -86,8 +86,9 @@ CREATE TABLE `bi_datasource` (
 -- ----------------------------
 -- Records of bi_datasource
 -- ----------------------------
+INSERT INTO `bi_datasource` VALUES ('40285681645e25f601645e4907420003', 'local', '测试Excel数据源', 'select name ,code ,descript  from ds_excel_1530589527664', '0', null, 'superadmin', '2018-07-03 11:56:41');
+INSERT INTO `bi_datasource` VALUES ('4028568164cb7f450164cb982e690008', 'local', '带参数的数据源1', 'select level, ip, content from sys_log', '0', null, 'superadmin', '2018-07-24 17:21:45');
 INSERT INTO `bi_datasource` VALUES ('4028b88158af03570158af47b68e000b', 'local', '测试数据源', 'select id, name, sex from bi_test1 where name like \'%{#姓名#}%\'', '0', null, 'superadmin', '2016-11-29 16:51:02');
-INSERT INTO `bi_datasource` VALUES ('4028b88158af03570158af6adbf80011', 'local', '测试数据源-无参', 'select * from bi_test1', '0', null, 'superadmin', '2016-11-29 17:29:25');
 INSERT INTO `bi_datasource` VALUES ('4028b88158b8da450158b94836200009', 'local', '系统日志模块统计', 'SELECT module AS \'系统模块\', COUNT(*) AS \'访问数量\' FROM sys_log GROUP BY module', '0', null, 'superadmin', '2016-12-01 15:27:47');
 INSERT INTO `bi_datasource` VALUES ('4028b88158bd92010158be031c820003', 'local', '系统日志IP统计', 'SELECT ip as IP地址 , COUNT(*) AS 数量 FROM sys_log where level=1 GROUP BY ip', '0', null, 'superadmin', '2016-12-02 13:30:24');
 INSERT INTO `bi_datasource` VALUES ('4028b88158c282ad0158c28c61550001', 'local', '系统日访问量', 'SELECT t AS \'日期\', c AS \'访问数\' FROM (SELECT LEFT(log_time, 10) AS t, COUNT(*) AS c FROM sys_log GROUP BY LEFT(log_time, 10) ORDER BY log_time DESC LIMIT 0, 7) AS a ORDER BY a.t ASC', '0', null, 'superadmin', '2016-12-03 10:38:49');
@@ -114,12 +115,12 @@ CREATE TABLE `bi_datasource_meta` (
 -- ----------------------------
 -- Records of bi_datasource_meta
 -- ----------------------------
+INSERT INTO `bi_datasource_meta` VALUES ('4028568164cb9e330164cba2116a0003', '4028568164cb7f450164cb982e690008', 'level', 'level', 'java.lang.Integer');
+INSERT INTO `bi_datasource_meta` VALUES ('4028568164cb9e330164cba2116a0004', '4028568164cb7f450164cb982e690008', 'ip', 'ip', 'java.lang.String');
+INSERT INTO `bi_datasource_meta` VALUES ('4028568164cb9e330164cba2116a0005', '4028568164cb7f450164cb982e690008', 'content', 'content', 'java.lang.String');
 INSERT INTO `bi_datasource_meta` VALUES ('4028b881590192ea01590193616a0001', '4028b88158af03570158af47b68e000b', 'id', 'id', 'java.lang.Integer');
 INSERT INTO `bi_datasource_meta` VALUES ('4028b881590192ea01590193616a0002', '4028b88158af03570158af47b68e000b', 'name', 'name', 'java.lang.String');
 INSERT INTO `bi_datasource_meta` VALUES ('4028b881590192ea01590193616a0003', '4028b88158af03570158af47b68e000b', 'sex', 'sex', 'java.lang.String');
-INSERT INTO `bi_datasource_meta` VALUES ('4028b8815945c4f9015945da425b0001', '4028b88158af03570158af6adbf80011', 'id', 'id', 'java.lang.Integer');
-INSERT INTO `bi_datasource_meta` VALUES ('4028b8815945c4f9015945da425c0002', '4028b88158af03570158af6adbf80011', 'name', 'name', 'java.lang.String');
-INSERT INTO `bi_datasource_meta` VALUES ('4028b8815945c4f9015945da425c0003', '4028b88158af03570158af6adbf80011', 'sex', 'sex', 'java.lang.String');
 INSERT INTO `bi_datasource_meta` VALUES ('4028b8815945c4f9015945dc1a2e0004', '4028b88158b8da450158b94836200009', 'manipulatename', '系统模块', 'java.lang.String');
 INSERT INTO `bi_datasource_meta` VALUES ('4028b8815945c4f9015945dc1a2e0005', '4028b88158b8da450158b94836200009', '访问数量', '访问数量', 'java.lang.Long');
 INSERT INTO `bi_datasource_meta` VALUES ('4028b88159780b930159780df39e0002', '4028b8815977f53a01597805e6290001', 'id', 'id', 'java.lang.Integer');
@@ -163,6 +164,7 @@ CREATE TABLE `bi_datasource_params` (
   `id` varchar(50) NOT NULL,
   `dsId` varchar(50) NOT NULL COMMENT '数据源',
   `field` varchar(50) NOT NULL COMMENT '字段',
+  `method` varchar(255) DEFAULT NULL COMMENT '计算方式',
   `defaultValue` varchar(255) DEFAULT NULL COMMENT '映射关系',
   PRIMARY KEY (`id`),
   KEY `FK_DS_MP_DS` (`dsId`),
@@ -172,7 +174,8 @@ CREATE TABLE `bi_datasource_params` (
 -- ----------------------------
 -- Records of bi_datasource_params
 -- ----------------------------
-INSERT INTO `bi_datasource_params` VALUES ('4028b88158af03570158af47b68f000c', '4028b88158af03570158af47b68e000b', '姓名', 'A');
+INSERT INTO `bi_datasource_params` VALUES ('4028568164cb7f450164cb982e690009', '4028568164cb7f450164cb982e690008', 'content', 'like', '');
+INSERT INTO `bi_datasource_params` VALUES ('4028b88158af03570158af47b68f000c', '4028b88158af03570158af47b68e000b', '姓名', null, 'A');
 
 -- ----------------------------
 -- Table structure for bi_flow
@@ -215,6 +218,7 @@ CREATE TABLE `bi_form` (
 -- Records of bi_form
 -- ----------------------------
 INSERT INTO `bi_form` VALUES ('297eb7974e044455014e046e5dc10005', '人员信息', null, 'bi_form_parent', 'bi_form_parent,bi_form_children', '<div class=\"containers fd-view-drag-in\"><div id=\"v_formtitle\" fd-view=\"formtitle\" class=\"bb h4 pb5\" style=\"text-align: center;\">人员信息</div>\n<table id=\"v_table\" fd-view=\"table\" class=\"table table-bordered\">\n    <tbody>\n        <tr>\n            <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:25%;\">\n                <table fd-move=\"\" fd-view=\"label_input\" id=\"v_label_input\" class=\"move\">\n                    <tbody>\n                        <tr>\n                            <td fd-view=\"table_td\" class=\"\"><span contenteditable=\"true\" fd-view=\"label\" fd-label=\"\" class=\"\">　姓名1：</span>\n\n                            </td>\n                            <td fd-view=\"table_td\">\n                                <input type=\"text\" class=\"form-control\" fd-view=\"input\" field=\"name\" rules=\"chinese\" required=\"required\" id=\"\" placeholder=\"必须是中文\">\n                            </td>\n                        </tr>\n                    </tbody>\n                </table>\n            </td>\n            <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:25%;\">\n                <table fd-move=\"\" fd-view=\"label_input\" id=\"v_label_input\" class=\"move\">\n                    <tbody>\n                        <tr>\n                            <td fd-view=\"table_td\" class=\"\"><span contenteditable=\"true\" fd-view=\"label\" fd-label=\"\" class=\"\" style=\"\">　　 年龄：</span>\n\n                            </td>\n                            <td fd-view=\"table_td\">\n                                <input type=\"text\" class=\"form-control\" fd-view=\"input\" rules=\"number2\" field=\"age\" required=\"required\" placeholder=\"必须是整数\">\n                            </td>\n                        </tr>\n                    </tbody>\n                </table>\n            </td>\n            <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:25%;\">\n                \n            </td>\n        </tr>\n        <tr>\n            <td fd-view=\"table_td \" class=\"fd-view-drag-in\" style=\"width:25%; \">\n                <table fd-move=\" \" fd-view=\"label_input \" id=\"v_label_input \" class=\"move\">\n                    <tbody>\n                        <tr>\n                            <td fd-view=\"table_td\"><span contenteditable=\"true\" fd-view=\"label\" fd-label=\"\" class=\"\">手机号：</span>\n\n                            </td>\n                            <td fd-view=\"table_td\">\n                                <input type=\"text\" class=\"form-control\" fd-view=\"input\" field=\"mobile\" required=\"required\" rules=\"mobile\" placeholder=\"11位手机号\">\n                            </td>\n                        </tr>\n                    </tbody>\n                </table>\n            </td>\n            <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:25%; \" colspan=\"2\"><span contenteditable=\"true\" fd-view=\"label\" id=\"v_label\" class=\"\">出生日期：</span>\n\n                <input type=\"text\" class=\"form-control datepicker inline\" fd-view=\"datepicker\" id=\"v_datepicker\" style=\"width:250px\" data-date-format=\"yyyy年mm月dd日\" field=\"birthday\" required=\"required\" placeholder=\"yyyy年mm月dd日\">\n            </td>\n        </tr>\n        <tr>\n            <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:25%; \" colspan=\"3 \">\n                <table fd-move=\" \" fd-view=\"label_textarea\" id=\"v_label_textarea \" width=\"100% \" class=\"move\" style=\"text-align: left;\">\n                    <tbody>\n                        <tr>\n                            <td fd-view=\"table_td\" style=\"min-width: 5%; width: 50px;\" class=\"\"><span contenteditable=\"true\" fd-view=\"label\" fd-label=\"\" class=\"\">住址：</span>\n\n                            </td>\n                            <td fd-view=\"table_td\">\n                                <textarea class=\"form-control\" fd-view=\"textarea\" style=\"width: 100%; margin-top: 0px; margin-bottom: 0px; height: 54px;\" field=\"address\" placeholder=\"现居地址\"></textarea>\n                            </td>\n                        </tr>\n                    </tbody>\n                </table>\n            </td>\n        </tr><tr>\n            <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:25%; \" colspan=\"3 \"><table fd-move=\"\" fd-view=\"label_textarea\" id=\"v_label_textarea\" class=\"move\">\n                    <tbody>\n                        <tr>\n                            <td fd-view=\"table_td\" class=\"\"><span contenteditable=\"true\" fd-view=\"label\" fd-label=\"\" class=\"\">性别：</span>\n\n                            </td>\n                            <td fd-view=\"table_td\">\n                                <select class=\"form-control\" fd-view=\"select\" field=\"sex\">\n                                    <option value=\"男 \" selected=\"selected \">男</option>\n                                    <option value=\"女 \">女</option>\n                                </select>\n                            </td>\n                        </tr>\n                    </tbody>\n                </table></td>\n        </tr>\n    </tbody>\n</table>\n<div class=\"row\" contenteditable=\"true\" fd-view=\"dynamicPanel\" id=\"v_cynamicPanel\" css_align=\"\" \":\"left=\"\" \"}\"=\"\" style=\"text-align: left;\">\n    <div class=\"p10\">\n        <div id=\"header\" class=\"bordered\">其他信息\n            <div class=\"pull-right\"><a href=\"javascript:;\" id=\"handler\" style=\"cursor: pointer;\"><i class=\"ti-plus\"></i> 添加</a>\n            </div>\n        </div>\n        <div id=\"content\" class=\"bl br bb p10\">\n            <div class=\"item mb5\">\n                <table style=\"width:100%\">\n                    <tbody>\n                        <tr>\n                            <td style=\"width:99%\">\n                                <div class=\"fd-view-drag-in\">\n                                    <table fd-move=\"\" fd-view=\"label_input\" id=\"v_label_input\" style=\"width:100%\" class=\"move\">\n                                        <tbody>\n                                            <tr>\n                                                <td fd-view=\"table_td\"></td>\n                                                <td fd-view=\"table_td\"></td>\n                                                <td fd-view=\"table_td\"></td>\n                                            </tr>\n                                        </tbody>\n                                    </table>\n                                    <table id=\"v_table\" fd-view=\"table\" class=\"table table-bordered\" style=\"width:100%\" \":\"width:100%=\"\" \"}\"=\"\">\n                                        <tbody>\n                                            <tr>\n                                                <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:50%\" \":\"width:50%=\"\" \",\"css_padding=\"\" \":\"8px=\"\" \"}\"=\"\">\n                                                    <table fd-move=\"\" fd-view=\"label_input\" id=\"v_label_input\" style=\"width:100%\" class=\"move\">\n                                                        <tbody>\n                                                            <tr>\n                                                                <td fd-view=\"table_td\" style=\"min-width: 5%; width: 60px;\" class=\"\" css_width=\"\" \":\"60px=\"\" \"}\"=\"\"><span contenteditable=\"true\" fd-view=\"label\" fd-label=\"\" class=\"\" css_width=\"\" \":\"60px=\"\" \"}\"=\"\" style=\"width: 60px;\">联系人：</span>\n                                                                </td>\n                                                                <td fd-view=\"table_td\">\n                                                                    <input type=\"text\" class=\"form-control\" fd-view=\"input\" field=\"wf_form_children.data_0\" \":\"wf_form_children.data_0=\"\" \",\"required=\"\" \":\"true=\"\" \",\"rules=\"\" \":[\"chinese=\"\" \"]}\"=\"\" required=\"required\" rules=\"chinese\">\n                                                                </td>\n                                                            </tr>\n                                                        </tbody>\n                                                    </table>\n                                                </td>\n                                                <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:50%\" \":\"width:50%=\"\" \"}\"=\"\">\n                                                    <table fd-move=\"\" fd-view=\"label_input\" id=\"v_label_input\" style=\"width:100%\" class=\"move\">\n                                                        <tbody>\n                                                            <tr>\n                                                                <td fd-view=\"table_td\" style=\"min-width: 5%; width: 60px;\" class=\"\" css_width=\"\" \":\"60px=\"\" \"}\"=\"\"><span contenteditable=\"true\" fd-view=\"label\" fd-label=\"\" class=\"\">电话：</span>\n                                                                </td>\n                                                                <td fd-view=\"table_td\">\n                                                                    <input type=\"text\" class=\"form-control\" fd-view=\"input\" field=\"wf_form_children.data_1\" \":\"wf_form_children.data_1=\"\" \",\"required=\"\" \":\"true=\"\" \",\"rules=\"\" \":[\"mobile=\"\" \"]}\"=\"\" required=\"required\" rules=\"mobile\">\n                                                                </td>\n                                                                <td fd-view=\"table_td\"></td>\n                                                            </tr>\n                                                        </tbody>\n                                                    </table>\n                                                </td>\n                                            </tr>\n                                        </tbody>\n                                    </table>\n                                </div>\n                            </td>\n                            <td>	<a id=\"closer\" class=\"hide\" style=\"cursor: pointer;\"><i class=\"ti-close\"></i> </a>\n\n                            </td>\n                        </tr>\n                    </tbody>\n                </table>\n            </div>\n        </div>\n    </div>\n</div>\n<button type=\"submit\" class=\"btn btn-default btn-block\" fd-view=\"submit\" id=\"v_submit\" style=\"margin: 10px;\">立即保存</button></div>', '<form action=\"#formAction#\" method=\"post\" onsubmit=\"return fd.run.submit(this)\">\n <input type=\"hidden\" name=\"$formId\" value=\"#tid#\" />\n <div class=\"containers fd-view-drag-in\">\n  <div id=\"v_formtitle\" fd-view=\"formtitle\" class=\"bb h4 pb5\" style=\"text-align: center;\">\n   人员信息\n  </div> \n  <table id=\"v_table\" fd-view=\"table\" class=\"table table-bordered\"> \n   <tbody> \n    <tr> \n     <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:25%;\"> \n      <table fd-view=\"label_input\" id=\"v_label_input\" class=\"move\"> \n       <tbody> \n        <tr> \n         <td fd-view=\"table_td\" class=\"\"><span fd-view=\"label\" fd-label=\"\" class=\"\">　姓名1：</span> </td> \n         <td fd-view=\"table_td\"> <input type=\"text\" class=\"form-control\" fd-view=\"input\" name=\"name\" rules=\"chinese\" required=\"required\" id=\"\" placeholder=\"必须是中文\" /> </td> \n        </tr> \n       </tbody> \n      </table> </td> \n     <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:25%;\"> \n      <table fd-view=\"label_input\" id=\"v_label_input\" class=\"move\"> \n       <tbody> \n        <tr> \n         <td fd-view=\"table_td\" class=\"\"><span fd-view=\"label\" fd-label=\"\" class=\"\" style=\"\">　　 年龄：</span> </td> \n         <td fd-view=\"table_td\"> <input type=\"text\" class=\"form-control\" fd-view=\"input\" rules=\"number2\" name=\"age\" required=\"required\" placeholder=\"必须是整数\" /> </td> \n        </tr> \n       </tbody> \n      </table> </td> \n     <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:25%;\"> </td> \n    </tr> \n    <tr> \n     <td fd-view=\"table_td \" class=\"fd-view-drag-in\" style=\"width:25%; \"> \n      <table fd-view=\"label_input \" id=\"v_label_input \" class=\"move\"> \n       <tbody> \n        <tr> \n         <td fd-view=\"table_td\"><span fd-view=\"label\" fd-label=\"\" class=\"\">手机号：</span> </td> \n         <td fd-view=\"table_td\"> <input type=\"text\" class=\"form-control\" fd-view=\"input\" name=\"mobile\" required=\"required\" rules=\"mobile\" placeholder=\"11位手机号\" /> </td> \n        </tr> \n       </tbody> \n      </table> </td> \n     <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:25%; \" colspan=\"2\"><span fd-view=\"label\" id=\"v_label\" class=\"\">出生日期：</span> <input type=\"text\" class=\"form-control datepicker inline\" fd-view=\"datepicker\" id=\"v_datepicker\" style=\"width:250px\" data-date-format=\"yyyy年mm月dd日\" name=\"birthday\" required=\"required\" placeholder=\"yyyy年mm月dd日\" /> </td> \n    </tr> \n    <tr> \n     <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:25%; \" colspan=\"3 \"> \n      <table fd-view=\"label_textarea\" id=\"v_label_textarea \" width=\"100% \" class=\"move\" style=\"text-align: left;\"> \n       <tbody> \n        <tr> \n         <td fd-view=\"table_td\" style=\"min-width: 5%; width: 50px;\" class=\"\"><span fd-view=\"label\" fd-label=\"\" class=\"\">住址：</span> </td> \n         <td fd-view=\"table_td\"> <textarea class=\"form-control\" fd-view=\"textarea\" style=\"width: 100%; margin-top: 0px; margin-bottom: 0px; height: 54px;\" name=\"address\" placeholder=\"现居地址\"></textarea> </td> \n        </tr> \n       </tbody> \n      </table> </td> \n    </tr>\n    <tr> \n     <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:25%; \" colspan=\"3 \">\n      <table fd-view=\"label_textarea\" id=\"v_label_textarea\" class=\"move\"> \n       <tbody> \n        <tr> \n         <td fd-view=\"table_td\" class=\"\"><span fd-view=\"label\" fd-label=\"\" class=\"\">性别：</span> </td> \n         <td fd-view=\"table_td\"> <select class=\"form-control\" fd-view=\"select\" name=\"sex\"> <option value=\"男 \" selected=\"selected \">男</option> <option value=\"女 \">女</option> </select> </td> \n        </tr> \n       </tbody> \n      </table></td> \n    </tr> \n   </tbody> \n  </table> \n  <div class=\"row\" fd-view=\"dynamicPanel\" id=\"v_cynamicPanel\" css_align=\"\" \":\"left=\"\" \"}\"=\"\" style=\"text-align: left;\"> \n   <div class=\"p10\"> \n    <div id=\"header\" class=\"bordered\">\n     其他信息 \n     <div class=\"pull-right\">\n      <a href=\"javascript:;\" id=\"handler\" style=\"cursor: pointer;\"><i class=\"ti-plus\"></i> 添加</a> \n     </div> \n    </div> \n    <div id=\"content\" class=\"bl br bb p10\"> \n     <div class=\"item mb5\"> \n      <table style=\"width:100%\"> \n       <tbody> \n        <tr> \n         <td style=\"width:99%\"> \n          <div class=\"fd-view-drag-in\"> \n           <table fd-view=\"label_input\" id=\"v_label_input\" style=\"width:100%\" class=\"move\"> \n            <tbody> \n             <tr> \n              <td fd-view=\"table_td\"></td> \n              <td fd-view=\"table_td\"></td> \n              <td fd-view=\"table_td\"></td> \n             </tr> \n            </tbody> \n           </table> \n           <table id=\"v_table\" fd-view=\"table\" class=\"table table-bordered\" style=\"width:100%\" \":\"width:100%=\"\" \"}\"=\"\"> \n            <tbody> \n             <tr> \n              <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:50%\" \":\"width:50%=\"\" \",\"css_padding=\"\" \":\"8px=\"\" \"}\"=\"\"> \n               <table fd-view=\"label_input\" id=\"v_label_input\" style=\"width:100%\" class=\"move\"> \n                <tbody> \n                 <tr> \n                  <td fd-view=\"table_td\" style=\"min-width: 5%; width: 60px;\" class=\"\" css_width=\"\" \":\"60px=\"\" \"}\"=\"\"><span fd-view=\"label\" fd-label=\"\" class=\"\" css_width=\"\" \":\"60px=\"\" \"}\"=\"\" style=\"width: 60px;\">联系人：</span> </td> \n                  <td fd-view=\"table_td\"> <input type=\"text\" class=\"form-control\" fd-view=\"input\" name=\"wf_form_children.data_0\" \":\"wf_form_children.data_0=\"\" \",\"required=\"\" \":\"true=\"\" \",\"rules=\"\" \":[\"chinese=\"\" \"]}\"=\"\" required=\"required\" rules=\"chinese\" /> </td> \n                 </tr> \n                </tbody> \n               </table> </td> \n              <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:50%\" \":\"width:50%=\"\" \"}\"=\"\"> \n               <table fd-view=\"label_input\" id=\"v_label_input\" style=\"width:100%\" class=\"move\"> \n                <tbody> \n                 <tr> \n                  <td fd-view=\"table_td\" style=\"min-width: 5%; width: 60px;\" class=\"\" css_width=\"\" \":\"60px=\"\" \"}\"=\"\"><span fd-view=\"label\" fd-label=\"\" class=\"\">电话：</span> </td> \n                  <td fd-view=\"table_td\"> <input type=\"text\" class=\"form-control\" fd-view=\"input\" name=\"wf_form_children.data_1\" \":\"wf_form_children.data_1=\"\" \",\"required=\"\" \":\"true=\"\" \",\"rules=\"\" \":[\"mobile=\"\" \"]}\"=\"\" required=\"required\" rules=\"mobile\" /> </td> \n                  <td fd-view=\"table_td\"></td> \n                 </tr> \n                </tbody> \n               </table> </td> \n             </tr> \n            </tbody> \n           </table> \n          </div> </td> \n         <td> <a id=\"closer\" class=\"hide\" style=\"cursor: pointer;\"><i class=\"ti-close\"></i> </a> </td> \n        </tr> \n       </tbody> \n      </table> \n     </div> \n    </div> \n   </div> \n  </div> \n  <button type=\"submit\" class=\"btn btn-default btn-block\" fd-view=\"submit\" id=\"v_submit\" style=\"margin: 10px;\">立即保存</button>\n </div>\n</form>', '2.0', 'superadmin', '2015-06-19 15:47:45');
+INSERT INTO `bi_form` VALUES ('4028568164cb9e330164cba0e5a60001', '日志搜索表单', '', null, 'wf_form_15324246765711', '<div class=\"containers fd-view-drag-in\">\n                                        <div class=\"hide\" id=\"script\"></div>\n                                    <div id=\"v_formtitle\" fd-view=\"\" class=\"bb h4\"><h4 fd-view=\"formtitle\" class=\"\" id=\"20170001\">日志搜索</h4></div><div class=\"row\" contenteditable=\"true\" fd-view=\"col12\" id=\"v_col12\">\n                <div class=\"col-md-12 fd-view-drag-in fd-view-bordered\"><table fd-move=\"\" fd-view=\"label_input\" id=\"v_label_input\" style=\"width:100%\">\n                <tbody><tr>\n                    <td fd-view=\"table_td\" style=\"min-width:5%;width:8%\" class=\"\" id=\"20170001\"><span contenteditable=\"true\" fd-view=\"label\" fd-label=\"\" class=\"\">日志内容：</span></td>\n                    <td fd-view=\"table_td\"><input type=\"text\" class=\"form-control\" fd-view=\"input\" field=\"content\"></td>\n                </tr>\n            </tbody></table></div>\n            </div></div>', '<form action=\'#formAction#\' method=\'post\' onsubmit=\'return fd.run.submit(this)\'>\r\n<input type=\'hidden\' name=\'_formId\' value=\'#formId#\'/>\r\n<input type=\'hidden\' name=\'_tid\' value=\'#tid#\'/>\r\n<input type=\'hidden\' name=\'_start\' value=\'#start#\'/>\r\n<div class=\"containers\"> \n <div class=\"hide\"></div> \n <div class=\"bb h4\">\n  <h4 class=\"\">日志搜索</h4>\n </div>\n <div class=\"row\"> \n  <div class=\"col-md-12 fd-view-bordered\">\n   <table style=\"width:100%\"> \n    <tbody>\n     <tr> \n      <td style=\"min-width:5%;width:8%\" class=\"\"><span class=\"\">日志内容：</span></td> \n      <td><input type=\"text\" class=\"form-control\" name=\"content\"></td> \n     </tr> \n    </tbody>\n   </table>\n  </div> \n </div>\n</div></form>', '1.0', 'superadmin', '2018-07-26 10:57:35');
 INSERT INTO `bi_form` VALUES ('402881ee54a29b8b0154a2c6cc1b000b', '测试表单1', null, 'bi_test1', 'bi_test1', '<div class=\"containers fd-view-drag-in\"><div id=\"v_formtitle\" fd-view=\"formtitle\" class=\"bb h4\" style=\"text-align: center;\">表单A</div><div class=\"row\" contenteditable=\"true\" fd-view=\"col12\" id=\"v_col12\" style=\"padding: 0px 0px 5px;\">\n													<div class=\"col-md-12 fd-view-drag-in fd-view-bordered\"><table fd-move=\"\" fd-view=\"label_input\" id=\"v_label_input\" style=\"width:100%\">\n													<tbody><tr>\n														<td fd-view=\"table_td\" style=\"min-width:5%;width:8%\" class=\"\"><span contenteditable=\"true\" fd-view=\"label\" fd-label=\"\">姓名：</span></td>\n														<td fd-view=\"table_td\"><input type=\"text\" class=\"form-control\" fd-view=\"input\" field=\"name\" required=\"required\" rules=\"none\"></td>\n													</tr>\n												</tbody></table></div>\n												</div><div class=\"row\" contenteditable=\"true\" fd-view=\"col12\" id=\"v_col12\">\n													<div class=\"col-md-12 fd-view-drag-in fd-view-bordered\"><table fd-move=\"\" fd-view=\"label_textarea\" id=\"v_label_textarea\" style=\"width:100%\">\n													<tbody><tr>\n														<td fd-view=\"table_td\" style=\"min-width:5%;width:8%\" class=\"\"><span contenteditable=\"true\" fd-view=\"label\" fd-label=\"\" class=\"\">性别：</span></td>\n														<td fd-view=\"table_td\"><select class=\"form-control\" fd-view=\"select\" \"=\"\" field=\"sex\"><option value=\"男\" selected=\"selected\">男</option><option value=\"女\">女</option></select></td>\n													</tr>\n												</tbody></table></div>\n												</div></div>', '<form action=\"#formAction#\" method=\"post\" onsubmit=\"return fd.run.submit(this)\">\n <input type=\"hidden\" name=\"$formId\" value=\"#tid#\">\n <div class=\"containers fd-view-drag-in\">\n  <div id=\"v_formtitle\" fd-view=\"formtitle\" class=\"bb h4\" style=\"text-align: center;\">\n   表单A\n  </div>\n  <div class=\"row\" fd-view=\"col12\" id=\"v_col12\" style=\"padding: 0px 0px 5px;\"> \n   <div class=\"col-md-12 fd-view-drag-in fd-view-bordered\">\n    <table fd-view=\"label_input\" id=\"v_label_input\" style=\"width:100%\"> \n     <tbody>\n      <tr> \n       <td fd-view=\"table_td\" style=\"min-width:5%;width:8%\" class=\"\"><span fd-view=\"label\" fd-label=\"\">姓名：</span></td> \n       <td fd-view=\"table_td\"><input type=\"text\" class=\"form-control\" fd-view=\"input\" name=\"name\" required rules=\"none\"></td> \n      </tr> \n     </tbody>\n    </table>\n   </div> \n  </div>\n  <div class=\"row\" fd-view=\"col12\" id=\"v_col12\"> \n   <div class=\"col-md-12 fd-view-drag-in fd-view-bordered\">\n    <table fd-view=\"label_textarea\" id=\"v_label_textarea\" style=\"width:100%\"> \n     <tbody>\n      <tr> \n       <td fd-view=\"table_td\" style=\"min-width:5%;width:8%\" class=\"\"><span fd-view=\"label\" fd-label=\"\" class=\"\">性别：</span></td> \n       <td fd-view=\"table_td\"><select class=\"form-control\" fd-view=\"select\" \"=\"\" name=\"sex\"><option value=\"男\" selected>男</option><option value=\"女\">女</option></select></td> \n      </tr> \n     </tbody>\n    </table>\n   </div> \n  </div>\n </div>\n</form>', '2.0', 'superadmin', '2016-05-12 10:40:38');
 INSERT INTO `bi_form` VALUES ('40289f885a46ea03015a46f1940b0001', '请假申请单', '您的请假申请已提交，请等待审批。', null, 'wf_form_14872489213681', '<div class=\"containers fd-view-drag-in\" tip=\"您的请假申请已提交，请等待审批。\"> \n <div class=\"hide\" id=\"script\"></div> \n <div id=\"v_formtitle\" fd-view=\"\" class=\"bb h4\"> \n  <h4 fd-view=\"formtitle\" class=\"\">请假申请</h4> \n </div> \n <table id=\"v_table\" fd-view=\"label_input\" class=\"table table-bordered\"> \n  <tbody> \n   <tr> \n    <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:25%;\"><br><span contenteditable=\"true\" fd-view=\"label\" id=\"v_label\" class=\"\">申请人：</span><span fd-view=\"macros\" class=\"text-primary\" macro=\"user_realname\">{宏控件}</span></td> \n   </tr> \n   <tr> \n    <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:25%;\"><br> \n     <table fd-move=\"\" fd-view=\"label_input\" id=\"v_label_input\" style=\"width:100%\"> \n      <tbody> \n       <tr> \n        <td fd-view=\"table_td\" style=\"min-width:5%;width:8%\" class=\"\"><span contenteditable=\"true\" fd-view=\"label\" fd-label=\"\" class=\"\">天数：</span></td> \n        <td fd-view=\"table_td\"><input type=\"number\" class=\"form-control\" fd-view=\"input\" field=\"days\" placeholder=\"请假天数\" name=\"days\"></td> \n       </tr> \n      </tbody> \n     </table></td> \n   </tr> \n   <tr> \n    <td fd-view=\"table_td\" class=\"fd-view-drag-in\" style=\"width:25%;\"> \n     <table fd-move=\"\" fd-view=\"label_textarea\" id=\"v_label_textarea\" style=\"width:100%\"> \n      <tbody> \n       <tr> \n        <td fd-view=\"table_td\" style=\"min-width:5%;width:8%\"><span contenteditable=\"true\" fd-view=\"label\" fd-label=\"\" class=\"\">说明：</span></td> \n        <td fd-view=\"table_td\"><textarea class=\"form-control\" fd-view=\"textarea\" field=\"remarks\" placeholder=\"请假描述\" name=\"remarks\"></textarea></td> \n       </tr> \n      </tbody> \n     </table></td> \n   </tr> \n   <tr> \n   </tr> \n  </tbody> \n </table> \n</div>', '<form action=\'#formAction#\' method=\'post\' onsubmit=\'return fd.run.submit(this)\'>\r\n<input type=\'hidden\' name=\'_formId\' value=\'#formId#\'/>\r\n<input type=\'hidden\' name=\'_tid\' value=\'#tid#\'/>\r\n<input type=\'hidden\' name=\'_start\' value=\'#start#\'/>\r\n<input type=\'hidden\' field=\'user_realname\' name=\'user_realname\' value=\'#user_realname#\'/>\r\n<div class=\"containers\" tip=\"您的请假申请已提交，请等待审批。\"> \n <div class=\"hide\"></div> \n <div class=\"bb h4\"> \n  <h4 class=\"\">请假申请</h4> \n </div> \n <table class=\"table table-bordered\"> \n  <tbody> \n   <tr> \n    <td class=\"\" style=\"width:25%;\"><br><span class=\"\">申请人：</span><span class=\"macro text-primary\" style=\"\">#user_realname#</span></td> \n   </tr> \n   <tr> \n    <td class=\"\" style=\"width:25%;\"><br> \n     <table style=\"width:100%\"> \n      <tbody> \n       <tr> \n        <td style=\"min-width:5%;width:8%\" class=\"\"><span class=\"\">天数：</span></td> \n        <td><input type=\"number\" class=\"form-control\" placeholder=\"请假天数\" name=\"days\"></td> \n       </tr> \n      </tbody> \n     </table></td> \n   </tr> \n   <tr> \n    <td class=\"\" style=\"width:25%;\"> \n     <table style=\"width:100%\"> \n      <tbody> \n       <tr> \n        <td style=\"min-width:5%;width:8%\"><span class=\"\">说明：</span></td> \n        <td><textarea class=\"form-control\" placeholder=\"请假描述\" name=\"remarks\"></textarea></td> \n       </tr> \n      </tbody> \n     </table></td> \n   </tr> \n   <tr> \n   </tr> \n  </tbody> \n </table> \n</div></form>', '1.0', 'superadmin', '2017-02-17 15:51:02');
 INSERT INTO `bi_form` VALUES ('4028b88158cd06060158cdb1a444001d', '气泡数据录入', null, 'bi_test2', 'bi_test2', '<div class=\"containers fd-view-drag-in\">\n							<div class=\"hide\" id=\"script\"></div>\n						<div id=\"v_formtitle\" fd-view=\"\" class=\"bb h4\"><h4 fd-view=\"formtitle\" class=\"\" style=\"text-align: center;\">气泡图数据录入</h4></div><div class=\"row\" contenteditable=\"true\" fd-view=\"col444\" id=\"v_col444\">\n													<div class=\"col-md-4 fd-view-drag-in fd-view-bordered\"></div>\n													<div class=\"col-md-4 fd-view-drag-in fd-view-bordered\"><table fd-move=\"\" fd-view=\"label_input\" id=\"v_label_input\" style=\"width:100%\">\n													<tbody><tr>\n														<td fd-view=\"table_td\" style=\"min-width:5%;width:8%\"><span contenteditable=\"true\" fd-view=\"label\" fd-label=\"\" class=\"\">X：</span></td>\n														<td fd-view=\"table_td\"><input type=\"text\" class=\"form-control\" fd-view=\"input\" field=\"x\" required=\"required\" rules=\"integer\"></td>\n													</tr>\n												</tbody></table><table fd-move=\"\" fd-view=\"label_input\" id=\"v_label_input\" style=\"width:100%\">\n													<tbody><tr>\n														<td fd-view=\"table_td\" style=\"min-width:5%;width:8%\"><span contenteditable=\"true\" fd-view=\"label\" fd-label=\"\" class=\"\">Y：</span></td>\n														<td fd-view=\"table_td\"><input type=\"text\" class=\"form-control\" fd-view=\"input\" field=\"y\" required=\"required\" rules=\"integer\"></td>\n													</tr>\n												</tbody></table><table fd-move=\"\" fd-view=\"label_input\" id=\"v_label_input\" style=\"width:100%\">\n													<tbody><tr>\n														<td fd-view=\"table_td\" style=\"min-width:5%;width:8%\"><span contenteditable=\"true\" fd-view=\"label\" fd-label=\"\" class=\"\">R：</span></td>\n														<td fd-view=\"table_td\"><input type=\"text\" class=\"form-control\" fd-view=\"input\" field=\"r\" required=\"required\" rules=\"integer\"></td>\n													</tr>\n												</tbody></table></div>\n													<div class=\"col-md-4 fd-view-drag-in fd-view-bordered\"></div>\n												</div></div>', '<form action=\"#formAction#\" method=\"post\" onsubmit=\"return fd.run.submit(this)\">\n <input type=\"hidden\" name=\"$formId\" value=\"#tid#\">\n <div class=\"containers fd-view-drag-in\"> \n  <div class=\"hide\" id=\"script\"></div> \n  <div id=\"v_formtitle\" fd-view=\"\" class=\"bb h4\">\n   <h4 fd-view=\"formtitle\" class=\"\" style=\"text-align: center;\">气泡图数据录入</h4>\n  </div>\n  <div class=\"row\" fd-view=\"col444\" id=\"v_col444\"> \n   <div class=\"col-md-4 fd-view-drag-in fd-view-bordered\"></div> \n   <div class=\"col-md-4 fd-view-drag-in fd-view-bordered\">\n    <table fd-view=\"label_input\" id=\"v_label_input\" style=\"width:100%\"> \n     <tbody>\n      <tr> \n       <td fd-view=\"table_td\" style=\"min-width:5%;width:8%\"><span fd-view=\"label\" fd-label=\"\" class=\"\">X：</span></td> \n       <td fd-view=\"table_td\"><input type=\"text\" class=\"form-control\" fd-view=\"input\" name=\"x\" required rules=\"integer\"></td> \n      </tr> \n     </tbody>\n    </table>\n    <table fd-view=\"label_input\" id=\"v_label_input\" style=\"width:100%\"> \n     <tbody>\n      <tr> \n       <td fd-view=\"table_td\" style=\"min-width:5%;width:8%\"><span fd-view=\"label\" fd-label=\"\" class=\"\">Y：</span></td> \n       <td fd-view=\"table_td\"><input type=\"text\" class=\"form-control\" fd-view=\"input\" name=\"y\" required rules=\"integer\"></td> \n      </tr> \n     </tbody>\n    </table>\n    <table fd-view=\"label_input\" id=\"v_label_input\" style=\"width:100%\"> \n     <tbody>\n      <tr> \n       <td fd-view=\"table_td\" style=\"min-width:5%;width:8%\"><span fd-view=\"label\" fd-label=\"\" class=\"\">R：</span></td> \n       <td fd-view=\"table_td\"><input type=\"text\" class=\"form-control\" fd-view=\"input\" name=\"r\" required rules=\"integer\"></td> \n      </tr> \n     </tbody>\n    </table>\n   </div> \n   <div class=\"col-md-4 fd-view-drag-in fd-view-bordered\"></div> \n  </div>\n </div>\n</form>', '2.0', 'superadmin', '2016-12-05 14:35:23');
@@ -282,6 +286,7 @@ CREATE TABLE `bi_report` (
   `descript` varchar(200) DEFAULT NULL COMMENT '描述',
   `source` text COMMENT '源码',
   `content` text COMMENT '生成代码',
+  `search_form_id` varchar(32) DEFAULT NULL COMMENT '搜索表单ID',
   `createUser` varchar(32) NOT NULL COMMENT '创建人',
   `createTime` varchar(20) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
@@ -290,8 +295,9 @@ CREATE TABLE `bi_report` (
 -- ----------------------------
 -- Records of bi_report
 -- ----------------------------
-INSERT INTO `bi_report` VALUES ('40289f395935cd44015935d7886b0002', '报表1', '测试用', '<table id=\"40289f395935cd44015935d7886b0002\" class=\"table table-bordered\" contenteditable=\"true\">\n                                                                                        <tbody><tr>\n                                                                                                <td class=\"rownum\" style=\"text-align: center;\" contenteditable=\"false\"></td>\n                                                                                                <td class=\"colnum\" style=\"text-align: center; cursor: default;\" contenteditable=\"false\" width=\"166\">A</td>\n                                                                                                <td class=\"colnum\" style=\"text-align: center; cursor: default;\" contenteditable=\"false\">B</td>\n                                                                                                \n                                                                                                \n                                                                                            </tr>\n                                                                                        <tr><td contenteditable=\"false\" class=\"rownum\">1</td><td class=\"\" colspan=\"2\" style=\"text-align: center; font-weight: bold;\">人员信息表</td></tr><tr><td contenteditable=\"false\" class=\"rownum\">2</td><td class=\"\">姓名</td><td class=\"\">性别</td></tr><tr>\n                                                                                                <td class=\"rownum\" ds=\"4028b88158af03570158af47b68e000b\" code=\"id\" arrow=\"down\" contenteditable=\"false\">3</td>\n                                                                                                <td class=\"\" ds=\"4028b88158af03570158af47b68e000b\" code=\"name\" arrow=\"down\" width=\"166\" data-binder=\"true\" style=\"font-weight: normal;\"><div class=\"debug\">#name-&gt;down#</div></td>\n                                                                                                <td class=\"\" ds=\"4028b88158af03570158af47b68e000b\" code=\"sex\" arrow=\"down\" data-binder=\"true\"><div class=\"debug\">#sex-&gt;down#</div></td>\n                                                                                                \n                                                                                                \n                                                                                            </tr>\n                                                                                        <tr>\n                                                                                                <td contenteditable=\"false\" class=\"rownum\">4</td>\n                                                                                                <td class=\"\" style=\"background-color: rgb(255, 255, 255);\" width=\"166\"><br></td>\n                                                                                                <td class=\"\"><br></td>\n                                                                                                \n                                                                                                \n                                                                                            </tr>\n                                                                                        <tr>\n                                                                                                <td contenteditable=\"false\" class=\"rownum\">5</td>\n                                                                                                <td width=\"166\" class=\"\"><br></td>\n                                                                                                <td class=\"formula\" formula=\"count(A3+)\"><br></td>\n                                                                                                \n                                                                                                \n                                                                                            </tr>\n                                                                                    </tbody></table>', '<table id=\"40289f395935cd44015935d7886b0002\" class=\"table table-bordered\">\n                                                                                        <tbody>\n                                                                                        <tr><td colspan=\"2\" style=\"text-align: center; font-weight: bold;\">人员信息表</td></tr><tr><td>姓名</td><td>性别</td></tr><tr>\n                                                                                                \n                                                                                                <td ds=\"4028b88158af03570158af47b68e000b\" code=\"name\" arrow=\"down\" width=\"166\" data-binder=\"true\" style=\"font-weight: normal;\"><br></td>\n                                                                                                <td ds=\"4028b88158af03570158af47b68e000b\" code=\"sex\" arrow=\"down\" data-binder=\"true\"><br></td>\n                                                                                                \n                                                                                                \n                                                                                            </tr>\n                                                                                        <tr>\n                                                                                                \n                                                                                                <td style=\"background-color: rgb(255, 255, 255);\" width=\"166\"><br></td>\n                                                                                                <td><br></td>\n                                                                                                \n                                                                                                \n                                                                                            </tr>\n                                                                                        <tr>\n                                                                                                \n                                                                                                <td width=\"166\"><br></td>\n                                                                                                <td formula=\"count(A3+)\"><br></td>\n                                                                                                \n                                                                                                \n                                                                                            </tr>\n                                                                                    </tbody></table>', '超级管理员', '2016-12-25 19:57:14');
-INSERT INTO `bi_report` VALUES ('4028b88159780b930159780c7ae30001', '统计表-测试1', '用于测试统计功能：合计，平均数等', '<table id=\"4028b88159780b930159780c7ae30001\" class=\"table table-bordered\" contenteditable=\"true\">\n                                                                                        <tbody><tr><td contenteditable=\"false\" class=\"rownum\"><br></td><td class=\"colnum\" contenteditable=\"false\" style=\"cursor: s-resize;\">A</td><td contenteditable=\"false\" class=\"colnum\" style=\"cursor: s-resize;\">B</td><td contenteditable=\"false\" class=\"colnum\" style=\"cursor: default;\">C</td><td contenteditable=\"false\" class=\"colnum\" style=\"cursor: col-resize;\">D</td><td contenteditable=\"false\" class=\"colnum\" style=\"cursor: s-resize;\">E</td><td contenteditable=\"false\" class=\"colnum\" style=\"cursor: col-resize;\">F</td><td contenteditable=\"false\" class=\"colnum\" style=\"cursor: default;\">G</td><td contenteditable=\"false\" class=\"colnum\">H</td><td contenteditable=\"false\" class=\"colnum\" style=\"cursor: default;\">I</td><td contenteditable=\"false\" class=\"colnum\" style=\"cursor: default;\">J</td><td contenteditable=\"false\" class=\"colnum\" style=\"cursor: default;\">K</td></tr><tr>\n                                                                                                <td contenteditable=\"false\" class=\"rownum\">1</td><td class=\"\" style=\"text-align: center;\"><b>日期</b></td><td class=\"\" style=\"text-align: left;\"><b>数据1-1</b></td>\n                                                                                                <td class=\"\" style=\"text-align: left;\"><b>数据1-2</b></td>\n                                                                                                <td class=\"\" style=\"text-align: left;\"><b>数据2-1</b></td>\n                                                                                                <td class=\"\" style=\"text-align: left;\"><b>数据2-2</b></td><td class=\"\" style=\"text-align: left;\"><b>数据3-1</b></td><td class=\"\" style=\"text-align: left;\"><b>数据3-2</b></td><td class=\"\" style=\"text-align: left;\"><b>数据4-1</b></td><td class=\"\" style=\"text-align: left;\"><b>数据4-2</b></td><td class=\"\" style=\"text-align: left;\"><b>数据5-1</b></td><td class=\"\" style=\"text-align: left;\"><b>数据5-2</b></td>\n                                                                                            </tr>\n                                                                                        <tr>\n                                                                                                <td contenteditable=\"false\" class=\"rownum\">2</td><td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"day\" arrow=\"down\" data-binder=\"true\" style=\"text-align: center; font-weight: bold; font-style: normal; font-size: 13px;\">#day-&gt;down#</td>\n                                                                                                <td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c1_1\" arrow=\"down\" data-binder=\"true\" condition-symbo=\">\" condition-value=\"60\" condition-type=\"color\" condition-color=\"#00FF00\" condition-target=\"cell\">#c1_1-&gt;down#</td>\n                                                                                                <td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c1_2\" arrow=\"down\" data-binder=\"true\" condition-symbo=\"<\" condition-value=\"1000\" condition-type=\"backgroundColor\" condition-color=\"#FF0000\" condition-target=\"row\">#c1_2-&gt;down#</td>\n                                                                                                <td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c2_1\" arrow=\"down\" data-binder=\"true\" condition-symbo=\"==\" condition-value=\"0\" condition-type=\"borderColor\" condition-color=\"#FFFF00\" condition-target=\"cell\">#c2_1-&gt;down#</td>\n                                                                                                <td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c2_2\" arrow=\"down\" data-binder=\"true\"><div class=\"debug\">#c2_2-&gt;down#</div></td><td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c3_1\" arrow=\"down\" data-binder=\"true\">#c3_1-&gt;down#</td><td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c3_2\" arrow=\"down\" data-binder=\"true\">#c3_2-&gt;down#</td><td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c4_1\" arrow=\"down\" data-binder=\"true\">#c4_1-&gt;down#</td><td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c4_2\" arrow=\"down\" data-binder=\"true\">#c4_2-&gt;down#</td><td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c5_1\" arrow=\"down\" data-binder=\"true\">#c5_1-&gt;down#</td><td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c5_1\" arrow=\"down\" data-binder=\"true\">#c5_1-&gt;down#</td>\n                                                                                            </tr>\n                                                                                        \n                                                                                        <tr>\n                                                                                                <td contenteditable=\"false\" class=\"rownum\">3</td><td class=\"\" style=\"text-align: center; font-weight: bold; background-color: rgb(206, 198, 206);\">合计：</td><td class=\"formula\" formula=\"max(B2,B3)\" style=\"font-weight: bold; background-color: rgb(206, 198, 206);\"></td>\n                                                                                                <td class=\"formula\" formula=\"avg(C2+)\" precision=\"2\" style=\"background-color: rgb(206, 198, 206);\"></td>\n                                                                                                <td class=\"formula\" formula=\"count(D2+)\" precision=\"2\" style=\"background-color: rgb(206, 198, 206);\"></td>\n                                                                                                <td class=\"\" formula=\"\" style=\"background-color: rgb(206, 198, 206);\"></td><td class=\"\" formula=\"\" style=\"background-color: rgb(206, 198, 206);\"></td><td class=\"\" style=\"background-color: rgb(206, 198, 206);\"><br></td><td class=\"\" style=\"background-color: rgb(206, 198, 206);\"><br></td><td class=\"\" style=\"background-color: rgb(206, 198, 206);\"><br></td><td class=\"\" style=\"background-color: rgb(206, 198, 206);\"><br></td><td class=\"\" style=\"background-color: rgb(206, 198, 206);\"><br></td>\n                                                                                            </tr>\n                                                                                    </tbody></table>', '<table id=\"4028b88159780b930159780c7ae30001\" class=\"table table-bordered\">\n                                                                                        <tbody><tr>\n                                                                                                <td style=\"text-align: center;\"><b>日期</b></td><td style=\"text-align: left;\"><b>数据1-1</b></td>\n                                                                                                <td style=\"text-align: left;\"><b>数据1-2</b></td>\n                                                                                                <td style=\"text-align: left;\"><b>数据2-1</b></td>\n                                                                                                <td style=\"text-align: left;\"><b>数据2-2</b></td><td style=\"text-align: left;\"><b>数据3-1</b></td><td style=\"text-align: left;\"><b>数据3-2</b></td><td style=\"text-align: left;\"><b>数据4-1</b></td><td style=\"text-align: left;\"><b>数据4-2</b></td><td style=\"text-align: left;\"><b>数据5-1</b></td><td style=\"text-align: left;\"><b>数据5-2</b></td>\n                                                                                            </tr>\n                                                                                        <tr>\n                                                                                                <td ds=\"4028b8815977f53a01597805e6290001\" code=\"day\" arrow=\"down\" data-binder=\"true\" style=\"text-align: center; font-weight: bold; font-style: normal; font-size: 13px;\"><br></td>\n                                                                                                <td ds=\"4028b8815977f53a01597805e6290001\" code=\"c1_1\" arrow=\"down\" data-binder=\"true\" condition-symbo=\">\" condition-value=\"60\" condition-type=\"color\" condition-color=\"#00FF00\" condition-target=\"cell\"><br></td>\n                                                                                                <td ds=\"4028b8815977f53a01597805e6290001\" code=\"c1_2\" arrow=\"down\" data-binder=\"true\" condition-symbo=\"<\" condition-value=\"1000\" condition-type=\"backgroundColor\" condition-color=\"#FF0000\" condition-target=\"row\"><br></td>\n                                                                                                <td ds=\"4028b8815977f53a01597805e6290001\" code=\"c2_1\" arrow=\"down\" data-binder=\"true\" condition-symbo=\"==\" condition-value=\"0\" condition-type=\"borderColor\" condition-color=\"#FFFF00\" condition-target=\"cell\"><br></td>\n                                                                                                <td ds=\"4028b8815977f53a01597805e6290001\" code=\"c2_2\" arrow=\"down\" data-binder=\"true\"><br></td><td ds=\"4028b8815977f53a01597805e6290001\" code=\"c3_1\" arrow=\"down\" data-binder=\"true\"><br></td><td ds=\"4028b8815977f53a01597805e6290001\" code=\"c3_2\" arrow=\"down\" data-binder=\"true\"><br></td><td ds=\"4028b8815977f53a01597805e6290001\" code=\"c4_1\" arrow=\"down\" data-binder=\"true\"><br></td><td ds=\"4028b8815977f53a01597805e6290001\" code=\"c4_2\" arrow=\"down\" data-binder=\"true\"><br></td><td ds=\"4028b8815977f53a01597805e6290001\" code=\"c5_1\" arrow=\"down\" data-binder=\"true\"><br></td><td ds=\"4028b8815977f53a01597805e6290001\" code=\"c5_1\" arrow=\"down\" data-binder=\"true\"><br></td>\n                                                                                            </tr>\n                                                                                        \n                                                                                        <tr>\n                                                                                                <td style=\"text-align: center; font-weight: bold; background-color: rgb(206, 198, 206);\">合计：</td><td formula=\"max(B2,B3)\" style=\"font-weight: bold; background-color: rgb(206, 198, 206);\"></td>\n                                                                                                <td formula=\"avg(C2+)\" precision=\"2\" style=\"background-color: rgb(206, 198, 206);\"></td>\n                                                                                                <td formula=\"count(D2+)\" precision=\"2\" style=\"background-color: rgb(206, 198, 206);\"></td>\n                                                                                                <td formula=\"\" style=\"background-color: rgb(206, 198, 206);\"></td><td formula=\"\" style=\"background-color: rgb(206, 198, 206);\"></td><td style=\"background-color: rgb(206, 198, 206);\"><br></td><td style=\"background-color: rgb(206, 198, 206);\"><br></td><td style=\"background-color: rgb(206, 198, 206);\"><br></td><td style=\"background-color: rgb(206, 198, 206);\"><br></td><td style=\"background-color: rgb(206, 198, 206);\"><br></td>\n                                                                                            </tr>\n                                                                                    </tbody></table>', '超级管理员', '2017-01-07 16:30:00');
+INSERT INTO `bi_report` VALUES ('4028568164cb9e330164cba126580002', '日志报表', '', '<table id=\"4028568164cb9e330164cba126580002\" class=\"table table-bordered\" contenteditable=\"true\">\n                                                                                        <tbody><tr>\n                                                                                                <td contenteditable=\"false\" class=\"rownum\"><br></td>\n                                                                                                <td contenteditable=\"false\" class=\"colnum\" style=\"cursor: s-resize;\">A</td>\n                                                                                                <td contenteditable=\"false\" class=\"colnum\" style=\"cursor: s-resize;\">B</td>\n                                                                                                <td contenteditable=\"false\" class=\"colnum\">C</td>\n                                                                                                \n                                                                                            </tr>\n                                                                                        <tr>\n                                                                                                <td contenteditable=\"false\" class=\"rownum\">1</td>\n                                                                                                <td class=\"\">日志等级</td>\n                                                                                                <td class=\"\">日志内容</td>\n                                                                                                <td class=\"\">IP地址</td>\n                                                                                                \n                                                                                            </tr>\n                                                                                        <tr>\n                                                                                                <td contenteditable=\"false\" class=\"rownum\">2</td>\n                                                                                                <td class=\"\" ds=\"4028568164cb7f450164cb982e690008\" code=\"level\" arrow=\"down\" data-binder=\"true\"><div class=\"debug\">#level-&gt;down#</div></td>\n                                                                                                <td class=\"\" ds=\"4028568164cb7f450164cb982e690008\" code=\"content\" arrow=\"down\" data-binder=\"true\"><div class=\"debug\">#content-&gt;down#</div></td>\n                                                                                                <td class=\"\" ds=\"4028568164cb7f450164cb982e690008\" code=\"ip\" arrow=\"down\" data-binder=\"true\"><div class=\"debug\">#ip-&gt;down#</div></td>\n                                                                                                \n                                                                                            </tr>\n                                                                                        <tr>\n                                                                                                <td contenteditable=\"false\" class=\"rownum\">3</td>\n                                                                                                <td><br></td>\n                                                                                                <td><br></td>\n                                                                                                <td><br></td>\n                                                                                                \n                                                                                            </tr>\n                                                                                    </tbody></table>', '<table id=\"4028568164cb9e330164cba126580002\" class=\"table table-bordered\">\n                                                                                        <tbody>\n                                                                                        <tr>\n                                                                                                \n                                                                                                <td>日志等级</td>\n                                                                                                <td>日志内容</td>\n                                                                                                <td>IP地址</td>\n                                                                                                \n                                                                                            </tr>\n                                                                                        <tr>\n                                                                                                \n                                                                                                <td ds=\"4028568164cb7f450164cb982e690008\" code=\"level\" arrow=\"down\" data-binder=\"true\"><br></td>\n                                                                                                <td ds=\"4028568164cb7f450164cb982e690008\" code=\"content\" arrow=\"down\" data-binder=\"true\"><br></td>\n                                                                                                <td ds=\"4028568164cb7f450164cb982e690008\" code=\"ip\" arrow=\"down\" data-binder=\"true\"><br></td>\n                                                                                                \n                                                                                            </tr>\n                                                                                        <tr>\n                                                                                                \n                                                                                                <td><br></td>\n                                                                                                <td><br></td>\n                                                                                                <td><br></td>\n                                                                                                \n                                                                                            </tr>\n                                                                                    </tbody></table>', '4028568164cb9e330164cba0e5a60001', '超级管理员', '2018-07-24 17:31:33');
+INSERT INTO `bi_report` VALUES ('40289f395935cd44015935d7886b0002', '报表1', '测试用', '<table id=\"40289f395935cd44015935d7886b0002\" class=\"table table-bordered\" contenteditable=\"true\">\n                                                                                        <tbody><tr>\n                                                                                                <td class=\"rownum\" style=\"text-align: center;\" contenteditable=\"false\"></td>\n                                                                                                <td class=\"colnum\" style=\"text-align: center; cursor: default;\" contenteditable=\"false\" width=\"166\">A</td>\n                                                                                                <td class=\"colnum\" style=\"text-align: center; cursor: default;\" contenteditable=\"false\">B</td>\n                                                                                                \n                                                                                                \n                                                                                            </tr>\n                                                                                        <tr><td contenteditable=\"false\" class=\"rownum\">1</td><td class=\"\" colspan=\"2\" style=\"text-align: center; font-weight: bold;\">人员信息表</td></tr><tr><td contenteditable=\"false\" class=\"rownum\">2</td><td class=\"\">姓名</td><td class=\"\">性别</td></tr><tr>\n                                                                                                <td class=\"rownum\" ds=\"4028b88158af03570158af47b68e000b\" code=\"id\" arrow=\"down\" contenteditable=\"false\">3</td>\n                                                                                                <td class=\"\" ds=\"4028b88158af03570158af47b68e000b\" code=\"name\" arrow=\"down\" width=\"166\" data-binder=\"true\" style=\"font-weight: normal;\"><div class=\"debug\">#name-&gt;down#</div></td>\n                                                                                                <td class=\"\" ds=\"4028b88158af03570158af47b68e000b\" code=\"sex\" arrow=\"down\" data-binder=\"true\"><div class=\"debug\">#sex-&gt;down#</div></td>\n                                                                                                \n                                                                                                \n                                                                                            </tr>\n                                                                                        <tr>\n                                                                                                <td contenteditable=\"false\" class=\"rownum\">4</td>\n                                                                                                <td class=\"\" style=\"background-color: rgb(255, 255, 255);\" width=\"166\"><br></td>\n                                                                                                <td class=\"\"><br></td>\n                                                                                                \n                                                                                                \n                                                                                            </tr>\n                                                                                        <tr>\n                                                                                                <td contenteditable=\"false\" class=\"rownum\">5</td>\n                                                                                                <td width=\"166\" class=\"\"><br></td>\n                                                                                                <td class=\"formula\" formula=\"count(A3+)\"><br></td>\n                                                                                                \n                                                                                                \n                                                                                            </tr>\n                                                                                    </tbody></table>', '<table id=\"40289f395935cd44015935d7886b0002\" class=\"table table-bordered\">\n                                                                                        <tbody>\n                                                                                        <tr><td colspan=\"2\" style=\"text-align: center; font-weight: bold;\">人员信息表</td></tr><tr><td>姓名</td><td>性别</td></tr><tr>\n                                                                                                \n                                                                                                <td ds=\"4028b88158af03570158af47b68e000b\" code=\"name\" arrow=\"down\" width=\"166\" data-binder=\"true\" style=\"font-weight: normal;\"><br></td>\n                                                                                                <td ds=\"4028b88158af03570158af47b68e000b\" code=\"sex\" arrow=\"down\" data-binder=\"true\"><br></td>\n                                                                                                \n                                                                                                \n                                                                                            </tr>\n                                                                                        <tr>\n                                                                                                \n                                                                                                <td style=\"background-color: rgb(255, 255, 255);\" width=\"166\"><br></td>\n                                                                                                <td><br></td>\n                                                                                                \n                                                                                                \n                                                                                            </tr>\n                                                                                        <tr>\n                                                                                                \n                                                                                                <td width=\"166\"><br></td>\n                                                                                                <td formula=\"count(A3+)\"><br></td>\n                                                                                                \n                                                                                                \n                                                                                            </tr>\n                                                                                    </tbody></table>', null, '超级管理员', '2016-12-25 19:57:14');
+INSERT INTO `bi_report` VALUES ('4028b88159780b930159780c7ae30001', '统计表-测试1', '用于测试统计功能：合计，平均数等', '<table id=\"4028b88159780b930159780c7ae30001\" class=\"table table-bordered\" contenteditable=\"true\">\n                                                                                        <tbody><tr><td contenteditable=\"false\" class=\"rownum\"><br></td><td class=\"colnum\" contenteditable=\"false\" style=\"cursor: s-resize;\">A</td><td contenteditable=\"false\" class=\"colnum\" style=\"cursor: s-resize;\">B</td><td contenteditable=\"false\" class=\"colnum\" style=\"cursor: default;\">C</td><td contenteditable=\"false\" class=\"colnum\" style=\"cursor: col-resize;\">D</td><td contenteditable=\"false\" class=\"colnum\" style=\"cursor: s-resize;\">E</td><td contenteditable=\"false\" class=\"colnum\" style=\"cursor: col-resize;\">F</td><td contenteditable=\"false\" class=\"colnum\" style=\"cursor: default;\">G</td><td contenteditable=\"false\" class=\"colnum\">H</td><td contenteditable=\"false\" class=\"colnum\" style=\"cursor: default;\">I</td><td contenteditable=\"false\" class=\"colnum\" style=\"cursor: default;\">J</td><td contenteditable=\"false\" class=\"colnum\" style=\"cursor: default;\">K</td></tr><tr>\n                                                                                                <td contenteditable=\"false\" class=\"rownum\">1</td><td class=\"\" style=\"text-align: center;\"><b>日期</b></td><td class=\"\" style=\"text-align: left;\"><b>数据1-1</b></td>\n                                                                                                <td class=\"\" style=\"text-align: left;\"><b>数据1-2</b></td>\n                                                                                                <td class=\"\" style=\"text-align: left;\"><b>数据2-1</b></td>\n                                                                                                <td class=\"\" style=\"text-align: left;\"><b>数据2-2</b></td><td class=\"\" style=\"text-align: left;\"><b>数据3-1</b></td><td class=\"\" style=\"text-align: left;\"><b>数据3-2</b></td><td class=\"\" style=\"text-align: left;\"><b>数据4-1</b></td><td class=\"\" style=\"text-align: left;\"><b>数据4-2</b></td><td class=\"\" style=\"text-align: left;\"><b>数据5-1</b></td><td class=\"\" style=\"text-align: left;\"><b>数据5-2</b></td>\n                                                                                            </tr>\n                                                                                        <tr>\n                                                                                                <td contenteditable=\"false\" class=\"rownum\">2</td><td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"day\" arrow=\"down\" data-binder=\"true\" style=\"text-align: center; font-weight: bold; font-style: normal; font-size: 13px;\">#day-&gt;down#</td>\n                                                                                                <td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c1_1\" arrow=\"down\" data-binder=\"true\" condition-symbo=\">\" condition-value=\"60\" condition-type=\"color\" condition-color=\"#00FF00\" condition-target=\"cell\">#c1_1-&gt;down#</td>\n                                                                                                <td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c1_2\" arrow=\"down\" data-binder=\"true\" condition-symbo=\"<\" condition-value=\"1000\" condition-type=\"backgroundColor\" condition-color=\"#FF0000\" condition-target=\"row\">#c1_2-&gt;down#</td>\n                                                                                                <td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c2_1\" arrow=\"down\" data-binder=\"true\" condition-symbo=\"==\" condition-value=\"0\" condition-type=\"borderColor\" condition-color=\"#FFFF00\" condition-target=\"cell\">#c2_1-&gt;down#</td>\n                                                                                                <td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c2_2\" arrow=\"down\" data-binder=\"true\"><div class=\"debug\">#c2_2-&gt;down#</div></td><td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c3_1\" arrow=\"down\" data-binder=\"true\">#c3_1-&gt;down#</td><td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c3_2\" arrow=\"down\" data-binder=\"true\">#c3_2-&gt;down#</td><td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c4_1\" arrow=\"down\" data-binder=\"true\">#c4_1-&gt;down#</td><td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c4_2\" arrow=\"down\" data-binder=\"true\">#c4_2-&gt;down#</td><td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c5_1\" arrow=\"down\" data-binder=\"true\">#c5_1-&gt;down#</td><td class=\"\" ds=\"4028b8815977f53a01597805e6290001\" code=\"c5_1\" arrow=\"down\" data-binder=\"true\">#c5_1-&gt;down#</td>\n                                                                                            </tr>\n                                                                                        \n                                                                                        <tr>\n                                                                                                <td contenteditable=\"false\" class=\"rownum\">3</td><td class=\"\" style=\"text-align: center; font-weight: bold; background-color: rgb(206, 198, 206);\">合计：</td><td class=\"formula\" formula=\"max(B2,B3)\" style=\"font-weight: bold; background-color: rgb(206, 198, 206);\"></td>\n                                                                                                <td class=\"formula\" formula=\"avg(C2+)\" precision=\"2\" style=\"background-color: rgb(206, 198, 206);\"></td>\n                                                                                                <td class=\"formula\" formula=\"count(D2+)\" precision=\"2\" style=\"background-color: rgb(206, 198, 206);\"></td>\n                                                                                                <td class=\"\" formula=\"\" style=\"background-color: rgb(206, 198, 206);\"></td><td class=\"\" formula=\"\" style=\"background-color: rgb(206, 198, 206);\"></td><td class=\"\" style=\"background-color: rgb(206, 198, 206);\"><br></td><td class=\"\" style=\"background-color: rgb(206, 198, 206);\"><br></td><td class=\"\" style=\"background-color: rgb(206, 198, 206);\"><br></td><td class=\"\" style=\"background-color: rgb(206, 198, 206);\"><br></td><td class=\"\" style=\"background-color: rgb(206, 198, 206);\"><br></td>\n                                                                                            </tr>\n                                                                                    </tbody></table>', '<table id=\"4028b88159780b930159780c7ae30001\" class=\"table table-bordered\">\n                                                                                        <tbody><tr>\n                                                                                                <td style=\"text-align: center;\"><b>日期</b></td><td style=\"text-align: left;\"><b>数据1-1</b></td>\n                                                                                                <td style=\"text-align: left;\"><b>数据1-2</b></td>\n                                                                                                <td style=\"text-align: left;\"><b>数据2-1</b></td>\n                                                                                                <td style=\"text-align: left;\"><b>数据2-2</b></td><td style=\"text-align: left;\"><b>数据3-1</b></td><td style=\"text-align: left;\"><b>数据3-2</b></td><td style=\"text-align: left;\"><b>数据4-1</b></td><td style=\"text-align: left;\"><b>数据4-2</b></td><td style=\"text-align: left;\"><b>数据5-1</b></td><td style=\"text-align: left;\"><b>数据5-2</b></td>\n                                                                                            </tr>\n                                                                                        <tr>\n                                                                                                <td ds=\"4028b8815977f53a01597805e6290001\" code=\"day\" arrow=\"down\" data-binder=\"true\" style=\"text-align: center; font-weight: bold; font-style: normal; font-size: 13px;\"><br></td>\n                                                                                                <td ds=\"4028b8815977f53a01597805e6290001\" code=\"c1_1\" arrow=\"down\" data-binder=\"true\" condition-symbo=\">\" condition-value=\"60\" condition-type=\"color\" condition-color=\"#00FF00\" condition-target=\"cell\"><br></td>\n                                                                                                <td ds=\"4028b8815977f53a01597805e6290001\" code=\"c1_2\" arrow=\"down\" data-binder=\"true\" condition-symbo=\"<\" condition-value=\"1000\" condition-type=\"backgroundColor\" condition-color=\"#FF0000\" condition-target=\"row\"><br></td>\n                                                                                                <td ds=\"4028b8815977f53a01597805e6290001\" code=\"c2_1\" arrow=\"down\" data-binder=\"true\" condition-symbo=\"==\" condition-value=\"0\" condition-type=\"borderColor\" condition-color=\"#FFFF00\" condition-target=\"cell\"><br></td>\n                                                                                                <td ds=\"4028b8815977f53a01597805e6290001\" code=\"c2_2\" arrow=\"down\" data-binder=\"true\"><br></td><td ds=\"4028b8815977f53a01597805e6290001\" code=\"c3_1\" arrow=\"down\" data-binder=\"true\"><br></td><td ds=\"4028b8815977f53a01597805e6290001\" code=\"c3_2\" arrow=\"down\" data-binder=\"true\"><br></td><td ds=\"4028b8815977f53a01597805e6290001\" code=\"c4_1\" arrow=\"down\" data-binder=\"true\"><br></td><td ds=\"4028b8815977f53a01597805e6290001\" code=\"c4_2\" arrow=\"down\" data-binder=\"true\"><br></td><td ds=\"4028b8815977f53a01597805e6290001\" code=\"c5_1\" arrow=\"down\" data-binder=\"true\"><br></td><td ds=\"4028b8815977f53a01597805e6290001\" code=\"c5_1\" arrow=\"down\" data-binder=\"true\"><br></td>\n                                                                                            </tr>\n                                                                                        \n                                                                                        <tr>\n                                                                                                <td style=\"text-align: center; font-weight: bold; background-color: rgb(206, 198, 206);\">合计：</td><td formula=\"max(B2,B3)\" style=\"font-weight: bold; background-color: rgb(206, 198, 206);\"></td>\n                                                                                                <td formula=\"avg(C2+)\" precision=\"2\" style=\"background-color: rgb(206, 198, 206);\"></td>\n                                                                                                <td formula=\"count(D2+)\" precision=\"2\" style=\"background-color: rgb(206, 198, 206);\"></td>\n                                                                                                <td formula=\"\" style=\"background-color: rgb(206, 198, 206);\"></td><td formula=\"\" style=\"background-color: rgb(206, 198, 206);\"></td><td style=\"background-color: rgb(206, 198, 206);\"><br></td><td style=\"background-color: rgb(206, 198, 206);\"><br></td><td style=\"background-color: rgb(206, 198, 206);\"><br></td><td style=\"background-color: rgb(206, 198, 206);\"><br></td><td style=\"background-color: rgb(206, 198, 206);\"><br></td>\n                                                                                            </tr>\n                                                                                    </tbody></table>', null, '超级管理员', '2017-01-07 16:30:00');
 
 -- ----------------------------
 -- Table structure for bi_report_data
@@ -422,6 +428,434 @@ INSERT INTO `bi_test4` VALUES ('29', '2016-11-29', '47', '2330.40', '0', '0.00',
 INSERT INTO `bi_test4` VALUES ('30', '2016-11-30', '20', '1055.00', '1', '5.88', '26', '340.00', '0', '0.00', '0', '0.00');
 
 -- ----------------------------
+-- Table structure for ds_excel_1530589527664
+-- ----------------------------
+DROP TABLE IF EXISTS `ds_excel_1530589527664`;
+CREATE TABLE `ds_excel_1530589527664` (
+  `name` varchar(255) DEFAULT NULL,
+  `code` varchar(255) DEFAULT NULL,
+  `descript` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of ds_excel_1530589527664
+-- ----------------------------
+INSERT INTO `ds_excel_1530589527664` VALUES ('首页', '001', '集中显示各种数据，报表等。');
+INSERT INTO `ds_excel_1530589527664` VALUES ('教务', '002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('基本信息管理', '002001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('专业管理', '002001001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('课程管理', '002001002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学期管理', '002001003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('教室管理', '002001004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('级别管理', '002001005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('班级管理', '002001006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('宿舍管理', '002001007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('建筑管理', '002001008', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('班级教材配置', '002001009', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('智能排课', '002002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('课时设置', '002002001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('班级教学计划', '002002002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('固定课设置', '002002003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('合班设置', '002002004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('限制条件', '002002005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('自动排课', '002002006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('手动排课', '002002007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('课表调整', '002002008', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('教师课表', '002002008001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('班级课表', '002002008002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('课表查询', '002003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('教师课表', '002003001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('班级课表', '002003002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('教室课表', '002003003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('专业课表', '002003004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的课表', '002003005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的班级课表', '002003006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('总课表', '002003007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('调课管理', '002003008', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('调课记录', '002003009', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('总课表(教师)', '002003010', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('考试管理', '002004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('监考编排', '002004001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('监考查询', '002004002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('监考查询', '002004002001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('按教师', '002004002002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('考场查询', '002004003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('考场查询', '002004003001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('按班级', '002004003002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('考务打印', '002004004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('桌角条打印', '002004004001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('准考证打印', '002004004002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('成绩录入', '002005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('成绩录入(教师)', '002005001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('成绩录入(教务处)', '002005002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('成绩修改记录', '002005003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('成绩录入进度查询', '002005004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('实训成绩录入', '002005005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('补考成绩管理', '002005006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('历年成绩导入', '002005007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('成绩查询', '002006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('考试成绩查询', '002006001', '考试维度查看班级的成绩');
+INSERT INTO `ds_excel_1530589527664` VALUES ('成绩单查询', '002006002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('总成绩查询', '002006003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('教学科研', '002007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('课题管理', '002007001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的课题', '002007001001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('课题审核', '002007001002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('论文管理', '002007002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的论文', '002007002001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('论文审核', '002007002002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('培训管理', '002007003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的培训', '002007003001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('培训初审', '002007003002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('培训终审', '002007003003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('继续教育管理', '002007004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的继续教育', '002007004001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('继续教育初审', '002007004002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('继续教育终审', '002007004003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('教育获奖等级', '002007005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的获奖', '002007005001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('获奖初审', '002007005002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('获奖终审', '002007005003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('获奖统计', '002007005004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('教学评测', '002008', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('模板设置', '002008001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('评测任务', '002008002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学生评教', '002008003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('教师评教', '002008004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('操行分管理', '002009', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('班级操行分管理', '002009001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学生操行分管理', '002009002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('班级操行分查询', '002009003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学生操行分查询', '002009004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('日志管理', '002010', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学生工作日志', '002010001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('班级工作计划', '002010002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('评语管理', '002011', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('评语类型', '002011001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('评语录入', '002011002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('教材管理', '002012', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('教材管理', '002012001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('教材征订', '002012002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('验收入库', '002012003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('供应商管理', '002012004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('出版社管理', '002012005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('库存管理', '002012006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('教师征订意见', '002012007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('费用管理', '002012008', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('工作任务登记', '002013', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('补课登记', '002013001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('临时任务登记', '002013002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学管', '003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('迎新管理系统', '003001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('招生信息管理', '003001001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('入学准备', '003001002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('缴费项目', '003001002001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('物品管理', '003001002002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('临时班级管理', '003001002003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('班级宿舍分配', '003001002004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('入学管理', '003001003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学生报名', '003001003001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('缴费管理', '003001003002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('一卡通发放', '003001003003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('物品领取', '003001003004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('教材领取', '003001003005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('新生管理', '003001004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('专业分配', '003001004001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('班级分配', '003001004002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('宿舍分配', '003001004003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('统计报表', '003001005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('报名统计', '003001005001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('缴费统计', '003001005002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('新生缴费明细', '003001005003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('老生缴费明细', '003001005004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('参数设置', '003001006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学工管理系统', '003002', '奖、惩、助、贷、勤、补、思政、竞赛、技能鉴定');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学生信息管理', '003002001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学生信息管理', '003002001001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学生信息变更审核', '003002001002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('奖学金管理', '003002002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('奖学金设置', '003002002001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('奖学金申请', '003002002002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('奖学金审核', '003002002003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('奖学金查看', '003002002004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('奖学金统计', '003002002005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('违纪处分管理', '003002003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('违纪处分设置', '003002003001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('违纪处分上报', '003002003002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('违纪处分审核', '003002003003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('违纪处分解除申请', '003002003004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('违纪处分解除审核', '003002003005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('违纪处分查看', '003002003006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('违纪处分统计', '003002003007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('助学金管理', '003002004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('助学金设置', '003002004001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('助学金申请', '003002004002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('助学金审核', '003002004003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('助学金查看', '003002004004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('助学金统计', '003002004005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('勤工助学管理', '003002005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('用工单位管理', '003002005001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('岗位申请', '003002005002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('岗位审核', '003002005003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('勤工助学查看', '003002005004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('报酬发放', '003002005005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('勤工助学统计', '003002005006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('困难补助管理', '003002006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('困难补助设置', '003002006001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('困难补助申请', '003002006002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('困难补助审核', '003002006003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('困难补助查看', '003002006004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('困难补助统计', '003002006005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('荣誉称号管理', '003002007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('荣誉称号设置', '003002007001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('个人荣誉称号申请', '003002007002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('个人荣誉称号审批', '003002007003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('集体荣誉称号申请', '003002007004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('集体荣誉称号审批', '003002007005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('个人荣誉称号查看', '003002007006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('集体荣誉称号查看', '003002007007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('荣誉称号统计', '003002007008', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('贫困生管理', '003002008', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('贫困生申请', '003002008001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('贫困生审核', '003002008002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('受助情况', '003002008003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('心理健康管理', '003002009', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('心理评测试题', '003002009001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('心理评测结果', '003002009002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('心理咨询管理', '003002009003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('预约记录', '003002009004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('特殊学生维护', '003002009005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('竞赛信息管理', '003002010', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('技能鉴定管理', '003002011', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学生会管理', '003002012', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('查寝管理', '003002013', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('查寝记录查询', '003002013001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('查寝统计', '003002013002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学生社团管理', '003002014', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学生考勤管理', '003002015', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('请假登记', '003002015001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('每日考勤统计', '003002015002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学籍管理系统', '003003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学籍管理', '003003001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('休学管理', '003003002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('开除管理', '003003003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('留级查询', '003003004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('退学管理', '003003005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('离校查询', '003003006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('转专业查询', '003003007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('实习管理系统', '003004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('实习企业', '003004001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('实习企业类型', '003004001001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('实习企业管理', '003004001002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('实习安排', '003004002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('实习班级', '003004002001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('实习人员审批', '003004002002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('实习安排', '003004002003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学生实习', '003004003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('已实习学生', '003004003001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('未实习学生', '003004003002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('实习统计', '003004003003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('实习检查', '003004004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('实习月报', '003004004001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('实习月报统计', '003004004002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('实习鉴定', '003004005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('实习总结', '003004005001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('实习工作记录', '003004006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('工作日志记录', '003004006001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('工作记录汇总', '003004006002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('实习成绩管理', '003004007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('成绩录入（教师）', '003004007001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('成绩录入（教务处）', '003004007002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('毕业管理系统', '003005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('毕业申请', '003005001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('毕业审核', '003005002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('毕业流程配置', '003005003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('毕业进度统计', '003005004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('校友管理系统', '003006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('校友信息查询', '003006001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('校友信息管理', '003006002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('就业分布统计', '003006003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('就业专业统计', '003006004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('薪资待遇统计', '003006005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('办公', '004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('日常办公', '004001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('在线考勤', '004001001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的日程', '004001002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('通知公告', '004001003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的课表', '004001004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的班级课表', '004001005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的薪资', '004001006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的评教', '004001007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我要调课', '004001008', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('工作报告', '004001009', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('日报管理', '004001009001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('周报管理', '004001009002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('月报管理', '004001009003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('年报管理', '004001009004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的班级', '004002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('请假登记', '004002001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('成绩录入', '004002002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('宿舍分配', '004002003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('奖学金申请', '004002004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('助学金申请', '004002005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('贫困生申请', '004002006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('违纪处分上报', '004002007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('困难补助申请', '004002008', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('个人荣誉称号申请', '004002009', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('集体荣誉称号申请', '004002010', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('每日考勤统计', '004002011', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('审批流转', '004003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('流程申请', '004003001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('待办任务', '004003002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我发起的', '004003003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我参与的', '004003004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('通知公告', '004004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的通知', '004004001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('通知管理', '004004002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('通知类型', '004004003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('新闻中心', '004005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('新闻管理', '004005001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('新闻栏目', '004005002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('人事管理', '004006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('简历管理', '004006001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('通讯录', '004006002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('在线考勤', '004006003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('考勤设置', '004006004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('人员管理', '004006005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('考勤统计', '004006006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('薪资管理', '004007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('薪资录入', '004007001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('薪资查询', '004007002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('其他薪资查询', '004007003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的薪资', '004007004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('会议室管理', '004008', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('会议室预定', '004008001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('会议室设置', '004008002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('已预定查询', '004008003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('车辆管理', '004009', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('车辆预定', '004009001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('车辆归还', '004009002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('车辆管理', '004009003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('文档管理', '004010', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的文档', '004010001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('共享文档', '004010002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('回收站', '004010003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('资产管理', '004011', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('资产管理', '004011001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('资产分类', '004011002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('资产库存', '004011003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('物品领用', '004011004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('物品归还', '004011005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的资产', '004011006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('公文管理', '004012', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('发文管理', '004012001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('发文拟稿', '004012001001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('待办发文', '004012001002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('已办发文', '004012001003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('待阅发文', '004012001004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('已阅发文', '004012001005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('催办记录', '004012001006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('发文查询', '004012001007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('发文打印', '004012001008', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('收文管理', '004012002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('收文登记', '004012002001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('待办收文', '004012002002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('已办收文', '004012002003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('待阅收文', '004012002004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('已阅收文', '004012002005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('催办记录', '004012002006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('收文查询', '004012002007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('收文打印', '004012002008', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('公文类型', '004012003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('公文模板', '004012004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('公文编号', '004012005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('签章管理', '004012006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('调查问卷', '004013', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我发起的', '004013001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我参与的', '004013002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('网站编辑', '004014', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('发稿申请', '004014001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的待办', '004014002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的已办', '004014003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('资源', '005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学校资源管理', '005001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES (' 教师资源管理', '005002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('资源空间使用', '005002001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('教师资源管理', '005002002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('资源门户管理', '005003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('首页banner', '005003001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('栏目管理', '005003002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('资源管理', '005003003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('数据分析', '006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('招生情况统计', '006001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('学生管理统计', '006002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('成绩趋势', '006002001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('奖惩统计', '006002002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('补助统计', '006002003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('就业情况统计', '006003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('实习情况统计', '006004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('毕业信息统计', '006005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('校友数据统计', '006006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('消费数据统计', '006007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('人员情况统计', '006008', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('教职工分布统计', '006008001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('教师工作量统计', '006008002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('教师科研统计', '006008003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('网站', '007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('文章管理', '007001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('文章管理', '007001001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('文章审核', '007001002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('栏目管理', '007002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('广告管理', '007003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('模板管理', '007004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('站点管理', '007005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('权限配置', '007006', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('微信平台', '007007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('配置项管理', '007007001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('菜单管理', '007007002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('基本素材管理', '007007003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('图文素材管理', '007007004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('精品课程', '007008', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('课程分类', '007008001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('课程管理', '007008002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('课程维护', '007008003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('内容维护', '007008003001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('留言管理', '007008003002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('微信数字化校园', '007009', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('全校考勤', '007009001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('在线教学', '008', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('人人通', '009', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('系统管理', '010', '管理系统中的用户、角色、菜单等');
+INSERT INTO `ds_excel_1530589527664` VALUES ('组织架构', '010001', '软件内部的组织结构，也可以是公司内部的组织结构');
+INSERT INTO `ds_excel_1530589527664` VALUES ('用户管理', '010002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('用户组管理', '010003', '用户组');
+INSERT INTO `ds_excel_1530589527664` VALUES ('角色管理', '010004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('资源管理', '010005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('通知中心', '010006', '集中系统的各种通知');
+INSERT INTO `ds_excel_1530589527664` VALUES ('数据字典', '010007', '系统数据字典，公共数据配置/存储中心');
+INSERT INTO `ds_excel_1530589527664` VALUES ('系统日志', '010008', '查看系统日志信息，包含所有功能的操作日志。');
+INSERT INTO `ds_excel_1530589527664` VALUES ('参数配置', '010009', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('高级管理', '010010', '涉及系统的关键性数据，请在客服人员指导下谨慎操作');
+INSERT INTO `ds_excel_1530589527664` VALUES ('插件管理', '010010001', '系统插件管理');
+INSERT INTO `ds_excel_1530589527664` VALUES ('短信中心', '010010002', '短信中心功能，包含已发短信，群发短信等功能');
+INSERT INTO `ds_excel_1530589527664` VALUES ('文件管理', '010010003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('IP黑名单', '010010004', '符合规则的全部重定向到IP禁止访问页面');
+INSERT INTO `ds_excel_1530589527664` VALUES ('URL路由', '010010005', '自定义路由，可以显性/隐性的跳转');
+INSERT INTO `ds_excel_1530589527664` VALUES ('SQL执行器', '010010006', '数据库管理');
+INSERT INTO `ds_excel_1530589527664` VALUES ('数据初始化', '010010007', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('在线用户监控', '010010008', '查看实时在线用户');
+INSERT INTO `ds_excel_1530589527664` VALUES ('工作流管理', '010011', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我的任务', '010011001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我发起的', '010011002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('我参与的', '010011003', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('流程管理', '010011004', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('流程定义', '010011005', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('App管理', '010012', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('资源管理', '010012001', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('权限管理', '010012002', '');
+INSERT INTO `ds_excel_1530589527664` VALUES ('参数配置', '010012003', '');
+
+-- ----------------------------
 -- Table structure for sys_black_list
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_black_list`;
@@ -526,12 +960,10 @@ CREATE TABLE `sys_datadict` (
 INSERT INTO `sys_datadict` VALUES ('4028812856a0dfaa0156a12c4ab80017', '系统', 'sys_themes', '系统主题包', 'superadmin', '2016-08-19 13:00:49');
 INSERT INTO `sys_datadict` VALUES ('402881ee52f2c20f0152f2fa36fb0008', '系统', 'sys_status', '状态', 'superadmin', '2016-02-18 14:03:50');
 INSERT INTO `sys_datadict` VALUES ('402887d9535f625501535f73ff2b0009', '系统', 'sys_exception', '异常', 'superadmin', '2016-03-10 15:35:50');
-INSERT INTO `sys_datadict` (`id`, `category`, `name`, `remarks`, `create_user`, `create_time`)
-VALUES
-	('4028b88158b3bc850158b411f07b0003','自定义图表','bi_charts_type','图表类型','superadmin','2016-11-30 15:10:24'),
-	('4028b88159b070d70159b0a2b34e0001','数据源','bi_db_type','外部数据库类型','superadmin','2017-01-18 16:12:49'),
-	('4028b88159b070d70159b0ab81e30004','数据源','bi_db_driver','外部数据库驱动','superadmin','2017-01-18 16:22:27'),
-	('4028b88159b070d70159b0abea6e0005','数据源','bi_db_jdbc_url','外部数据库JDBC连接','superadmin','2017-01-18 16:22:53');
+INSERT INTO `sys_datadict` VALUES ('4028b88158b3bc850158b411f07b0003', '自定义图表', 'bi_charts_type', '图表类型', 'superadmin', '2016-11-30 15:10:24');
+INSERT INTO `sys_datadict` VALUES ('4028b88159b070d70159b0a2b34e0001', '数据源', 'bi_db_type', '外部数据库类型', 'superadmin', '2017-01-18 16:12:49');
+INSERT INTO `sys_datadict` VALUES ('4028b88159b070d70159b0ab81e30004', '数据源', 'bi_db_driver', '外部数据库驱动', 'superadmin', '2017-01-18 16:22:27');
+INSERT INTO `sys_datadict` VALUES ('4028b88159b070d70159b0abea6e0005', '数据源', 'bi_db_jdbc_url', '外部数据库JDBC连接', 'superadmin', '2017-01-18 16:22:53');
 
 -- ----------------------------
 -- Table structure for sys_datadict_item
@@ -553,6 +985,13 @@ CREATE TABLE `sys_datadict_item` (
 -- ----------------------------
 -- Records of sys_datadict_item
 -- ----------------------------
+INSERT INTO `sys_datadict_item` VALUES ('40288126632046c50163204b1e60000e', '4028b88158b3bc850158b411f07b0003', 'bar', '柱状图', '1', 'superadmin', '2018-05-02 17:59:43');
+INSERT INTO `sys_datadict_item` VALUES ('40288126632046c50163204b1e60000f', '4028b88158b3bc850158b411f07b0003', 'line', '折线图', '2', 'superadmin', '2018-05-02 17:59:43');
+INSERT INTO `sys_datadict_item` VALUES ('40288126632046c50163204b1e600010', '4028b88158b3bc850158b411f07b0003', 'pie', '饼状图', '3', 'superadmin', '2018-05-02 17:59:43');
+INSERT INTO `sys_datadict_item` VALUES ('40288126632046c50163204b1e600011', '4028b88158b3bc850158b411f07b0003', 'doughnut', '环形图', '4', 'superadmin', '2018-05-02 17:59:43');
+INSERT INTO `sys_datadict_item` VALUES ('40288126632046c50163204b1e600012', '4028b88158b3bc850158b411f07b0003', 'polar-area', '极坐标图', '5', 'superadmin', '2018-05-02 17:59:43');
+INSERT INTO `sys_datadict_item` VALUES ('40288126632046c50163204b1e610013', '4028b88158b3bc850158b411f07b0003', 'radar', '雷达图', '6', 'superadmin', '2018-05-02 17:59:43');
+INSERT INTO `sys_datadict_item` VALUES ('40288126632046c50163204b1e610014', '4028b88158b3bc850158b411f07b0003', 'bubble', '气泡图', '7', 'superadmin', '2018-05-02 17:59:43');
 INSERT INTO `sys_datadict_item` VALUES ('4028812856a0dfaa0156a12e94150018', '4028812856a0dfaa0156a12c4ab80017', '默认风格', 'palette', '1', 'superadmin', '2016-08-19 13:03:19');
 INSERT INTO `sys_datadict_item` VALUES ('4028812856a0dfaa0156a12e94330019', '4028812856a0dfaa0156a12c4ab80017', '风格一', 'palette.2', '2', 'superadmin', '2016-08-19 13:03:19');
 INSERT INTO `sys_datadict_item` VALUES ('4028812856a0dfaa0156a12e9434001a', '4028812856a0dfaa0156a12c4ab80017', '风格二', 'palette.3', '3', 'superadmin', '2016-08-19 13:03:19');
@@ -564,21 +1003,12 @@ INSERT INTO `sys_datadict_item` VALUES ('4028812856a0dfaa0156a12e9436001f', '402
 INSERT INTO `sys_datadict_item` VALUES ('402887d9535f625501535f713d060001', '402881ee52f2c20f0152f2fa36fb0008', '0', '启用', '1', 'superadmin', '2016-03-10 15:32:50');
 INSERT INTO `sys_datadict_item` VALUES ('402887d9535f625501535f713d180002', '402881ee52f2c20f0152f2fa36fb0008', '1', '禁用', '2', 'superadmin', '2016-03-10 15:32:50');
 INSERT INTO `sys_datadict_item` VALUES ('402887d9535f625501535f7419c0000e', '402887d9535f625501535f73ff2b0009', 'org.hibernate.exception.ConstraintViolationException', '存在关联数据，无法执行此操作！', '1', 'superadmin', '2016-03-10 15:35:57');
-INSERT INTO `sys_datadict_item` (`id`, `did`, `k`, `v`, `location`, `create_user`, `create_time`)
-VALUES
-	('4028b88158c394ca0158c3ad98cf001b','4028b88158b3bc850158b411f07b0003','bar','柱状图',1,'superadmin','2016-12-03 15:54:43'),
-	('4028b88158c394ca0158c3ad98d0001c','4028b88158b3bc850158b411f07b0003','line','折线图',2,'superadmin','2016-12-03 15:54:43'),
-	('4028b88158c394ca0158c3ad98d0001d','4028b88158b3bc850158b411f07b0003','pie','饼状图',3,'superadmin','2016-12-03 15:54:43'),
-	('4028b88158c394ca0158c3ad98d0001e','4028b88158b3bc850158b411f07b0003','doughnut','环形图',4,'superadmin','2016-12-03 15:54:43'),
-	('4028b88158c394ca0158c3ad98d0001f','4028b88158b3bc850158b411f07b0003','polar-area','极坐标图',5,'superadmin','2016-12-03 15:54:43'),
-	('4028b88158c394ca0158c3ad98d00020','4028b88158b3bc850158b411f07b0003','radar','雷达图',6,'superadmin','2016-12-03 15:54:43'),
-	('4028b88158c394ca0158c3ad98d00021','4028b88158b3bc850158b411f07b0003','bubble','气泡图',7,'superadmin','2016-12-03 15:54:43'),
-	('4028b88159b070d70159b0a32f720002','4028b88159b070d70159b0a2b34e0001','mysql','MySQL数据库',1,'superadmin','2017-01-18 16:13:21'),
-	('4028b88159b070d70159b0a32f720003','4028b88159b070d70159b0a2b34e0001','oracle','Oracle数据库',2,'superadmin','2017-01-18 16:13:21'),
-	('4028b88159b070d70159b0ac98de0006','4028b88159b070d70159b0ab81e30004','mysql','com.mysql.jdbc.Driver',1,'superadmin','2017-01-18 16:23:38'),
-	('4028b88159b070d70159b0ac98de0007','4028b88159b070d70159b0ab81e30004','oracle','oracle.jdbc.driver.OracleDriver',2,'superadmin','2017-01-18 16:23:38'),
-	('4028b88159b070d70159b0adbad40008','4028b88159b070d70159b0abea6e0005','mysql','jdbc:mysql://${host}:${port}/${db}',1,'superadmin','2017-01-18 16:24:52'),
-	('4028b88159b070d70159b0adbad40009','4028b88159b070d70159b0abea6e0005','oracle','jdbc:oracle:thin:@localhost:1521:orcl',2,'superadmin','2017-01-18 16:24:52');
+INSERT INTO `sys_datadict_item` VALUES ('4028b88159b070d70159b0a32f720002', '4028b88159b070d70159b0a2b34e0001', 'mysql', 'MySQL数据库', '1', 'superadmin', '2017-01-18 16:13:21');
+INSERT INTO `sys_datadict_item` VALUES ('4028b88159b070d70159b0a32f720003', '4028b88159b070d70159b0a2b34e0001', 'oracle', 'Oracle数据库', '2', 'superadmin', '2017-01-18 16:13:21');
+INSERT INTO `sys_datadict_item` VALUES ('4028b88159b070d70159b0ac98de0006', '4028b88159b070d70159b0ab81e30004', 'mysql', 'com.mysql.jdbc.Driver', '1', 'superadmin', '2017-01-18 16:23:38');
+INSERT INTO `sys_datadict_item` VALUES ('4028b88159b070d70159b0ac98de0007', '4028b88159b070d70159b0ab81e30004', 'oracle', 'oracle.jdbc.driver.OracleDriver', '2', 'superadmin', '2017-01-18 16:23:38');
+INSERT INTO `sys_datadict_item` VALUES ('4028b88159b070d70159b0adbad40008', '4028b88159b070d70159b0abea6e0005', 'mysql', 'jdbc:mysql://${host}:${port}/${db}', '1', 'superadmin', '2017-01-18 16:24:52');
+INSERT INTO `sys_datadict_item` VALUES ('4028b88159b070d70159b0adbad40009', '4028b88159b070d70159b0abea6e0005', 'oracle', 'jdbc:oracle:thin:@localhost:1521:orcl', '2', 'superadmin', '2017-01-18 16:24:52');
 
 -- ----------------------------
 -- Table structure for sys_email
@@ -627,6 +1057,7 @@ CREATE TABLE `sys_file` (
 -- ----------------------------
 -- Records of sys_file
 -- ----------------------------
+INSERT INTO `sys_file` VALUES ('40285681645e25f601645e2f85df0001', 'qWHLuoe1QQ.xlsx', '/file/20180703/qWHLuoe1QQ.xlsx', 'D:/IDEA/JRelax-BI/target/jrelax-bi-1.4/resources/upload//file/20180703/qWHLuoe1QQ.xlsx', '/jrelax-bi/dl', '111.xlsx', 'ec1d04bbbdc968ad1f56da47019118e2', '.xlsx', 'doc', '21054', '20.56KB', 'superadmin', '2018-07-03 11:28:50');
 
 -- ----------------------------
 -- Table structure for sys_group
@@ -723,6 +1154,65 @@ CREATE TABLE `sys_log` (
 -- ----------------------------
 -- Records of sys_log
 -- ----------------------------
+INSERT INTO `sys_log` VALUES ('402856816382d835016382d8be050000', '1', '[superadmin]登录系统', 'superadmin', '本地主机', '2018-05-21 21:17:12 012', 'login', 'LoginController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568163fd969a0163fd97a0360000', '1', '[superadmin]登录系统', 'superadmin', '36.7.84.3', '2018-06-14 17:19:22 022', 'login', 'LoginController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568163fd969a0163fd97e37f0001', '1', '[superadmin]登录系统', 'superadmin', '111.204.215.183', '2018-06-14 17:19:39 039', 'login', 'LoginController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568163fd969a0163fd98b5300002', '1', '查询机构列表', 'superadmin', '111.204.215.183', '2018-06-14 17:20:33 033', 'sys-unit', 'UnitController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568163fd969a0163fd98b5410003', '1', '访问机构列表', 'superadmin', '', '2018-06-14 17:20:33 033', '机构管理', 'UnitController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568163fd969a0163fd98e4840004', '1', '查询机构结构图', 'superadmin', '111.204.215.183', '2018-06-14 17:20:45 045', 'sys-unit', 'UnitController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568163fd969a0163fd9938520005', '1', '查询用户列表[1, 20]', 'superadmin', '111.204.215.183', '2018-06-14 17:21:07 007', 'sys-user', 'UserController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568163fd969a0163fda29dc80006', '1', '查询角色列表', 'superadmin', '111.204.215.183', '2018-06-14 17:31:22 022', 'sys-role', 'RoleController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568163fd969a0163fda29f8e0007', '1', '查询角色列表[1, 20]', 'superadmin', '111.204.215.183', '2018-06-14 17:31:23 023', 'sys-role', 'RoleController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568163fd969a0163fda2b5a80008', '1', '查询角色列表[1, 20]', 'superadmin', '111.204.215.183', '2018-06-14 17:31:29 029', 'sys-role', 'RoleController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568163fd969a0163fda2bbcb0009', '1', '查询角色列表[1, 20]', 'superadmin', '111.204.215.183', '2018-06-14 17:31:30 030', 'sys-role', 'RoleController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568163fd969a0163fda2dd7d000a', '1', '查询菜单列表', 'superadmin', '111.204.215.183', '2018-06-14 17:31:39 039', 'sys-res', 'ResourceController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568163fd969a0163fda34f44000b', '1', '查询机构结构图', 'superadmin', '111.204.215.183', '2018-06-14 17:32:08 008', 'sys-unit', 'UnitController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568163fd969a0163fda9d15f000c', '1', '查询角色列表', 'superadmin', '111.204.215.183', '2018-06-14 17:39:14 014', 'sys-role', 'RoleController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568163fd969a0163fda9d411000d', '1', '查询角色列表[1, 20]', 'superadmin', '111.204.215.183', '2018-06-14 17:39:15 015', 'sys-role', 'RoleController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568163fd969a0163fdadb61f000e', '1', '查询机构列表', 'superadmin', '111.204.215.183', '2018-06-14 17:43:30 030', 'sys-unit', 'UnitController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568163fd969a0163fdadb629000f', '1', '访问机构列表', 'superadmin', '', '2018-06-14 17:43:30 030', '机构管理', 'UnitController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('40285681645e10f101645e11dfc90000', '1', '[superadmin]登录系统', 'superadmin', '本地主机', '2018-07-03 10:56:27 027', 'login', 'LoginController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('40285681645e137e01645e140a090000', '1', '[superadmin]登录系统', 'superadmin', '本地主机', '2018-07-03 10:58:48 048', 'login', 'LoginController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('40285681645e25f601645e2675b90000', '1', '[superadmin]登录系统', 'superadmin', '本地主机', '2018-07-03 11:18:56 056', 'login', 'LoginController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('40285681645e25f601645e2f85fe0002', '1', '[{\"original\":\"111.xlsx\",\"size\":21054,\"path\":\"/file/20180703/qWHLuoe1QQ.xlsx\",\"suffix\":\".xlsx\",\"name\":\"qWHLuoe1QQ.xlsx\",\"uploadPrefixPath\":\"/jrelax-bi/dl\"}]', 'superadmin', '', '2018-07-03 11:28:50 050', '上传文件', 'LogService', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568164cb4b760164cb4e868e0000', '1', '[superadmin]登录系统', 'superadmin', '本地主机', '2018-07-24 16:01:18 018', 'login', 'LoginController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568164cb66000164cb6684380000', '1', '[superadmin]登录系统', 'superadmin', '本地主机', '2018-07-24 16:27:30 030', 'login', 'LoginController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568164cb7f450164cb808c7b0000', '1', '[superadmin]登录系统', 'superadmin', '本地主机', '2018-07-24 16:55:56 056', 'login', 'LoginController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568164cb9e330164cb9eae5f0000', '1', '[superadmin]登录系统', 'superadmin', '本地主机', '2018-07-24 17:28:51 051', 'login', 'LoginController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028568164d463b70164d46445bd0000', '1', '[superadmin]登录系统', 'superadmin', '本地主机', '2018-07-26 10:21:38 038', 'login', 'LoginController', 'Chrome/66.0.3359.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812662dc01a90162dc02197b0000', '1', '[superadmin]登录系统', 'superadmin', '本地主机', '2018-04-19 11:45:47 047', 'login', 'LoginController', 'Chrome/65.0.3325.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812662dc01a90162dc0228790001', '1', '[superadmin]退出系统', 'superadmin', '', '2018-04-19 11:45:51 051', 'login-out', 'LogService', 'Chrome/65.0.3325.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812662dc01a90162dc0228860002', '1', '退出系统', 'Guest', '', '2018-04-19 11:45:51 051', '系统登录', 'LoginController', 'Chrome/65.0.3325.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812662dc01a90162dc0235330003', '1', '[superadmin]登录系统', 'superadmin', '本地主机', '2018-04-19 11:45:54 054', 'login', 'LoginController', 'Chrome/65.0.3325.181', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812663202e4f0163202ea29e0000', '1', '[superadmin]登录系统', 'superadmin', '本地主机', '2018-05-02 17:28:37 037', 'login', 'LoginController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812663202e4f0163202eb76c0001', '1', '[superadmin]退出系统', 'superadmin', '', '2018-05-02 17:28:42 042', 'login-out', 'LogService', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812663202e4f0163202eb7790002', '1', '退出系统', 'Guest', '', '2018-05-02 17:28:42 042', '系统登录', 'LoginController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('40288126632046c50163204720b10000', '1', '[superadmin]登录系统', 'superadmin', '本地主机', '2018-05-02 17:55:22 022', 'login', 'LoginController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('40288126632046c50163204a1b620001', '1', '查询字典项[4028b88158b3bc850158b411f07b0003]', 'superadmin', '本地主机', '2018-05-02 17:58:37 037', 'sys-datadict', 'DataDictController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('40288126632046c50163204a219a0009', '1', '编辑字典项[4028b88158b3bc850158b411f07b0003]', 'superadmin', '本地主机', '2018-05-02 17:58:39 039', 'sys-datadict', 'DataDictController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('40288126632046c50163204a6244000a', '1', '[superadmin]退出系统', 'superadmin', '', '2018-05-02 17:58:55 055', 'login-out', 'LogService', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('40288126632046c50163204a624b000b', '1', '退出系统', 'Guest', '', '2018-05-02 17:58:55 055', '系统登录', 'LoginController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('40288126632046c50163204a6e24000c', '1', '[superadmin]登录系统', 'superadmin', '本地主机', '2018-05-02 17:58:58 058', 'login', 'LoginController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('40288126632046c50163204b01fa000d', '1', '查询字典项[4028b88158b3bc850158b411f07b0003]', 'superadmin', '本地主机', '2018-05-02 17:59:36 036', 'sys-datadict', 'DataDictController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('40288126632046c50163204b1e720015', '1', '编辑字典项[4028b88158b3bc850158b411f07b0003]', 'superadmin', '本地主机', '2018-05-02 17:59:43 043', 'sys-datadict', 'DataDictController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812663204bc20163204d74560000', '1', '[superadmin]登录系统', 'superadmin', '本地主机', '2018-05-02 18:02:17 017', 'login', 'LoginController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812663204bc20163205230ef0001', '1', '切换皮肤：[theme: palette.2]', 'superadmin', '', '2018-05-02 18:07:27 027', '系统首页', 'LogService', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812663204bc2016320523c820002', '1', '切换皮肤：[theme: palette.6]', 'superadmin', '', '2018-05-02 18:07:30 030', '系统首页', 'LogService', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812663204bc20163205252850003', '1', '切换皮肤：[theme: palette]', 'superadmin', '', '2018-05-02 18:07:36 036', '系统首页', 'LogService', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812663204bc20163205292de0004', '1', '查询菜单列表', 'superadmin', '本地主机', '2018-05-02 18:07:52 052', 'sys-res', 'ResourceController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812663204bc201632052a7200005', '1', '编辑菜单[402881ff500261d4015002732e960000, 数据库管理, -1]', 'superadmin', '本地主机', '2018-05-02 18:07:57 057', 'sys-res', 'ResourceController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812663204bc201632052a8560006', '1', '查询菜单列表', 'superadmin', '本地主机', '2018-05-02 18:07:58 058', 'sys-res', 'ResourceController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812663204bc201632052aff70007', '1', '[superadmin]退出系统', 'superadmin', '', '2018-05-02 18:07:59 059', 'login-out', 'LogService', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812663204bc201632052b0150008', '1', '[superadmin]登录系统', 'superadmin', '本地主机', '2018-05-02 18:08:00 000', 'login', 'LoginController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812663204bc201632052b02c0009', '1', '重新登录', 'superadmin', '', '2018-05-02 18:08:00 000', '系统登录', 'LoginController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812663204bc20163205301e3000a', '1', '查询机构列表', 'superadmin', '本地主机', '2018-05-02 18:08:20 020', 'sys-unit', 'UnitController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812663204bc20163205301e9000b', '1', '访问机构列表', 'superadmin', '', '2018-05-02 18:08:20 020', '机构管理', 'UnitController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812663204bc201632065cfbd000c', '1', '[superadmin]退出系统', 'superadmin', '', '2018-05-02 18:28:53 053', 'login-out', 'LogService', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812663204bc201632065cfc3000d', '1', '退出系统', 'Guest', '', '2018-05-02 18:28:53 053', '系统登录', 'LoginController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812f63428d810163428de59c0000', '1', '[superadmin]登录系统', 'superadmin', '本地主机', '2018-05-09 09:39:45 045', 'login', 'LoginController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812f63428d810163428fcbe50001', '1', '[superadmin]退出系统', 'superadmin', '', '2018-05-09 09:41:50 050', 'login-out', 'LogService', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812f63428d810163428fcbec0002', '1', '退出系统', 'Guest', '', '2018-05-09 09:41:50 050', '系统登录', 'LoginController', 'Chrome/66.0.3359.139', 'Windows 10');
+INSERT INTO `sys_log` VALUES ('4028812f6344196c0163441a33a20000', '1', '[superadmin]登录系统', 'superadmin', '本地主机', '2018-05-09 16:52:37 037', 'login', 'LoginController', 'Chrome/66.0.3359.139', 'Windows 10');
 
 -- ----------------------------
 -- Table structure for sys_notify
@@ -5820,7 +6310,7 @@ INSERT INTO `sys_res` VALUES ('40288191610c944d01610c95cb860002', '定时任务'
 INSERT INTO `sys_res` VALUES ('402881ee535473d6015354bbd1fd0026', '矢量图标', '010001', '/open/icon', 'fa fa-image', '1', '1', '', '402838814ae123a1014ae2775ac00000', '0', '0', '1', '1', '2016-03-08 13:38:28');
 INSERT INTO `sys_res` VALUES ('402881ee547ea15801547eb07a2f0002', '数据源管理', '006', '/bi/datasource', 'fa fa-database', '6', '1', '', '-1', '0', '0', '1', '0', '2016-05-05 10:12:55');
 INSERT INTO `sys_res` VALUES ('402881ee547ea15801547eb17d800004', '图表管理', '004', '/bi/charts', 'fa fa-pie-chart', '4', '1', '基于 自定义数据源 模块生成图表', '-1', '0', '0', '1', '0', '2016-05-05 10:14:01');
-INSERT INTO `sys_res` VALUES ('402881ff500261d4015002732e960000', '数据库管理', '007', '/bi/table', 'fa fa-table', '7', '1', '数据库表管理', '-1', '0', '0', '1', '1', '2015-09-25 11:01:54');
+INSERT INTO `sys_res` VALUES ('402881ff500261d4015002732e960000', '数据库管理', '007', '/bi/table', 'fa fa-table', '7', '1', '数据库表管理', '-1', '0', '0', '1', '0', '2015-09-25 11:01:54');
 INSERT INTO `sys_res` VALUES ('40289f395992c350015992c676300002', '数据表单', '002002', '/bi/form/v2', 'fa fa-check-square-o', '2', '1', '表单管理2.0版本，添加表单时必须先选择数据库表', '297ec0504dfb4517014dfb8441740006', '0', '0', '1', '0', '2017-01-12 21:03:16');
 INSERT INTO `sys_res` VALUES ('4028b8815852021101585214bca00002', '参数配置', '008010002', '/system/config', 'fa fa-cogs', '2', '1', '', '4028388148b2fe810148b32e9036002e', '0', '0', '1', '0', '2016-11-11 14:30:40');
 INSERT INTO `sys_res` VALUES ('4028b8815885ab62015885bec7ac000a', '在线用户监控', '008010009', '/system/senior/monitor/online', 'fa fa-eye', '9', '1', '查看实时在线用户', '4028388148b2fe810148b32e9036002e', '0', '0', '1', '0', '2016-11-21 15:17:02');
@@ -6184,7 +6674,7 @@ CREATE TABLE `sys_user` (
 -- Records of sys_user
 -- ----------------------------
 INSERT INTO `sys_user` VALUES ('4028812857559047015755eaf35c0149', 'superman', 'C4CA4238A0B923820DCC509A6F75849B', 'SuperMan', '', '', '', 'palette', null, '1', '0', '2016-09-23 15:20:43', '2017-11-23 19:09:53', '本地主机', '1', null);
-INSERT INTO `sys_user` VALUES ('402881ee547f564d01547f7dd49b002e', 'superadmin', 'C4CA4238A0B923820DCC509A6F75849B', '超级管理员', '', '', '', 'palette', '', '1', '1', '2016-05-05 13:57:13', '2018-04-19 10:45:01', '本地主机', '1', null);
+INSERT INTO `sys_user` VALUES ('402881ee547f564d01547f7dd49b002e', 'superadmin', 'C4CA4238A0B923820DCC509A6F75849B', '超级管理员', '', '', '', 'palette', '', '1', '1', '2016-05-05 13:57:13', '2018-07-26 10:21:38', '本地主机', '1', null);
 
 -- ----------------------------
 -- Table structure for sys_user_config
@@ -6296,7 +6786,7 @@ CREATE TABLE `sys_version` (
   `update_time` varchar(50) DEFAULT NULL,
   `update_server` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 -- ----------------------------
 -- Records of sys_version
@@ -6316,4 +6806,18 @@ CREATE TABLE `wf_form_14872489213681` (
 
 -- ----------------------------
 -- Records of wf_form_14872489213681
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for wf_form_15324246765711
+-- ----------------------------
+DROP TABLE IF EXISTS `wf_form_15324246765711`;
+CREATE TABLE `wf_form_15324246765711` (
+  `id` varchar(32) NOT NULL DEFAULT '',
+  `content` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of wf_form_15324246765711
 -- ----------------------------
