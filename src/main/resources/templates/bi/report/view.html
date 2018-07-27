@@ -33,8 +33,8 @@
                                         $!searchForm.content
                                     </div>
                                     <div class="panel-footer text-center">
-                                        <button class="btn btn-primary btn-form-submit" type="submit">立即搜索</button>
-                                        <button class="btn btn-default btn-form-submit" type="reset">重置</button>
+                                        <button class="btn btn-primary btn-form-submit" type="button" onclick="searchFun()">立即搜索</button>
+                                        <button class="btn btn-default btn-form-submit" type="button" onclick="resetFun()">重置</button>
                                     </div>
                                 </div>
                             </div>
@@ -60,6 +60,15 @@
 <script src="$!basePath/app/report/bi.report.js?v=1.1"></script>
 <script src="$!basePath/app/report/bi.report.formula.js"></script>
 <script type="text/javascript">
+    function searchFun(){
+        var searchForm = $("#searchForm form");
+        searchForm.submit();
+    }
+    function resetFun(){
+        var searchForm = $("#searchForm form");
+        searchForm[0].reset();
+        render();
+    }
     function render(params) {
         var id = "$!biReport.id";
         var report = new BiReport({
