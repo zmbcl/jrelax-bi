@@ -10,7 +10,7 @@
 - 修改src/resources/jdbc_mysql.properties 中的jdbc.master中的数据库连接
 
 说明：
-* 技术支持：QQ群490249408
+* 技术支持：QQ群1：490249408(已满) QQ群2：838134564
 * 当前版本号为：1.4
 * lib中的jar包已开源，开源地址：http://www.oschina.net/p/jrelax
 
